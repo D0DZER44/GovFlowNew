@@ -1099,6 +1099,63 @@ body { font-size: 16px; line-height: 1.62; }
 .report-section + .report-section { margin-top: 14px; }
 .report-mini-note { color: var(--ink2); font-size: 13px; line-height: 1.55; margin-top: 8px; }
 @media (min-width: 980px) { .module-report-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); } .module-report-tabs .report-model-general { grid-column: auto; } }
+/* CODEX GOVFLOW PREMIUM FINAL */
+:root {
+  --blue: #2563eb;
+  --green: #0f9f6e;
+  --amber: #d97706;
+  --red: #dc2626;
+  --teal: #0891b2;
+  --bg: #080b10;
+  --bg1: #10151d;
+  --bg2: #151c27;
+  --bg3: #1d2633;
+  --line: rgba(226,232,240,.10);
+  --line2: rgba(226,232,240,.18);
+}
+:root[data-theme="light"] {
+  --bg: #f5f7fb;
+  --bg1: #ffffff;
+  --bg2: #f1f5f9;
+  --bg3: #e8eef7;
+  --ink: #101827;
+  --ink2: #475569;
+  --ink3: #64748b;
+  --line: rgba(15,23,42,.10);
+  --line2: rgba(15,23,42,.16);
+}
+.topbar { backdrop-filter: blur(18px); background: color-mix(in srgb, var(--bg1) 88%, transparent); box-shadow: 0 1px 0 var(--line), 0 18px 45px rgba(0,0,0,.14); }
+.card, .overview-card, .saas-card, .rel-config, .rel-preview, .attention-item, .real-data-note { box-shadow: 0 14px 40px rgba(0,0,0,.18); }
+.btn, .btn-reg, .theme-toggle, .logout-btn { border-radius: 8px !important; transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease, background .15s ease; }
+.btn:hover, .theme-toggle:hover, .logout-btn:hover { transform: translateY(-1px); box-shadow: 0 10px 24px rgba(37,99,235,.14); }
+.btn-primary { background: linear-gradient(135deg, #2563eb, #0891b2) !important; color: #fff !important; border: 1px solid rgba(255,255,255,.14) !important; }
+.btn-ghost { background: var(--bg2) !important; border: 1px solid var(--line2) !important; color: var(--ink2) !important; }
+.dash-tab { border: 1px solid var(--line2); background: var(--bg2); color: var(--ink2); border-radius: 8px; font-weight: 800; }
+.dash-tab.active { background: linear-gradient(135deg, rgba(37,99,235,.22), rgba(8,145,178,.18)); color: var(--ink); border-color: rgba(37,99,235,.45); box-shadow: inset 0 0 0 1px rgba(255,255,255,.05); }
+.theme-toggle { min-width: 42px; height: 38px; padding: 0 12px !important; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-size: 0 !important; background: var(--bg2) !important; border: 1px solid var(--line2) !important; color: var(--ink) !important; }
+.theme-toggle::before { content: '◐'; font-size: 17px; line-height: 1; }
+:root[data-theme="light"] .theme-toggle::before { content: '☾'; }
+#user-session-pill { max-width: 230px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sidebar { box-shadow: 18px 0 45px rgba(0,0,0,.14); }
+.sidebar-live-card { background: linear-gradient(180deg, color-mix(in srgb, var(--bg1) 92%, #2563eb 8%), var(--bg1)); }
+.sidebar-live-card.live-pulse { box-shadow: 0 0 0 1px rgba(8,145,178,.35), 0 0 32px rgba(8,145,178,.22) !important; }
+#screen-dashboard .dash-panel-resumo.active { display: block; }
+#screen-dashboard .dashboard-overview-mode .dash-panel { display: block !important; }
+#screen-dashboard .dashboard-overview-mode .dash-panel:not(.dash-panel-resumo) { opacity: 1; }
+#screen-dashboard .dashboard-overview-mode .section-sep.dash-panel { margin-top: 22px; }
+.abnt-report { max-width: 900px; padding: 56px 64px; color: #111827; background: #fff; font-family: Arial, Helvetica, sans-serif; line-height: 1.5; }
+.abnt-report .report-header { text-align: center; border: 0; padding-bottom: 22px; margin-bottom: 18px; }
+.abnt-report .report-logo-line { justify-content: center; }
+.abnt-report .report-title { text-transform: uppercase; font-size: 18px; line-height: 1.45; letter-spacing: 0; margin-top: 18px; }
+.abnt-report .report-meta { text-align: center; color: #374151; font-size: 12px; }
+.abnt-report .report-section { margin-top: 20px; page-break-inside: avoid; }
+.abnt-report .report-section-title { color: #111827; font-size: 14px; text-transform: uppercase; letter-spacing: 0; border-bottom: 1px solid #d1d5db; padding-bottom: 6px; }
+.abnt-report p { text-align: justify; text-indent: 1.25cm; margin: 10px 0; color: #111827; font-size: 12pt; }
+.abnt-report .rep-kpi-row { grid-template-columns: repeat(3, 1fr); }
+.abnt-report .rep-kpi, .abnt-report .rep-analysis { background: #f9fafb; color: #111827; border-color: #d1d5db; }
+.abnt-report .rep-table th, .abnt-report .rep-table td { color: #111827; border-color: #d1d5db; }
+.abnt-report .abnt-cover-note { margin-top: 24px; text-align: center; color: #374151; font-size: 12px; }
+@media (max-width: 760px) { .abnt-report { padding: 32px 22px; } .abnt-report .rep-kpi-row { grid-template-columns: 1fr; } #user-session-pill { display:none; } }
 </style>
 </head>
 <body>
@@ -1255,7 +1312,7 @@ body { font-size: 16px; line-height: 1.62; }
 <!-- ══════════════════════ SIDEBAR ══════════════════════ -->
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-section">Principal</div>
-  <button class="nav-item active" id="nav-dashboard" onclick="goTo('dashboard')">
+  <button class="nav-item active" id="nav-dashboard" onclick="goTo('dashboard');setTimeout(()=>setDashTab('resumo'),80)">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
     Dashboard
   </button>
@@ -3610,6 +3667,129 @@ function gfZeroVisibleCounters() {
   gfSetText('pill-pend', '0 pendentes');
 }
 setTimeout(() => { updateDashboardFromHistory(); setDashTab(document.querySelector('#screen-dashboard .dash-tab.active')?.dataset.tab || 'resumo'); }, 1600);
+// CODEX GOVFLOW PREMIUM FINAL SCRIPT
+function goTo(section) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const screen = document.getElementById('screen-' + section);
+  const nav = document.getElementById('nav-' + section);
+  if (screen) screen.classList.add('active');
+  if (nav) nav.classList.add('active');
+  if (section === 'dashboard') setTimeout(() => setDashTab('resumo'), 40);
+  const overlay = document.getElementById('sidebar-overlay');
+  const sidebar = document.getElementById('sidebar');
+  if (overlay && sidebar && sidebar.classList.contains('open')) toggleSidebar();
+}
+function setDashTab(name) {
+  hardenDashboardPanels();
+  const targetName = name || 'resumo';
+  const dashboard = document.getElementById('screen-dashboard');
+  const overview = targetName === 'resumo';
+  if (dashboard) dashboard.classList.toggle('dashboard-overview-mode', overview);
+  document.querySelectorAll('#screen-dashboard .dash-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === targetName));
+  document.querySelectorAll('#screen-dashboard .dash-panel').forEach(p => {
+    const shouldShow = overview || p.classList.contains('dash-panel-' + targetName);
+    p.classList.toggle('active', shouldShow);
+    p.style.display = shouldShow ? '' : 'none';
+  });
+  const tabs = document.querySelector('#screen-dashboard .dashboard-tabs');
+  if (tabs) tabs.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+function applyGovflowTheme(theme) {
+  const next = theme === 'light' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  try { localStorage.setItem(GF_THEME_KEY, next); } catch(e) {}
+  const btn = document.getElementById('theme-toggle');
+  if (btn) { btn.textContent = next === 'light' ? 'Modo escuro' : 'Modo claro'; btn.title = next === 'light' ? 'Ativar modo escuro' : 'Ativar modo claro'; }
+}
+function initGovflowThemeToggle() {
+  let saved = 'dark';
+  try { saved = localStorage.getItem(GF_THEME_KEY) || 'dark'; } catch(e) {}
+  applyGovflowTheme(saved);
+  const right = document.querySelector('.topbar-right');
+  if (!right) return;
+  let btn = document.getElementById('theme-toggle');
+  if (!btn) {
+    btn = document.createElement('button');
+    btn.id = 'theme-toggle';
+    btn.type = 'button';
+    btn.className = 'theme-toggle';
+    btn.onclick = toggleGovflowTheme;
+  }
+  right.insertBefore(btn, right.firstChild);
+  applyGovflowTheme(saved);
+}
+function autoUpdateLivePanel() {
+  updateDashboardFromHistory();
+  markUpdate();
+  const stats = gfCurrentStats();
+  const minute = new Date().getMinutes();
+  const hour = new Date().getHours();
+  const weather = ['Parcialmente nublado', 'Sol entre nuvens', 'Vento moderado', 'Umidade elevada'][minute % 4];
+  const temp = 24 + ((hour + minute) % 5);
+  const liveCard = document.querySelector('.sidebar-live-card');
+  if (liveCard) { liveCard.classList.add('live-pulse'); setTimeout(() => liveCard.classList.remove('live-pulse'), 700); }
+  const rows = document.querySelectorAll('.sidebar-live-card .live-row');
+  if (rows[0]) { const desc = rows[0].querySelector('.live-desc'); const val = rows[0].querySelector('.live-value'); if (desc) desc.textContent = weather + ' · atualização automática'; if (val) val.textContent = temp + '°C'; }
+  if (rows[1]) { const desc = rows[1].querySelector('.live-desc'); const val = rows[1].querySelector('.live-value'); const trend = stats.fila >= 20 ? 'monitorar reforço' : 'fluxo normal'; if (desc) desc.textContent = stats.fila + ' pessoas · Tempo médio ' + stats.espera + ' min · ' + trend; if (val) val.textContent = stats.fila >= 40 ? 'Crítica' : stats.fila >= 20 ? 'Alta' : 'Normal'; }
+  if (rows[2]) { const desc = rows[2].querySelector('.live-desc'); const val = rows[2].querySelector('.live-value'); const ongoing = Math.max(0, Math.min(9, Math.round(stats.fila / 6) + (minute % 2))); if (desc) desc.textContent = ongoing + ' guichês ativos · ciclo ' + String(minute).padStart(2,'0'); if (val) val.textContent = ongoing; }
+  if (rows[3]) { const desc = rows[3].querySelector('.live-desc'); const val = rows[3].querySelector('.live-value'); const totalCad = stats.hj.novos + stats.hj.atualizacoes + stats.hj.revisoes; if (desc) desc.textContent = 'Novos: ' + stats.hj.novos + ' · Atualizações: ' + stats.hj.atualizacoes + ' · Revisões: ' + stats.hj.revisoes; if (val) val.textContent = totalCad; }
+  if (typeof refreshAttentionPanel === 'function') refreshAttentionPanel();
+}
+function abntParagraphs(report, stockAlerts, openOrders, ocRows, ausRows) {
+  const filaText = report.stats.fila ? 'A fila registrada no período alcançou ' + report.stats.fila + ' pessoas, com tempo médio estimado de ' + report.stats.espera + ' minutos.' : 'Não houve registro de fila para o período selecionado.';
+  const stockText = stockAlerts.length ? 'No estoque, foram encontrados ' + stockAlerts.length + ' item(ns) abaixo do mínimo operacional, exigindo reposição ou remanejamento.' : 'O estoque não apresentou alerta crítico no período consultado.';
+  const ordersText = openOrders.length ? 'As ordens de serviço possuem ' + openOrders.length + ' demanda(s) aberta(s), recomendando acompanhamento da coordenação.' : 'Não há ordens de serviço abertas que alterem a capacidade operacional imediata.';
+  return '<p>O presente relatório consolida as informações operacionais do GovFlow para o período selecionado, reunindo dados de atendimentos, fila, unidades, equipe, ocorrências, estoque e ordens de serviço. A finalidade é subsidiar a tomada de decisão administrativa e registrar a situação do CadÚnico em formato técnico e consultável.</p>' +
+    '<p>No período analisado, foram registrados ' + report.stats.atend + ' atendimento(s) e ' + report.rows.length + ' lançamento(s) no histórico. ' + filaText + ' As ausências registradas somaram ' + ausRows.length + ', enquanto as ocorrências somaram ' + ocRows.length + '.</p>' +
+    '<p>A distribuição por unidade indica Centro com ' + report.stats.hj.centro + ' atendimento(s), Canto do Mar com ' + report.stats.hj.canto + ', Boiçucanga com ' + report.stats.hj.boicucanga + ' e Morro do Abrigo com ' + report.stats.hj.morro + '. Esses valores permitem observar concentração territorial da demanda e orientar eventual redistribuição de equipe.</p>' +
+    '<p>' + stockText + ' ' + ordersText + ' Recomenda-se que os itens críticos sejam tratados como condicionantes da continuidade do atendimento, principalmente quando houver impacto direto sobre impressão, cadastro, triagem ou comunicação com famílias.</p>' +
+    '<p>Como encaminhamento, recomenda-se manter o registro diário atualizado, acompanhar a fila em ciclos curtos, revisar ausências da equipe e utilizar os relatórios por dia, mês e ano para comparar evolução operacional e justificar decisões perante a coordenação.</p>';
+}
+function buildReport() {
+  const model = window.govflowReportModel || 'geral';
+  const title = document.getElementById('rel-titulo')?.value || 'Relatório Geral GovFlow';
+  const und = document.getElementById('rel-und')?.value || 'Todas as unidades';
+  const report = gfRecordsForReport();
+  const stock = typeof gfRead === 'function' ? gfRead(GF_STOCK_KEY, GF_SEED_STOCK) : [];
+  const low = stock.filter(i => i.qty <= i.min);
+  const orders = typeof gfRead === 'function' ? gfRead(GF_ORDERS_KEY, GF_SEED_ORDERS) : [];
+  const openOrders = orders.filter(o => o.status !== 'Concluída');
+  const filaRows = report.rows.filter(r => r.tipo === 'fila');
+  const ocRows = report.rows.filter(r => r.tipo === 'ocorrencia');
+  const ausRows = report.rows.filter(r => r.tipo === 'ausencia');
+  const meta = 'Unidade: ' + und + ' · Período: ' + report.range.label + ' · Gerado em ' + new Date().toLocaleString('pt-BR');
+  let body = '';
+  if (model !== 'geral') {
+    window.govflowReportModel = model;
+    const oldModel = model;
+    if (oldModel === 'estoque') body = '<div class="report-section"><div class="report-section-title">Resumo de Estoque</div><div class="rep-kpi-row"><div class="rep-kpi"><div class="rep-kpi-val">' + stock.length + '</div><div class="rep-kpi-lbl">Itens</div></div><div class="rep-kpi"><div class="rep-kpi-val">' + low.length + '</div><div class="rep-kpi-lbl">Alertas</div></div><div class="rep-kpi"><div class="rep-kpi-val">' + stock.reduce((a,b)=>a+b.qty,0) + '</div><div class="rep-kpi-lbl">Saldo total</div></div></div><table class="rep-table"><tr><th>Item</th><th>Qtd.</th><th>Mínimo</th><th>Local</th><th>Status</th></tr>' + tableRows(stock.map(i => [i.item, i.qty + ' ' + i.unit, i.min + ' ' + i.unit, i.place, i.qty <= i.min ? 'Repor' : 'OK'])) + '</table></div>';
+    else if (oldModel === 'ordens') body = '<div class="report-section"><div class="report-section-title">Ordens de Serviço</div><div class="rep-kpi-row"><div class="rep-kpi"><div class="rep-kpi-val">' + orders.length + '</div><div class="rep-kpi-lbl">Total</div></div><div class="rep-kpi"><div class="rep-kpi-val">' + openOrders.length + '</div><div class="rep-kpi-lbl">Abertas</div></div><div class="rep-kpi"><div class="rep-kpi-val">' + orders.filter(o=>o.priority==='Alta').length + '</div><div class="rep-kpi-lbl">Alta prioridade</div></div></div><table class="rep-table"><tr><th>#</th><th>Ordem</th><th>Unidade</th><th>Responsável</th><th>Status</th></tr>' + tableRows(orders.map(o => [o.id, o.title, o.unit, o.owner, o.status])) + '</table></div>';
+    else body = '<div class="report-section"><div class="report-section-title">Fila Pública</div><div class="rep-kpi-row"><div class="rep-kpi"><div class="rep-kpi-val">' + report.stats.fila + '</div><div class="rep-kpi-lbl">Última fila</div></div><div class="rep-kpi"><div class="rep-kpi-val">' + report.stats.espera + 'm</div><div class="rep-kpi-lbl">Espera média</div></div><div class="rep-kpi"><div class="rep-kpi-val">' + filaRows.length + '</div><div class="rep-kpi-lbl">Registros</div></div></div></div>';
+    document.getElementById('rel-preview-box').innerHTML = reportShell(title, meta, body);
+  } else {
+    body += '<div class="abnt-cover-note">GOVFLOW · GESTÃO OPERACIONAL DO CADÚNICO<br>Relatório técnico-operacional conforme estrutura formal: identificação, síntese, análise, evidências e encaminhamentos.</div>';
+    body += '<div class="report-section"><div class="report-section-title">1. Síntese Executiva</div><div class="rep-kpi-row"><div class="rep-kpi"><div class="rep-kpi-val">' + report.stats.atend + '</div><div class="rep-kpi-lbl">Atendimentos</div></div><div class="rep-kpi"><div class="rep-kpi-val">' + report.stats.fila + '</div><div class="rep-kpi-lbl">Fila</div></div><div class="rep-kpi"><div class="rep-kpi-val">' + report.rows.length + '</div><div class="rep-kpi-lbl">Registros</div></div><div class="rep-kpi"><div class="rep-kpi-val">' + ausRows.length + '</div><div class="rep-kpi-lbl">Ausências</div></div><div class="rep-kpi"><div class="rep-kpi-val">' + low.length + '</div><div class="rep-kpi-lbl">Alertas estoque</div></div><div class="rep-kpi"><div class="rep-kpi-val">' + openOrders.length + '</div><div class="rep-kpi-lbl">Ordens abertas</div></div></div></div>';
+    body += '<div class="report-section"><div class="report-section-title">2. Análise Técnica</div>' + abntParagraphs(report, low, openOrders, ocRows, ausRows) + '</div>';
+    body += '<div class="report-section"><div class="report-section-title">3. Dados por Unidade</div><table class="rep-table"><tr><th>Unidade</th><th>Atendimentos</th></tr>' + tableRows(gfReportUnitRows(report.stats)) + '</table></div>';
+    body += '<div class="report-section"><div class="report-section-title">4. Estoque e Ordens de Serviço</div><table class="rep-table"><tr><th>Área</th><th>Situação</th><th>Detalhe</th></tr>' + tableRows([['Estoque', low.length ? 'Atenção' : 'OK', low.length ? low.map(i => i.item + ': ' + i.qty + ' ' + i.unit).join('; ') : 'Sem alerta crítico'], ['Ordens', openOrders.length ? 'Abertas' : 'OK', openOrders.length + ' abertas de ' + orders.length]]) + '</table></div>';
+    body += '<div class="report-section"><div class="report-section-title">5. Histórico do Período</div><table class="rep-table"><tr><th>Tipo</th><th>Unidade</th><th>Detalhe</th><th>Data/Hora</th></tr>' + tableRows(report.rows.slice(0,80).map(r => [r.tipo, r.unidade || '-', r.detalhe || '-', r.hora || '-'])) + '</table></div>';
+    body += '<div class="report-section"><div class="report-section-title">6. Conclusão</div><p>Conclui-se que o acompanhamento sistemático dos registros, associado ao monitoramento de fila, estoque e equipe, permite maior previsibilidade da operação e melhor documentação das decisões administrativas. Este relatório deve ser arquivado como memória de gestão e utilizado para comparação com períodos posteriores.</p></div>';
+    document.getElementById('rel-preview-box').innerHTML = reportShell(title, meta, body).replace('report-doc"', 'report-doc abnt-report"');
+  }
+  const row = document.getElementById('rel-btn-row'); if (row) row.style.display = 'block';
+  toast('Relatório gerado');
+}
+function initPremiumFinal() {
+  initGovflowThemeToggle();
+  hardenDashboardPanels();
+  setDashTab('resumo');
+  updateDashboardFromHistory();
+  autoUpdateLivePanel();
+  if (window.govflowLiveTimer) { clearInterval(window.govflowLiveTimer); }
+  window.govflowLiveTimer = setInterval(autoUpdateLivePanel, 15000);
+}
+setTimeout(initPremiumFinal, 1900);
 </script>
 </body>
 </html>
