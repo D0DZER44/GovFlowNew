@@ -7646,5 +7646,309 @@ label,
 })();
 </script>
 <!-- /CODEX GOVFLOW FIX OVERFLOW STOCK SIDEBAR FINAL -->
+
+<!-- CODEX GOVFLOW FINAL VISUAL FIX LOGO TIMELINE -->
+<style>
+/* GOVFLOW - CORRECAO FINAL: SECOES, LOGO, SIDEBAR TIMELINE, MUTIROES E PERFORMANCE */
+.brand-mark.govflow-logo-mark,
+.report-logo-box.govflow-logo-mark {
+  width: 42px !important;
+  height: 42px !important;
+  border-radius: 10px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  background: transparent !important;
+  box-shadow: 0 14px 34px rgba(14,165,164,.26) !important;
+}
+.govflow-logo-svg { width: 100%; height: 100%; display: block; }
+.govflow-cad-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(14,165,164,.35);
+  border-radius: 999px;
+  padding: 6px 10px;
+  color: var(--ink, #111827);
+  background: rgba(14,165,164,.10);
+  font-size: 12px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+.govflow-cad-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.card-head,
+.page-hd,
+.section-sep,
+.rel-config-title,
+.card-title,
+.page-hd-title,
+.sidebar-section,
+.report-section-title,
+.saas-label,
+.kpi-label,
+.overview-label {
+  text-align: center !important;
+}
+.card-head { justify-content: center !important; gap: 10px !important; flex-wrap: wrap !important; }
+.card-head .mp { margin-left: 0 !important; }
+.card-title { justify-content: center !important; width: 100% !important; overflow-wrap: anywhere !important; white-space: normal !important; }
+.task-body, .mut-body, .acao-body, .overview-body, .performance-row div { text-align: justify !important; }
+#screen-dashboard .dash-panel-afazeres .card-title,
+#screen-dashboard .dash-panel-acoes .card-title { font-size: clamp(17px, 1.35vw, 21px) !important; line-height: 1.25 !important; letter-spacing: 0 !important; }
+#screen-dashboard .dash-panel-acoes .mut-item,
+#screen-dashboard .dash-panel-acoes .acao-card,
+#screen-dashboard .dash-panel-acoes .task-item {
+  display: grid !important;
+  grid-template-columns: 48px minmax(0, 1fr) auto !important;
+  gap: 12px !important;
+  align-items: center !important;
+  min-width: 0 !important;
+}
+#screen-dashboard .dash-panel-acoes .mut-title,
+#screen-dashboard .dash-panel-acoes .acao-title,
+#screen-dashboard .dash-panel-acoes .task-name {
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+  word-break: normal !important;
+  letter-spacing: 0 !important;
+  line-height: 1.35 !important;
+}
+#screen-dashboard .dash-panel-acoes .empty-state-clean.duplicate-clean { display: none !important; }
+#screen-relatorio .rel-config { min-width: 0 !important; width: 100% !important; }
+#screen-relatorio .report-sections-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)) !important;
+  gap: 10px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  overflow: visible !important;
+}
+#screen-relatorio .report-section-tile {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 46px !important;
+  height: auto !important;
+  padding: 10px 12px !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  line-height: 1.35 !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  text-align: left !important;
+  letter-spacing: 0 !important;
+}
+#screen-relatorio .report-section-tile .section-label-text {
+  display: block !important;
+  min-width: 0 !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  letter-spacing: 0 !important;
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
+}
+#screen-relatorio .report-section-tile input[type="checkbox"] {
+  flex: 0 0 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  min-height: 18px !important;
+  margin: 0 !important;
+}
+.report-doc .report-header { display: grid !important; justify-items: center !important; gap: 8px !important; }
+.report-brand-line { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.report-footer-govflow {
+  margin-top: 24px;
+  padding-top: 12px;
+  border-top: 1px solid #d1d5db;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  color: #374151;
+  font-size: 10pt;
+}
+.performance-hero { grid-template-columns: 1fr !important; align-items: stretch !important; }
+.performance-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important; }
+.performance-panel-card, .performance-score-card { overflow: visible !important; min-width: 0 !important; }
+.performance-row { align-items: flex-start !important; flex-wrap: wrap !important; }
+.performance-row div { min-width: min(100%, 280px) !important; flex: 1 1 280px !important; }
+.performance-row .mp { flex: 0 0 auto !important; }
+.sidebar-live-card { max-height: 360px !important; display: flex !important; flex-direction: column !important; }
+.sidebar-live-card .card-head { flex: 0 0 auto !important; }
+.sidebar-live-card .card-body { padding: 0 !important; overflow: hidden !important; }
+.sidebar-live-card .live-timeline { max-height: 292px !important; overflow-y: auto !important; padding: 0 !important; scroll-behavior: smooth; }
+.sidebar-live-card .live-timeline::-webkit-scrollbar { width: 6px; }
+.sidebar-live-card .live-timeline::-webkit-scrollbar-thumb { background: rgba(148,163,184,.30); border-radius: 999px; }
+.sidebar-live-card .live-row { position: relative !important; border-bottom: 1px solid rgba(148,163,184,.14) !important; }
+.sidebar-live-card .live-row::before {
+  content: "";
+  position: absolute;
+  left: 23px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(14,165,164,.25);
+  z-index: 0;
+}
+.sidebar-live-card .live-icon { position: relative !important; z-index: 1 !important; }
+@media (max-width: 980px) {
+  #screen-relatorio .report-sections-grid { grid-template-columns: 1fr !important; }
+  #screen-dashboard .dash-panel-acoes .mut-item,
+  #screen-dashboard .dash-panel-acoes .acao-card,
+  #screen-dashboard .dash-panel-acoes .task-item { grid-template-columns: 44px minmax(0,1fr) !important; }
+  #screen-dashboard .dash-panel-acoes .mp { grid-column: 2; justify-self: start; }
+}
+</style>
+<script>
+/* GOVFLOW - LOGO, REPORT BRANDING, TIMELINE E CORRECOES DE CONTEUDO */
+(function () {
+  function logoSvg(size) {
+    const s = size || 42;
+    return '<svg class="govflow-logo-svg" viewBox="0 0 64 64" width="' + s + '" height="' + s + '" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="GovFlow"><defs><linearGradient id="gfLogoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0ea5a4"/><stop offset=".55" stop-color="#2563eb"/><stop offset="1" stop-color="#16a34a"/></linearGradient></defs><rect x="4" y="4" width="56" height="56" rx="14" fill="url(#gfLogoGrad)"/><path d="M20 36c4 7 15 9 23 1" fill="none" stroke="white" stroke-width="5" stroke-linecap="round"/><path d="M20 25h24" stroke="white" stroke-width="5" stroke-linecap="round"/><path d="M32 18v28" stroke="white" stroke-width="5" stroke-linecap="round" opacity=".92"/><circle cx="46" cy="18" r="5" fill="#facc15"/></svg>';
+  }
+
+  function cadBadge() {
+    return '<span class="govflow-cad-badge"><span class="govflow-cad-dot" style="background:#16a34a"></span><span class="govflow-cad-dot" style="background:#2563eb"></span><span class="govflow-cad-dot" style="background:#facc15"></span>CadÚnico</span>';
+  }
+
+  function installLogo() {
+    document.querySelectorAll('.brand-mark').forEach(function (mark) {
+      mark.classList.add('govflow-logo-mark');
+      mark.innerHTML = logoSvg(42);
+    });
+    const brandText = document.querySelector('.brand-text');
+    if (brandText && !brandText.querySelector('.govflow-cad-badge')) brandText.insertAdjacentHTML('beforeend', cadBadge());
+  }
+
+  function fixReportSections() {
+    const field = Array.from(document.querySelectorAll('#screen-relatorio .rel-config .field')).find(function (el) { return /Seções do relatório|Seções do relatorio/i.test(el.innerText || ''); });
+    if (!field) return;
+    let grid = field.querySelector('.report-sections-grid');
+    if (!grid) {
+      grid = document.createElement('div');
+      grid.className = 'report-sections-grid';
+      field.appendChild(grid);
+    }
+    Array.from(field.querySelectorAll('label')).filter(function (label) { return label.querySelector('input[type="checkbox"]'); }).forEach(function (label) {
+      if (label.parentElement !== grid) grid.appendChild(label);
+      label.classList.add('report-section-tile');
+      label.removeAttribute('style');
+      const input = label.querySelector('input[type="checkbox"]');
+      let labelText = label.querySelector('.section-label-text');
+      const raw = Array.from(label.childNodes).filter(function (node) { return node.nodeType === Node.TEXT_NODE; }).map(function (node) { return node.nodeValue; }).join(' ').replace(/\s+/g, ' ').trim();
+      Array.from(label.childNodes).forEach(function (node) { if (node.nodeType === Node.TEXT_NODE) node.nodeValue = ''; });
+      if (!labelText) {
+        labelText = document.createElement('span');
+        labelText.className = 'section-label-text';
+        label.appendChild(labelText);
+      }
+      labelText.innerText = (raw || labelText.innerText || '').replace(/Resumo executivo/i, 'Resumo administrativo').replace(/Cenários financeiros/i, 'Demandas e cenários');
+      if (input && label.firstElementChild !== input) label.insertBefore(input, label.firstChild);
+    });
+  }
+
+  function cleanAcoesMutiroes() {
+    document.querySelectorAll('.card-title').forEach(function (title) {
+      let t = title.innerText.replace(/\s+/g, ' ').trim();
+      if (/Ações Móveis/i.test(t) || /Mutirões/i.test(t)) title.innerText = 'Ações Móveis e Mutirões';
+      if (/Afazeres|Plano do Dia/i.test(t)) title.innerText = 'Plano do Dia';
+      if (/Ações Inteligentes|Plano de Ação/i.test(t)) title.innerText = 'Plano de Ação';
+    });
+    document.querySelectorAll('#screen-dashboard .dash-panel-acoes .empty-state-clean').forEach(function (el, idx) {
+      if (idx > 0 || /Nenhuma acao movel|Nenhuma ação móvel/i.test(el.innerText)) el.classList.add('duplicate-clean');
+    });
+  }
+
+  function makeTimelineCentral() {
+    const sidebar = document.getElementById('sidebar');
+    const footer = document.querySelector('.sidebar-footer');
+    let live = document.querySelector('.sidebar-live-card');
+    if (!sidebar || !footer) return;
+    if (!live) {
+      live = document.createElement('div');
+      live.className = 'card sidebar-live-card';
+      live.innerHTML = '<div class="card-head"><div class="card-title"><span class="live-dot"></span>Central de Operação</div></div><div class="card-body"><div class="live-timeline"></div></div>';
+    }
+    sidebar.insertBefore(live, footer);
+    const title = live.querySelector('.card-title');
+    if (title) title.innerHTML = '<span class="live-dot"></span>Central de Operação';
+    let body = live.querySelector('.card-body');
+    if (!body) { body = document.createElement('div'); body.className = 'card-body'; live.appendChild(body); }
+    let timeline = live.querySelector('.live-timeline');
+    if (!timeline) {
+      timeline = document.createElement('div');
+      timeline.className = 'live-timeline';
+      Array.from(live.querySelectorAll('.live-row')).forEach(function (row) { timeline.appendChild(row); });
+      body.innerHTML = '';
+      body.appendChild(timeline);
+    }
+    const fila = document.getElementById('kpi-fila')?.innerText || '0';
+    const atend = document.getElementById('kpi-atend')?.innerText || '0';
+    const now = new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+    const desired = [
+      ['🟢','Status geral','Operação monitorada em tempo real','Normal'],
+      ['🪑','Fila de espera', fila + ' pessoas acompanhadas', Number(fila) > 30 ? 'Crítico' : Number(fila) > 15 ? 'Atenção' : 'Normal'],
+      ['📋','Atendimentos', atend + ' registros no período', 'Novo'],
+      ['⚠','Alertas','Demandas, estoque e equipe em leitura contínua','Atenção'],
+      ['🕒','Atualização','Última leitura às ' + now, 'Agora']
+    ];
+    timeline.innerHTML = desired.map(function (item) {
+      const color = /Crítico/i.test(item[3]) ? 'var(--red2)' : /Atenção/i.test(item[3]) ? 'var(--amber2)' : 'var(--green2)';
+      const valColor = /Crítico/i.test(item[3]) ? 'var(--red)' : /Atenção/i.test(item[3]) ? 'var(--amber)' : 'var(--green)';
+      return '<div class="live-row"><div class="live-icon" style="background:' + color + '">' + item[0] + '</div><div class="live-body"><div class="live-title">' + item[1] + '</div><div class="live-desc">' + item[2] + '</div></div><div class="live-value" style="color:' + valColor + '">' + item[3] + '</div></div>';
+    }).join('');
+  }
+
+  function brandReport() {
+    const report = document.getElementById('report-inner');
+    if (!report) return;
+    const header = report.querySelector('.report-header');
+    if (header && !header.querySelector('.report-brand-line')) {
+      const line = document.createElement('div');
+      line.className = 'report-brand-line';
+      line.innerHTML = '<span class="report-logo-box govflow-logo-mark">' + logoSvg(36) + '</span><strong>GovFlow</strong>' + cadBadge();
+      header.insertBefore(line, header.firstChild);
+    }
+    if (!report.querySelector('.report-footer-govflow')) {
+      const footer = document.createElement('div');
+      footer.className = 'report-footer-govflow';
+      footer.innerHTML = '<span>GovFlow · Gestão CadÚnico</span><span>Documento gerado em ' + new Date().toLocaleString('pt-BR') + '</span>';
+      report.appendChild(footer);
+    }
+  }
+
+  const buildReportAnterior = window.buildReport;
+  if (typeof buildReportAnterior === 'function') {
+    window.buildReport = function buildReport() {
+      fixReportSections();
+      const result = buildReportAnterior.apply(this, arguments);
+      setTimeout(function () { installLogo(); fixReportSections(); brandReport(); }, 120);
+      return result;
+    };
+  }
+
+  function applyFinal() {
+    installLogo();
+    fixReportSections();
+    cleanAcoesMutiroes();
+    makeTimelineCentral();
+    brandReport();
+  }
+
+  window.addEventListener('load', function () {
+    applyFinal();
+    setTimeout(applyFinal, 700);
+    setTimeout(applyFinal, 1800);
+    setInterval(makeTimelineCentral, 30000);
+  });
+})();
+</script>
+<!-- /CODEX GOVFLOW FINAL VISUAL FIX LOGO TIMELINE -->
 </body>
 </html>
