@@ -5686,5 +5686,447 @@ input, select, textarea, button { font-size: 15px !important; }
 })();
 </script>
 <!-- /CODEX GOVFLOW AUTH DISABLED PREVIEW -->
+
+<!-- CODEX GOVFLOW DASHBOARD PIZZA MURAL EQUIPE FINAL -->
+<style>
+/* GOVFLOW - GRAFICOS DE PIZZA, MURAL RENOMEADO E EQUIPE LIMPA */
+#screen-dashboard .dashboard-charts-top {
+  margin-top: 18px !important;
+  padding-top: 0 !important;
+}
+#screen-dashboard .dashboard-charts-top + .two-col {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+#screen-dashboard .dashboard-charts-top + .two-col .chart-wrap {
+  min-height: 260px !important;
+  height: 260px !important;
+}
+#screen-dashboard .dashboard-charts-top + .two-col .card {
+  min-height: 340px;
+}
+#ia-operacional-panel .ia-operacional-title,
+#ia-operacional-panel .ia-operacional-sub,
+#ia-operacional-panel .ia-operacional-badge {
+  letter-spacing: 0 !important;
+}
+.team-grid.team-empty {
+  display: block !important;
+  padding: 16px !important;
+}
+.team-grid.team-empty .empty-state-clean {
+  text-align: left;
+}
+</style>
+<script>
+/* GOVFLOW - AJUSTES FINAIS DO DASHBOARD */
+(function () {
+  function texto(el, value) {
+    if (el) el.innerText = value;
+  }
+
+  function getUsersCadastrados() {
+    try {
+      const key = typeof GF_USERS_KEY !== 'undefined' ? GF_USERS_KEY : 'govflow.users.v1';
+      const raw = localStorage.getItem(key);
+      const rows = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(rows)) return [];
+      return rows.filter(function (u) {
+        const email = String(u.email || '').toLowerCase();
+        const role = String(u.role || u.perfil || '').toLowerCase();
+        const name = String(u.name || u.nome || '').toLowerCase();
+        if (u.active === false || u.ativo === false) return false;
+        if (email === 'admin@govflow.com.br') return false;
+        if (role.includes('administrador')) return false;
+        if (name === 'administrador') return false;
+        return !!(u.name || u.nome || u.email);
+      });
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function emptyBox(text) {
+    return '<div class="empty-state-clean">' + text + '</div>';
+  }
+
+  function moverGraficosParaTopo() {
+    const kpis = document.querySelector('#screen-dashboard .kpi-strip');
+    const chartsTitle = document.querySelector('#screen-dashboard .dashboard-charts-top');
+    const chartsRow = chartsTitle ? chartsTitle.nextElementSibling : null;
+    if (!kpis || !chartsTitle || !chartsRow) return;
+
+    chartsTitle.classList.add('dash-panel', 'dash-panel-resumo', 'active');
+    chartsRow.classList.add('dash-panel', 'dash-panel-resumo', 'active');
+    kpis.insertAdjacentElement('afterend', chartsTitle);
+    chartsTitle.insertAdjacentElement('afterend', chartsRow);
+  }
+
+  function atualizarTitulosGraficos() {
+    const row = document.querySelector('#screen-dashboard .dashboard-charts-top + .two-col');
+    if (!row) return;
+    const titles = row.querySelectorAll('.card-title');
+    if (titles[0]) texto(titles[0], 'Distribuição por unidade');
+    if (titles[1]) texto(titles[1], 'Distribuição por horário');
+  }
+
+  function destruirChart(id) {
+    if (typeof Chart === 'undefined') return null;
+    const canvas = document.getElementById(id);
+    if (!canvas) return null;
+    const antigo = Chart.getChart(canvas);
+    let labels = antigo ? antigo.data.labels.slice() : [];
+    let data = antigo && antigo.data.datasets[0] ? antigo.data.datasets[0].data.slice() : [];
+    if (antigo) antigo.destroy();
+    return { canvas, labels, data };
+  }
+
+  function criarPizza(id, labelsFallback) {
+    if (typeof Chart === 'undefined') return null;
+    const info = destruirChart(id);
+    if (!info || !info.canvas) return null;
+    const labels = info.labels && info.labels.length ? info.labels : labelsFallback;
+    const data = info.data && info.data.length ? info.data : labels.map(function () { return 0; });
+
+    return new Chart(info.canvas, {
+      type: 'doughnut',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: data,
+          backgroundColor: [
+            'rgba(37, 99, 235, .72)',
+            'rgba(8, 145, 178, .72)',
+            'rgba(22, 163, 74, .72)',
+            'rgba(245, 158, 11, .72)',
+            'rgba(239, 68, 68, .72)',
+            'rgba(100, 116, 139, .72)'
+          ],
+          borderColor: ['#2563eb', '#0891b2', '#16a34a', '#f59e0b', '#ef4444', '#64748b'],
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '58%',
+        plugins: {
+          legend: {
+            display: true,
+            position: 'bottom',
+            labels: { color: getComputedStyle(document.documentElement).getPropertyValue('--ink2') || '#374151', font: { size: 13 } }
+          }
+        }
+      }
+    });
+  }
+
+  function garantirGraficosPizza() {
+    if (typeof Chart === 'undefined') return;
+    const cu = document.getElementById('chartUnidades');
+    const ce = document.getElementById('chartEvolucao');
+    const chartU = cu ? Chart.getChart(cu) : null;
+    const chartE = ce ? Chart.getChart(ce) : null;
+
+    if (!chartU || chartU.config.type !== 'doughnut') criarPizza('chartUnidades', ['Centro', 'Canto do Mar', 'Boiçucanga', 'Morro do Abrigo']);
+    if (!chartE || chartE.config.type !== 'doughnut') criarPizza('chartEvolucao', ['Manhã', 'Tarde']);
+  }
+
+  function atualizarPizza(id, labels, data) {
+    garantirGraficosPizza();
+    if (typeof Chart === 'undefined') return;
+    const canvas = document.getElementById(id);
+    const chart = canvas ? Chart.getChart(canvas) : null;
+    if (!chart) return;
+    chart.data.labels = labels && labels.length ? labels : ['Sem dados'];
+    chart.data.datasets[0].data = data && data.length ? data : [0];
+    chart.update();
+  }
+
+  function renomearMurais() {
+    const iaTitle = document.querySelector('#ia-operacional-panel .ia-operacional-title');
+    const iaSub = document.querySelector('#ia-operacional-panel .ia-operacional-sub');
+    const iaBadge = document.querySelector('#ia-operacional-panel .ia-operacional-badge');
+    texto(iaTitle, 'Mural Informativo');
+    texto(iaSub, 'Resumo prático do dia, com alertas e recomendações para a coordenação.');
+    if (iaBadge && /IA/i.test(iaBadge.innerText)) iaBadge.innerText = iaBadge.innerText.replace(/IA/gi, 'Mural');
+
+    document.querySelectorAll('#ia-narrativa').forEach(function (el) {
+      el.innerText = el.innerText.replace(/A IA operacional/gi, 'O mural informativo').replace(/IA operacional/gi, 'mural informativo').replace(/IA/gi, 'mural');
+    });
+
+    const insightAuto = document.querySelector('#insights-auto-panel .insights-auto-title');
+    const insightSub = document.querySelector('#insights-auto-panel .insights-auto-sub');
+    texto(insightAuto, 'Leituras do Dia');
+    texto(insightSub, 'Sinais operacionais gerados a partir dos dados do dashboard.');
+
+    document.querySelectorAll('.insights-title').forEach(function (el) {
+      if (/autom/i.test(el.innerText)) el.innerText = 'Insights';
+    });
+  }
+
+  window.renderTeam = function renderTeam() {
+    const grid = document.getElementById('team-grid');
+    if (!grid) return;
+    const users = getUsersCadastrados();
+    grid.classList.add('compact-team');
+
+    if (!users.length) {
+      grid.classList.add('team-empty');
+      grid.innerHTML = emptyBox('Nenhum integrante cadastrado ainda. Quando voce cadastrar a equipe em Funcionarios e Acessos, os nomes aparecerao aqui.');
+      return;
+    }
+
+    grid.classList.remove('team-empty');
+    grid.innerHTML = users.map(function (u, index) {
+      const nome = u.name || u.nome || u.email || ('Funcionario ' + (index + 1));
+      const perfil = u.role || u.perfil || 'Equipe';
+      const email = u.email || 'sem e-mail';
+      const iniciais = nome.split(/\s+/).slice(0, 2).map(function (p) { return p.charAt(0).toUpperCase(); }).join('') || 'EQ';
+      return '<div class="func-card is-collapsible" onclick="this.classList.toggle(\'open\')"><div class="func-main"><div class="func-av" style="background:rgba(37,99,235,.12);color:#2563eb;border:1px solid rgba(37,99,235,.35)">' + iniciais + '</div><div class="func-main-body"><div class="func-name">' + nome + '</div><div class="func-cargo">' + perfil + '</div></div><span class="func-status" style="background:var(--green2);color:var(--green)">Ativo</span></div><div class="func-detail">E-mail: ' + email + '<br>Status: cadastrado e ativo no sistema.</div></div>';
+    }).join('');
+  };
+
+  const saveFuncionarioAnterior = window.saveFuncionario;
+  if (typeof saveFuncionarioAnterior === 'function') {
+    window.saveFuncionario = function saveFuncionario() {
+      const retorno = saveFuncionarioAnterior.apply(this, arguments);
+      setTimeout(function () { if (typeof window.renderTeam === 'function') window.renderTeam(); }, 80);
+      return retorno;
+    };
+  }
+
+  const carregarDashboardAnterior = window.carregarDashboard;
+  if (typeof carregarDashboardAnterior === 'function') {
+    window.carregarDashboard = async function carregarDashboard() {
+      const retorno = await carregarDashboardAnterior.apply(this, arguments);
+      moverGraficosParaTopo();
+      atualizarTitulosGraficos();
+      garantirGraficosPizza();
+      renomearMurais();
+      if (typeof window.renderTeam === 'function') window.renderTeam();
+      return retorno;
+    };
+  }
+
+  const atualizarChartAnterior = window.atualizarChart;
+  window.atualizarPizzaDashboard = atualizarPizza;
+
+  window.addEventListener('load', function () {
+    moverGraficosParaTopo();
+    atualizarTitulosGraficos();
+    garantirGraficosPizza();
+    renomearMurais();
+    if (typeof window.renderTeam === 'function') window.renderTeam();
+    setTimeout(function () {
+      moverGraficosParaTopo();
+      atualizarTitulosGraficos();
+      garantirGraficosPizza();
+      renomearMurais();
+      if (typeof window.renderTeam === 'function') window.renderTeam();
+    }, 700);
+  });
+})();
+</script>
+<!-- /CODEX GOVFLOW DASHBOARD PIZZA MURAL EQUIPE FINAL -->
+
+<!-- CODEX GOVFLOW MURAL TEXT EQUIPE SEED FIX -->
+<script>
+/* GOVFLOW - REFINO DE TEXTOS DO MURAL E EQUIPE SEM SEED */
+(function () {
+  function limparTextoMural() {
+    const map = [
+      ['#ia-operacional-panel .ia-operacional-title', 'Mural Informativo'],
+      ['#ia-operacional-panel .ia-operacional-sub', 'Resumo prático do dia, com alertas e recomendações para a coordenação.'],
+      ['#insights-auto-panel .insights-auto-title', 'Leituras do Dia'],
+      ['#insights-auto-panel .insights-auto-sub', 'Sinais operacionais gerados a partir dos dados do dashboard.']
+    ];
+    map.forEach(function (item) {
+      const el = document.querySelector(item[0]);
+      if (el) el.innerText = item[1];
+    });
+
+    document.querySelectorAll('#ia-operacional-panel button').forEach(function (btn) {
+      if (/Atualizar IA/i.test(btn.innerText)) btn.innerText = 'Atualizar mural';
+      if (/Copiar analise/i.test(btn.innerText) || /Copiar análise/i.test(btn.innerText)) btn.innerText = 'Copiar resumo';
+    });
+
+    document.querySelectorAll('#ia-narrativa, .ia-report-section .rep-analysis, .report-section-title').forEach(function (el) {
+      el.innerText = el.innerText
+        .replace(/A IA operacional/gi, 'O mural informativo')
+        .replace(/IA operacional/gi, 'mural informativo')
+        .replace(/Analise da IA Operacional/gi, 'Resumo Operacional')
+        .replace(/Análise da IA Operacional/gi, 'Resumo Operacional')
+        .replace(/\bIA\b/gi, 'mural');
+    });
+  }
+
+  function usuariosReaisEquipe() {
+    try {
+      const key = typeof GF_USERS_KEY !== 'undefined' ? GF_USERS_KEY : 'govflow.users.v1';
+      const rows = JSON.parse(localStorage.getItem(key) || '[]');
+      if (!Array.isArray(rows)) return [];
+      return rows.filter(function (u) {
+        const email = String(u.email || '').toLowerCase();
+        const nome = String(u.name || u.nome || '').toLowerCase();
+        const role = String(u.role || u.perfil || '').toLowerCase();
+        if (!email && !nome) return false;
+        if (u.active === false || u.ativo === false) return false;
+        if (email.endsWith('@govflow.com.br')) return false;
+        if (email === 'admin@govflow.com.br') return false;
+        if (nome === 'administrador' || nome === 'coordenação' || nome === 'coordenacao' || nome === 'atendimento') return false;
+        if (role.includes('administrador')) return false;
+        return true;
+      });
+    } catch (e) {
+      return [];
+    }
+  }
+
+  window.renderTeam = function renderTeam() {
+    const grid = document.getElementById('team-grid');
+    if (!grid) return;
+    const users = usuariosReaisEquipe();
+    grid.classList.add('compact-team');
+
+    if (!users.length) {
+      grid.classList.add('team-empty');
+      grid.innerHTML = '<div class="empty-state-clean">Nenhum integrante cadastrado ainda. Quando voce cadastrar a equipe em Funcionarios e Acessos, os nomes aparecerao aqui.</div>';
+      return;
+    }
+
+    grid.classList.remove('team-empty');
+    grid.innerHTML = users.map(function (u, index) {
+      const nome = u.name || u.nome || u.email || ('Funcionario ' + (index + 1));
+      const perfil = u.role || u.perfil || 'Equipe';
+      const email = u.email || 'sem e-mail';
+      const iniciais = nome.split(/\s+/).slice(0, 2).map(function (p) { return p.charAt(0).toUpperCase(); }).join('') || 'EQ';
+      return '<div class="func-card is-collapsible" onclick="this.classList.toggle(\'open\')"><div class="func-main"><div class="func-av" style="background:rgba(37,99,235,.12);color:#2563eb;border:1px solid rgba(37,99,235,.35)">' + iniciais + '</div><div class="func-main-body"><div class="func-name">' + nome + '</div><div class="func-cargo">' + perfil + '</div></div><span class="func-status" style="background:var(--green2);color:var(--green)">Ativo</span></div><div class="func-detail">E-mail: ' + email + '<br>Status: cadastrado e ativo no sistema.</div></div>';
+    }).join('');
+  };
+
+  window.addEventListener('load', function () {
+    limparTextoMural();
+    if (typeof window.renderTeam === 'function') window.renderTeam();
+    setTimeout(limparTextoMural, 800);
+    setInterval(limparTextoMural, 2500);
+  });
+})();
+</script>
+<!-- /CODEX GOVFLOW MURAL TEXT EQUIPE SEED FIX -->
+
+<!-- CODEX GOVFLOW REPORT MODELS FIX FINAL -->
+<style>
+/* GOVFLOW - MODELOS DE RELATORIO VISIVEIS E SELECIONADOS */
+#report-model-tabs {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  margin: 0 0 14px 0 !important;
+}
+#report-model-tabs button {
+  border-radius: 8px !important;
+  border: 1px solid var(--line2, #d1d5db) !important;
+  background: var(--bg2, #f9fafb) !important;
+  color: var(--ink2, #374151) !important;
+  font-weight: 850 !important;
+  min-height: 38px !important;
+}
+#report-model-tabs button.report-model-active {
+  background: linear-gradient(135deg, #2563eb, #0891b2) !important;
+  color: #ffffff !important;
+  border-color: rgba(37, 99, 235, .85) !important;
+  box-shadow: 0 10px 24px rgba(37, 99, 235, .20) !important;
+}
+#report-model-tabs button.report-model-general {
+  display: inline-flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+</style>
+<script>
+/* GOVFLOW - CORRECAO DOS BOTOES DE RELATORIO */
+(function () {
+  const modelos = [
+    { id: 'geral', label: 'Geral', title: 'Relatório Geral GovFlow' },
+    { id: 'executivo', label: 'Administrativo', title: 'Relatório Administrativo GovFlow' },
+    { id: 'estoque', label: 'Estoque', title: 'Relatório de Estoque CadÚnico' },
+    { id: 'ordens', label: 'Ordens', title: 'Relatório de Ordens de Serviço' }
+  ];
+
+  function modeloAtual() {
+    return window.govflowReportModel || 'geral';
+  }
+
+  function tituloModelo(id) {
+    const found = modelos.find(function (m) { return m.id === id; });
+    return found ? found.title : modelos[0].title;
+  }
+
+  function atualizarTituloRelatorio(id) {
+    const input = document.getElementById('rel-titulo');
+    if (input) input.value = tituloModelo(id);
+  }
+
+  window.atualizarBotoesRelatorio = function atualizarBotoesRelatorio() {
+    let box = document.getElementById('report-model-tabs');
+    const cfg = document.querySelector('.rel-config');
+    if (!box) {
+      box = document.createElement('div');
+      box.id = 'report-model-tabs';
+      if (cfg) cfg.insertBefore(box, cfg.firstChild);
+    }
+
+    box.innerHTML = modelos.map(function (m) {
+      const active = m.id === modeloAtual() ? ' report-model-active btn-primary' : '';
+      const general = m.id === 'geral' ? ' report-model-general' : '';
+      return '<button type="button" class="btn btn-ghost btn-sm report-model-btn' + general + active + '" data-model="' + m.id + '" onclick="setReportModel(\'' + m.id + '\')">' + m.label + '</button>';
+    }).join('');
+
+    atualizarTituloRelatorio(modeloAtual());
+  };
+
+  window.setReportModel = function setReportModel(model) {
+    window.govflowReportModel = model || 'geral';
+    atualizarTituloRelatorio(window.govflowReportModel);
+    window.atualizarBotoesRelatorio();
+    if (typeof toast === 'function') {
+      const label = modelos.find(function (m) { return m.id === window.govflowReportModel; })?.label || window.govflowReportModel;
+      toast('Modelo de relatório: ' + label);
+    }
+  };
+
+  window.addReportModelControls = function addReportModelControls() {
+    if (!window.govflowReportModel) window.govflowReportModel = 'geral';
+    window.atualizarBotoesRelatorio();
+  };
+
+  const buildReportAnterior = window.buildReport;
+  if (typeof buildReportAnterior === 'function') {
+    window.buildReport = function buildReport() {
+      if (!window.govflowReportModel) window.govflowReportModel = 'geral';
+      window.atualizarBotoesRelatorio();
+      const retorno = buildReportAnterior.apply(this, arguments);
+      setTimeout(function () {
+        window.atualizarBotoesRelatorio();
+        document.querySelectorAll('#report-inner .report-section-title').forEach(function (el) {
+          el.innerText = el.innerText.replace(/Resumo Executivo/gi, 'Resumo Administrativo').replace(/Relatório Executivo/gi, 'Relatório Administrativo');
+        });
+        const title = document.querySelector('#report-inner .report-title');
+        if (title) title.innerText = title.innerText.replace(/Executivo/gi, 'Administrativo');
+      }, 80);
+      return retorno;
+    };
+  }
+
+  window.addEventListener('load', function () {
+    if (!window.govflowReportModel) window.govflowReportModel = 'geral';
+    window.atualizarBotoesRelatorio();
+    setTimeout(window.atualizarBotoesRelatorio, 600);
+    setTimeout(window.atualizarBotoesRelatorio, 1500);
+  });
+})();
+</script>
+<!-- /CODEX GOVFLOW REPORT MODELS FIX FINAL -->
 </body>
 </html>
