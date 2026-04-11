@@ -1,0 +1,2342 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>GOVFLOW · CadÚnico São Sebastião</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+/* ═══════════════════════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════════════════════ */
+:root {
+  --bg:     #07090f;
+  --bg1:    #0c0f18;
+  --bg2:    #111622;
+  --bg3:    #182030;
+  --bg4:    #1e2a3d;
+  --line:   rgba(255,255,255,0.07);
+  --line2:  rgba(255,255,255,0.13);
+
+  --ink:    #e8edf7;
+  --ink2:   #8494b0;
+  --ink3:   #49576e;
+
+  --blue:   #4f8ef7;
+  --blue2:  rgba(79,142,247,0.12);
+  --blue3:  rgba(79,142,247,0.25);
+
+  --green:  #29d98a;
+  --green2: rgba(41,217,138,0.1);
+  --green3: rgba(41,217,138,0.22);
+
+  --amber:  #f5a623;
+  --amber2: rgba(245,166,35,0.1);
+  --amber3: rgba(245,166,35,0.22);
+
+  --red:    #f04f52;
+  --red2:   rgba(240,79,82,0.1);
+  --red3:   rgba(240,79,82,0.22);
+
+  --teal:   #22d4c4;
+  --teal2:  rgba(34,212,196,0.1);
+
+  --purple: #a87fe8;
+  --purple2:rgba(168,127,232,0.1);
+
+  --r:   8px;
+  --r2: 12px;
+  --r3: 16px;
+
+  --font: 'Space Grotesk', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+
+  --sidebar: 224px;
+  --topbar:  54px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESET + BASE
+═══════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 13.5px;
+  line-height: 1.55;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+button { font-family: var(--font); cursor: pointer; border: none; background: none; }
+input, select, textarea { font-family: var(--font); }
+a { color: inherit; text-decoration: none; }
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 2px; }
+
+/* ═══════════════════════════════════════════════════════════
+   LAYOUT SHELL
+═══════════════════════════════════════════════════════════ */
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 300;
+  height: var(--topbar);
+  background: var(--bg1);
+  border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; gap: 0;
+  backdrop-filter: blur(12px);
+}
+.topbar-brand {
+  width: var(--sidebar);
+  flex-shrink: 0;
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 18px;
+  border-right: 1px solid var(--line);
+  height: 100%;
+}
+.brand-mark {
+  width: 30px; height: 30px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--blue) 0%, var(--teal) 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 12px; color: #fff;
+  flex-shrink: 0;
+}
+.brand-text { flex: 1; min-width: 0; }
+.brand-name { font-size: 15px; font-weight: 700; letter-spacing: -.3px; color: var(--ink); }
+.brand-sub  { font-size: 10px; color: var(--ink3); letter-spacing: .2px; }
+
+.topbar-center {
+  flex: 1;
+  display: flex; align-items: center; gap: 12px;
+  padding: 0 20px;
+}
+.tb-clock { font-family: var(--mono); font-size: 13px; color: var(--ink2); }
+.tb-date  { font-size: 11.5px; color: var(--ink3); }
+
+.topbar-right {
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 16px;
+}
+.tb-pill {
+  font-size: 11px; font-weight: 500; padding: 3px 10px;
+  border-radius: 20px; display: flex; align-items: center; gap: 4px;
+}
+.tp-red    { background: var(--red2);   color: var(--red);   border: 1px solid var(--red3); }
+.tp-amber  { background: var(--amber2); color: var(--amber); border: 1px solid var(--amber3); }
+.tp-green  { background: var(--green2); color: var(--green); border: 1px solid var(--green3); }
+.tp-blue   { background: var(--blue2);  color: var(--blue);  border: 1px solid var(--blue3); }
+
+.btn-reg {
+  padding: 6px 14px; border-radius: var(--r);
+  background: var(--blue); color: #fff;
+  font-size: 12px; font-weight: 600; letter-spacing: .1px;
+  transition: background .15s, transform .1s;
+}
+.btn-reg:hover { background: #3d7ff0; transform: translateY(-1px); }
+.btn-reg:active { transform: translateY(0); }
+
+.avatar-btn {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--blue2); border: 1px solid var(--blue3);
+  color: var(--blue); font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s;
+}
+.avatar-btn:hover { background: var(--blue3); }
+
+/* hamburger - mobile only */
+.ham-btn {
+  display: none;
+  width: 36px; height: 36px; border-radius: var(--r);
+  align-items: center; justify-content: center;
+  color: var(--ink2); margin-left: 12px;
+  transition: background .15s;
+}
+.ham-btn:hover { background: var(--bg3); }
+
+/* ═══════════════════════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════════════════════ */
+.sidebar {
+  position: fixed; top: var(--topbar); left: 0; bottom: 0;
+  width: var(--sidebar);
+  background: var(--bg1);
+  border-right: 1px solid var(--line);
+  display: flex; flex-direction: column;
+  z-index: 200;
+  overflow-y: auto;
+  transition: transform .25s cubic-bezier(.4,0,.2,1);
+}
+.sidebar-section {
+  padding: 18px 14px 6px;
+  font-size: 9.5px; letter-spacing: .9px; text-transform: uppercase;
+  color: var(--ink3); font-weight: 600;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 9px 12px; margin: 1px 8px;
+  border-radius: var(--r);
+  color: var(--ink2); font-size: 13px; font-weight: 500;
+  transition: all .15s; width: calc(100% - 16px);
+  position: relative;
+}
+.nav-item:hover { background: var(--bg3); color: var(--ink); }
+.nav-item.active {
+  background: var(--blue2); color: var(--blue);
+  border: 1px solid var(--blue3);
+}
+.nav-item svg { flex-shrink: 0; }
+.nav-badge {
+  margin-left: auto; font-size: 10px; padding: 1px 7px;
+  border-radius: 20px; font-weight: 600;
+  background: var(--red2); color: var(--red);
+}
+.sidebar-footer {
+  margin-top: auto; padding: 12px 14px;
+  border-top: 1px solid var(--line);
+}
+.sf-user { display: flex; align-items: center; gap: 9px; }
+.sf-av {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue2), var(--teal2));
+  border: 1px solid var(--blue3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: var(--blue); flex-shrink: 0;
+}
+.sf-info .sf-name { font-size: 12.5px; font-weight: 600; color: var(--ink); }
+.sf-info .sf-role { font-size: 10px; color: var(--ink3); margin-top: 1px; }
+.live-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--green); display: inline-block;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity:1; box-shadow: 0 0 0 0 var(--green3); }
+  50% { opacity:.7; box-shadow: 0 0 0 4px transparent; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MAIN AREA
+═══════════════════════════════════════════════════════════ */
+.main {
+  margin-left: var(--sidebar);
+  padding-top: var(--topbar);
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SCREENS
+═══════════════════════════════════════════════════════════ */
+.screen { display: none; flex: 1; }
+.screen.active { display: block; }
+
+/* ═══════════════════════════════════════════════════════════
+   KPI STRIP
+═══════════════════════════════════════════════════════════ */
+.kpi-strip {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  border-bottom: 1px solid var(--line);
+}
+.kpi-cell {
+  padding: 16px 20px;
+  border-right: 1px solid var(--line);
+  display: flex; flex-direction: column; gap: 4px;
+  transition: background .15s;
+}
+.kpi-cell:last-child { border-right: none; }
+.kpi-cell:hover { background: var(--bg2); }
+.kpi-label {
+  font-size: 10px; letter-spacing: .6px; text-transform: uppercase;
+  color: var(--ink3); font-weight: 500;
+}
+.kpi-value {
+  font-family: var(--mono); font-size: 26px; font-weight: 600;
+  letter-spacing: -1.5px; line-height: 1;
+}
+.kpi-sub { display: flex; align-items: center; gap: 6px; margin-top: 2px; }
+
+/* ═══════════════════════════════════════════════════════════
+   MICRO PILLS
+═══════════════════════════════════════════════════════════ */
+.mp {
+  font-size: 10px; font-weight: 600; padding: 2px 8px;
+  border-radius: 20px; display: inline-flex; align-items: center; gap: 3px;
+}
+.mp-g { background: var(--green2); color: var(--green); }
+.mp-r { background: var(--red2);   color: var(--red); }
+.mp-a { background: var(--amber2); color: var(--amber); }
+.mp-b { background: var(--blue2);  color: var(--blue); }
+.mp-t { background: var(--teal2);  color: var(--teal); }
+.mp-p { background: var(--purple2);color: var(--purple); }
+
+/* ═══════════════════════════════════════════════════════════
+   CARDS
+═══════════════════════════════════════════════════════════ */
+.card {
+  background: var(--bg1);
+  border: 1px solid var(--line);
+  border-radius: var(--r3);
+  overflow: hidden;
+}
+.card-head {
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+}
+.card-title {
+  font-size: 11px; font-weight: 700; letter-spacing: .5px;
+  text-transform: uppercase; color: var(--ink2);
+  display: flex; align-items: center; gap: 7px;
+}
+.card-body { padding: 14px 16px; }
+
+/* ═══════════════════════════════════════════════════════════
+   TASK LIST
+═══════════════════════════════════════════════════════════ */
+.task-section {
+  padding: 10px 16px 4px;
+  font-size: 9.5px; letter-spacing: .8px; text-transform: uppercase;
+  color: var(--ink3); font-weight: 600;
+}
+.task-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 9px 16px;
+  border-bottom: 1px solid var(--line);
+  cursor: pointer; transition: background .12s;
+  user-select: none;
+}
+.task-item:last-child { border-bottom: none; }
+.task-item:hover { background: var(--bg2); }
+.task-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  margin-top: 5px; flex-shrink: 0;
+}
+.task-body { flex: 1; min-width: 0; }
+.task-name { font-size: 13px; color: var(--ink); line-height: 1.3; }
+.task-meta { font-size: 11px; color: var(--ink3); margin-top: 1px; }
+.task-badge {
+  font-size: 10px; padding: 2px 8px; border-radius: 10px;
+  font-weight: 600; flex-shrink: 0; white-space: nowrap;
+}
+.done { text-decoration: line-through; opacity: .4; }
+.add-btn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 16px; color: var(--blue);
+  font-size: 12px; font-weight: 500;
+  transition: opacity .15s; width: 100%;
+}
+.add-btn:hover { opacity: .7; }
+
+/* ═══════════════════════════════════════════════════════════
+   LIVE ROWS
+═══════════════════════════════════════════════════════════ */
+.live-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px; border-bottom: 1px solid var(--line);
+}
+.live-row:last-child { border-bottom: none; }
+.live-icon {
+  width: 30px; height: 30px; border-radius: var(--r);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; flex-shrink: 0;
+}
+.live-body { flex: 1; min-width: 0; }
+.live-title { font-size: 13px; font-weight: 500; }
+.live-desc  { font-size: 11px; color: var(--ink2); margin-top: 1px; }
+.live-value { font-family: var(--mono); font-size: 13px; font-weight: 600; flex-shrink: 0; }
+
+/* ═══════════════════════════════════════════════════════════
+   UNIT CARDS
+═══════════════════════════════════════════════════════════ */
+.unit-card {
+  background: var(--bg2); border: 1px solid var(--line);
+  border-radius: var(--r2);
+  margin: 0 14px 10px; padding: 13px 14px;
+  transition: border-color .15s, background .15s;
+}
+.unit-card:hover { border-color: var(--line2); background: var(--bg3); }
+.unit-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; }
+.unit-name { font-size: 13.5px; font-weight: 700; color: var(--ink); }
+.unit-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.um { background: var(--bg1); border-radius: 6px; padding: 7px 8px; border: 1px solid var(--line); }
+.um-label { font-size: 9px; letter-spacing: .5px; text-transform: uppercase; color: var(--ink3); margin-bottom: 2px; }
+.um-value { font-family: var(--mono); font-size: 13px; font-weight: 500; }
+.u-bar { height: 3px; border-radius: 2px; background: var(--bg4); margin-top: 9px; overflow: hidden; }
+.u-bar-fill { height: 100%; border-radius: 2px; transition: width .6s ease; }
+.u-hint { font-size: 10.5px; color: var(--ink3); margin-top: 7px; line-height: 1.4; }
+
+/* ═══════════════════════════════════════════════════════════
+   DOC ITEMS
+═══════════════════════════════════════════════════════════ */
+.doc-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 16px; border-bottom: 1px solid var(--line);
+  transition: background .12s; cursor: pointer;
+}
+.doc-item:last-child { border-bottom: none; }
+.doc-item:hover { background: var(--bg2); }
+.doc-icon { width: 28px; height: 28px; border-radius: var(--r); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.doc-body { flex: 1; min-width: 0; }
+.doc-title { font-size: 13px; font-weight: 500; }
+.doc-meta { font-size: 11px; color: var(--ink3); margin-top: 1px; }
+.doc-count { font-family: var(--mono); font-size: 11.5px; font-weight: 600; padding: 2px 9px; border-radius: 6px; border: 1px solid; flex-shrink: 0; }
+
+/* ═══════════════════════════════════════════════════════════
+   ACTION ITEMS
+═══════════════════════════════════════════════════════════ */
+.acao-item {
+  padding: 11px 16px; border-bottom: 1px solid var(--line);
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.acao-item:last-child { border-bottom: none; }
+.acao-num { font-family: var(--mono); font-size: 16px; font-weight: 600; color: var(--ink3); line-height: 1; min-width: 22px; }
+.acao-body { flex: 1; min-width: 0; }
+.acao-title { font-size: 13px; font-weight: 600; color: var(--ink); line-height: 1.3; }
+.acao-desc { font-size: 11.5px; color: var(--ink2); margin-top: 3px; line-height: 1.5; }
+.acao-impact { font-size: 11px; margin-top: 5px; }
+
+/* ═══════════════════════════════════════════════════════════
+   MUTIRÃO
+═══════════════════════════════════════════════════════════ */
+.mut-item {
+  display: flex; gap: 12px; padding: 10px 16px;
+  border-bottom: 1px solid var(--line); align-items: flex-start;
+}
+.mut-item:last-child { border-bottom: none; }
+.mut-date { background: var(--bg3); border-radius: var(--r); padding: 6px 10px; text-align: center; min-width: 42px; flex-shrink: 0; }
+.mut-day { font-family: var(--mono); font-size: 17px; font-weight: 600; line-height: 1; color: var(--ink); }
+.mut-mon { font-size: 9px; text-transform: uppercase; color: var(--ink3); letter-spacing: .5px; }
+.mut-body { flex: 1; min-width: 0; }
+.mut-title { font-size: 13px; font-weight: 600; color: var(--ink); }
+.mut-desc { font-size: 11px; color: var(--ink2); margin-top: 2px; line-height: 1.4; }
+
+/* ═══════════════════════════════════════════════════════════
+   ANALYSIS BOX
+═══════════════════════════════════════════════════════════ */
+.analysis-text { font-size: 13px; color: var(--ink2); line-height: 1.75; padding: 14px 16px; }
+.analysis-text b { color: var(--ink); font-weight: 600; }
+.alert-box {
+  margin: 0 16px 12px; padding: 11px 14px;
+  border-radius: var(--r2);
+  font-size: 12px; line-height: 1.55;
+}
+.alert-box b { font-weight: 600; }
+.alert-red   { background: var(--red2);   border: 1px solid var(--red3);   color: var(--red); }
+.alert-green { background: var(--green2); border: 1px solid var(--green3); color: var(--green); }
+.alert-amber { background: var(--amber2); border: 1px solid var(--amber3); color: var(--amber); }
+
+/* ═══════════════════════════════════════════════════════════
+   CENÁRIOS
+═══════════════════════════════════════════════════════════ */
+.cenario-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 14px 16px; }
+.cenario { border-radius: var(--r2); padding: 16px; text-align: center; border: 1px solid; }
+.cenario-label { font-size: 9.5px; letter-spacing: .7px; text-transform: uppercase; font-weight: 700; margin-bottom: 8px; }
+.cenario-value { font-family: var(--mono); font-size: 22px; font-weight: 600; letter-spacing: -1px; line-height: 1; margin-bottom: 6px; }
+.cenario-desc  { font-size: 11px; line-height: 1.5; opacity: .8; }
+
+/* ═══════════════════════════════════════════════════════════
+   TEAM GRID
+═══════════════════════════════════════════════════════════ */
+.team-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; padding: 14px 16px; }
+.func-card {
+  background: var(--bg2); border: 1px solid var(--line);
+  border-radius: var(--r2); padding: 11px 8px; text-align: center;
+  transition: border-color .15s;
+}
+.func-card:hover { border-color: var(--line2); }
+.func-av {
+  width: 34px; height: 34px; border-radius: 50%;
+  margin: 0 auto 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 12px;
+}
+.func-name  { font-size: 11px; font-weight: 600; color: var(--ink); line-height: 1.2; }
+.func-cargo { font-size: 9.5px; color: var(--ink3); margin-top: 2px; }
+.func-status { font-size: 9.5px; padding: 2px 7px; border-radius: 20px; font-weight: 600; margin-top: 5px; display: inline-block; }
+
+/* ═══════════════════════════════════════════════════════════
+   GRID LAYOUTS
+═══════════════════════════════════════════════════════════ */
+.dash-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; padding: 14px; }
+.dash-grid > div > .card  { margin-bottom: 14px; }
+.dash-grid > div > .card:last-child { margin-bottom: 0; }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 0 14px 14px; }
+.full-col { padding: 0 14px 14px; }
+
+.section-sep {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px 4px;
+  font-size: 9.5px; letter-spacing: .9px; text-transform: uppercase;
+  color: var(--ink3); font-weight: 600;
+}
+.section-sep::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+
+/* ═══════════════════════════════════════════════════════════
+   MODAL
+═══════════════════════════════════════════════════════════ */
+.overlay {
+  display: none; position: fixed; inset: 0; z-index: 600;
+  background: rgba(0,0,0,.7); backdrop-filter: blur(4px);
+  align-items: center; justify-content: center;
+  padding: 16px;
+}
+.overlay.open { display: flex; }
+.modal {
+  background: var(--bg2); border: 1px solid var(--line2);
+  border-radius: 18px; padding: 24px;
+  width: 100%; max-width: 480px; max-height: 90vh;
+  overflow-y: auto;
+  animation: mIn .2s ease;
+}
+@keyframes mIn { from { opacity:0; transform: scale(.96) translateY(8px); } to { opacity:1; transform: none; } }
+.modal-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+.modal-title { font-size: 16px; font-weight: 700; color: var(--ink); }
+.modal-close { color: var(--ink3); font-size: 22px; line-height: 1; padding: 2px 4px; border-radius: 5px; transition: color .15s; }
+.modal-close:hover { color: var(--ink); }
+
+/* ═══════════════════════════════════════════════════════════
+   FORM ELEMENTS
+═══════════════════════════════════════════════════════════ */
+.field { margin-bottom: 13px; }
+.field label {
+  display: block; font-size: 10.5px; letter-spacing: .6px;
+  text-transform: uppercase; color: var(--ink3); font-weight: 600; margin-bottom: 5px;
+}
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  background: var(--bg3); border: 1px solid var(--line2);
+  border-radius: var(--r); color: var(--ink); font-size: 13px;
+  padding: 9px 12px; outline: none;
+  transition: border-color .15s;
+  appearance: none; -webkit-appearance: none;
+}
+.field input:focus,
+.field textarea:focus { border-color: var(--blue); }
+.field select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath fill='%238494b0' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 30px; }
+.field textarea { resize: vertical; min-height: 72px; }
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* Buttons */
+.btn {
+  padding: 9px 18px; border-radius: var(--r);
+  font-size: 13px; font-weight: 600; transition: all .15s;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-primary { background: var(--blue); color: #fff; }
+.btn-primary:hover { background: #3d7ff0; }
+.btn-ghost { background: var(--bg3); color: var(--ink2); border: 1px solid var(--line2); }
+.btn-ghost:hover { color: var(--ink); border-color: var(--line2); background: var(--bg4); }
+.btn-red { background: var(--red2); color: var(--red); border: 1px solid var(--red3); }
+.btn-sm { padding: 6px 12px; font-size: 11.5px; }
+.btn-full { width: 100%; justify-content: center; }
+
+/* ═══════════════════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════════════════ */
+.toast {
+  position: fixed; bottom: 24px; right: 24px; z-index: 900;
+  background: var(--bg2); border: 1px solid var(--green3);
+  border-radius: var(--r2); padding: 11px 16px;
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; color: var(--green);
+  transform: translateY(80px); opacity: 0;
+  transition: all .28s cubic-bezier(.4,0,.2,1);
+  max-width: 320px; pointer-events: none;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* ═══════════════════════════════════════════════════════════
+   CHART WRAPPER
+═══════════════════════════════════════════════════════════ */
+.chart-wrap { position: relative; width: 100%; }
+
+/* ═══════════════════════════════════════════════════════════
+   PAGE HEADER
+═══════════════════════════════════════════════════════════ */
+.page-hd {
+  padding: 20px 16px 14px;
+  display: flex; align-items: flex-start; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px;
+  border-bottom: 1px solid var(--line);
+}
+.page-hd-title { font-size: 20px; font-weight: 700; letter-spacing: -.3px; color: var(--ink); }
+.page-hd-sub   { font-size: 12px; color: var(--ink3); margin-top: 3px; }
+.page-body     { padding: 16px; }
+
+/* ═══════════════════════════════════════════════════════════
+   REGISTROS SCREEN
+═══════════════════════════════════════════════════════════ */
+.type-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 18px; }
+.type-tab {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 12px 18px; border-radius: var(--r2);
+  background: var(--bg2); border: 1px solid var(--line);
+  cursor: pointer; transition: all .15s; min-width: 90px;
+}
+.type-tab:hover { border-color: var(--line2); }
+.type-tab.sel { background: var(--blue2); border-color: var(--blue3); }
+.type-tab .tt-icon { font-size: 20px; }
+.type-tab .tt-lbl { font-size: 11.5px; font-weight: 600; color: var(--ink2); }
+.type-tab.sel .tt-lbl { color: var(--blue); }
+
+.form-section {
+  background: var(--bg1); border: 1px solid var(--line);
+  border-radius: var(--r3); padding: 20px; margin-bottom: 16px;
+}
+.form-section-title {
+  font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+
+/* Recent entries small table */
+.entry-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 16px; border-bottom: 1px solid var(--line);
+}
+.entry-row:last-child { border-bottom: none; }
+.entry-id { font-family: var(--mono); font-size: 10.5px; color: var(--ink3); min-width: 30px; }
+
+/* ═══════════════════════════════════════════════════════════
+   HISTÓRICO SCREEN
+═══════════════════════════════════════════════════════════ */
+.hist-toolbar {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.search-wrap { flex: 1; min-width: 200px; position: relative; }
+.search-wrap input {
+  width: 100%;
+  background: var(--bg2); border: 1px solid var(--line2);
+  border-radius: var(--r); color: var(--ink); font-size: 13px;
+  padding: 8px 12px 8px 36px; outline: none;
+  transition: border-color .15s;
+}
+.search-wrap input:focus { border-color: var(--blue); }
+.search-ico { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--ink3); pointer-events: none; }
+.filt-sel {
+  background: var(--bg2); border: 1px solid var(--line2);
+  border-radius: var(--r); color: var(--ink2); font-family: var(--font);
+  font-size: 12px; padding: 8px 28px 8px 10px; outline: none; cursor: pointer;
+  appearance: none; -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath fill='%238494b0' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 8px center;
+}
+
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th {
+  font-size: 9.5px; letter-spacing: .7px; text-transform: uppercase;
+  color: var(--ink3); font-weight: 600; padding: 9px 12px;
+  text-align: left; border-bottom: 1px solid var(--line);
+  background: var(--bg2); white-space: nowrap;
+}
+.data-table td {
+  padding: 10px 12px; border-bottom: 1px solid var(--line);
+  font-size: 12.5px; color: var(--ink2); vertical-align: middle;
+}
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: var(--bg2); }
+.table-empty { text-align: center; padding: 40px 20px; color: var(--ink3); font-size: 13px; }
+
+/* ═══════════════════════════════════════════════════════════
+   RELATÓRIO SCREEN
+═══════════════════════════════════════════════════════════ */
+.rel-layout { display: grid; grid-template-columns: 280px 1fr; gap: 16px; }
+.rel-config { background: var(--bg1); border: 1px solid var(--line); border-radius: var(--r3); padding: 20px; }
+.rel-config-title { font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 16px; display: flex; align-items: center; gap: 7px; }
+.rel-preview { background: var(--bg1); border: 1px solid var(--line); border-radius: var(--r3); overflow: hidden; }
+
+/* Report document styles */
+.report-doc { padding: 28px; font-size: 12.5px; color: var(--ink2); line-height: 1.6; }
+.report-header { margin-bottom: 24px; padding-bottom: 20px; border-bottom: 2px solid var(--blue3); }
+.report-logo-line { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.report-logo-box { width: 28px; height: 28px; border-radius: 7px; background: linear-gradient(135deg, var(--blue), var(--teal)); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; color: #fff; }
+.report-logo-name { font-size: 14px; font-weight: 700; color: var(--ink); }
+.report-title { font-size: 20px; font-weight: 700; color: var(--ink); letter-spacing: -.3px; }
+.report-meta { font-size: 11px; color: var(--ink3); margin-top: 4px; }
+
+.report-section { margin-bottom: 24px; }
+.report-section-title {
+  font-size: 10px; letter-spacing: .8px; text-transform: uppercase;
+  color: var(--ink3); font-weight: 700; margin-bottom: 12px;
+  padding-bottom: 6px; border-bottom: 1px solid var(--line);
+}
+
+.rep-kpi-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+.rep-kpi { background: var(--bg2); border: 1px solid var(--line); border-radius: var(--r2); padding: 12px; text-align: center; }
+.rep-kpi-val { font-family: var(--mono); font-size: 22px; font-weight: 600; letter-spacing: -1px; line-height: 1; margin-bottom: 4px; }
+.rep-kpi-lbl { font-size: 10px; color: var(--ink3); letter-spacing: .3px; }
+
+.rep-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
+.rep-table th { font-size: 10px; letter-spacing: .5px; text-transform: uppercase; color: var(--ink3); font-weight: 600; padding: 7px 10px; background: var(--bg2); text-align: left; }
+.rep-table td { padding: 8px 10px; border-bottom: 1px solid var(--line); font-size: 12px; color: var(--ink2); }
+.rep-table tr:last-child td { border-bottom: none; }
+
+.rep-analysis { background: var(--bg2); border-left: 3px solid var(--blue); border-radius: 0 var(--r) var(--r) 0; padding: 12px 14px; font-size: 12.5px; color: var(--ink2); line-height: 1.7; margin-bottom: 12px; }
+.rep-analysis b { color: var(--ink); }
+
+.rep-sign { margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 11px; color: var(--ink3); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+
+.rel-actions { display: flex; gap: 8px; padding: 14px 28px; border-top: 1px solid var(--line); flex-wrap: wrap; }
+
+/* ═══════════════════════════════════════════════════════════
+   CHARTS IN REPORT
+═══════════════════════════════════════════════════════════ */
+.rep-chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.rep-chart-box { background: var(--bg2); border: 1px solid var(--line); border-radius: var(--r2); padding: 14px; }
+.rep-chart-title { font-size: 10px; letter-spacing: .5px; text-transform: uppercase; color: var(--ink3); font-weight: 600; margin-bottom: 10px; }
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════════ */
+@media (max-width: 1200px) {
+  .dash-grid { grid-template-columns: 1fr 1fr; }
+  .team-grid { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 960px) {
+  :root { --sidebar: 200px; }
+  .cenario-grid { grid-template-columns: 1fr; gap: 8px; }
+  .rel-layout { grid-template-columns: 1fr; }
+  .rep-chart-row { grid-template-columns: 1fr; }
+}
+@media (max-width: 820px) {
+  :root { --sidebar: 0px; }
+  .topbar-brand { width: auto; border-right: none; padding-right: 8px; }
+  .brand-text { display: none; }
+  .ham-btn { display: flex; }
+  .sidebar { transform: translateX(-220px); width: 220px; }
+  .sidebar.open { transform: translateX(0); box-shadow: 4px 0 24px rgba(0,0,0,.5); }
+  .main { margin-left: 0; }
+  .dash-grid { grid-template-columns: 1fr; padding: 10px; }
+  .kpi-strip { grid-template-columns: repeat(3, 1fr); }
+  .kpi-cell:nth-child(4), .kpi-cell:nth-child(5) { display: none; }
+  .two-col { grid-template-columns: 1fr; padding: 0 10px 10px; }
+  .full-col { padding: 0 10px 10px; }
+  .team-grid { grid-template-columns: repeat(3, 1fr); }
+  .page-body { padding: 12px; }
+  .topbar-right .tb-pill { display: none; }
+  .topbar-right .tb-pill:first-child { display: flex; }
+  .unit-metrics { grid-template-columns: repeat(2, 1fr); }
+  .rep-kpi-row { grid-template-columns: repeat(2, 1fr); }
+  .type-tabs { gap: 4px; }
+  .type-tab { min-width: 70px; padding: 10px 12px; }
+}
+@media (max-width: 560px) {
+  .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+  .kpi-cell:nth-child(3) { display: none; }
+  .team-grid { grid-template-columns: repeat(2, 1fr); }
+  .g2 { grid-template-columns: 1fr; }
+  .modal { padding: 18px; }
+  .toast { right: 12px; bottom: 12px; left: 12px; max-width: none; }
+  .two-col { grid-template-columns: 1fr; }
+  .rep-kpi-row { grid-template-columns: 1fr; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════════════════════════ */
+@keyframes fadeUp { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: none; } }
+.screen.active .card { animation: fadeUp .25s ease both; }
+.screen.active .card:nth-child(2) { animation-delay: .04s; }
+.screen.active .card:nth-child(3) { animation-delay: .08s; }
+.screen.active .card:nth-child(4) { animation-delay: .12s; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════ TOAST ══════════════════════ -->
+<div class="toast" id="toast">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-msg">Salvo</span>
+</div>
+
+<!-- ══════════════════════ MODAL: NOVA TAREFA ══════════════════════ -->
+<div class="overlay" id="modal-tarefa">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Nova Tarefa</div>
+      <button class="modal-close" onclick="closeModal('modal-tarefa')">×</button>
+    </div>
+    <div class="field"><label>Descrição</label><input type="text" id="task-desc" placeholder="O que precisa ser feito?"></div>
+    <div class="g2">
+      <div class="field"><label>Quando</label>
+        <select id="task-quando"><option value="hoje">Hoje</option><option value="semana">Esta semana</option></select>
+      </div>
+      <div class="field"><label>Prioridade</label>
+        <select id="task-prio">
+          <option value="r">🔴 Urgente</option>
+          <option value="a">🟡 Atenção</option>
+          <option value="g">🟢 Normal</option>
+        </select>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="field"><label>Horário (opcional)</label><input type="time" id="task-hora"></div>
+      <div class="field"><label>Responsável</label><input type="text" id="task-resp" placeholder="Nome"></div>
+    </div>
+    <div class="field"><label>Observação</label><textarea id="task-obs" placeholder="Detalhes..."></textarea></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="closeModal('modal-tarefa')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveTarefa()">Adicionar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ MODAL: REGISTRAR ══════════════════════ -->
+<div class="overlay" id="modal-reg">
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title">Registrar Dado</div>
+        <div style="font-size:11px;color:var(--ink3);margin-top:2px">Registro rápido pelo operador</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('modal-reg')">×</button>
+    </div>
+    <div class="field"><label>Tipo</label>
+      <select id="mreg-tipo" onchange="updateModalFields()">
+        <option value="atend">Atendimento realizado</option>
+        <option value="fila">Atualizar fila de espera</option>
+        <option value="ausencia">Ausência de funcionário</option>
+        <option value="ocorrencia">Ocorrência / Problema</option>
+      </select>
+    </div>
+    <div id="mf-atend">
+      <div class="g2">
+        <div class="field"><label>Unidade</label>
+          <select id="mreg-unidade"><option>Centro</option><option>Canto do Mar</option><option>Boiçucanga</option><option>Morro do Abrigo</option></select>
+        </div>
+        <div class="field"><label>Tipo de Atendimento</label>
+          <select id="mreg-tipo-atend">
+            <option>Novo Cadastro</option><option>Atualização Cadastral</option>
+            <option>Revisão (+24 meses)</option><option>Bloqueio Bolsa Família</option>
+            <option>Emissão NIS</option><option>Consulta / Orientação</option>
+            <option>Transferência de Município</option><option>BPC / Encaminhamento</option>
+          </select>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="field"><label>Quantidade</label><input type="number" id="mreg-qtd" value="1" min="1"></div>
+        <div class="field"><label>Operador</label><input type="text" id="mreg-op" placeholder="Nome do operador"></div>
+      </div>
+      <div class="field"><label>Observação</label><textarea id="mreg-obs" placeholder="Pendências, documentação..."></textarea></div>
+    </div>
+    <div id="mf-fila" style="display:none">
+      <div class="g2">
+        <div class="field"><label>Unidade</label>
+          <select id="mreg-fila-und"><option>Centro</option><option>Canto do Mar</option><option>Boiçucanga</option><option>Morro do Abrigo</option></select>
+        </div>
+        <div class="field"><label>Nº de pessoas</label><input type="number" id="mreg-fila-n" placeholder="Ex: 42"></div>
+      </div>
+      <div class="field"><label>Tempo médio de espera (min)</label><input type="number" id="mreg-fila-t" placeholder="Ex: 35"></div>
+    </div>
+    <div id="mf-ausencia" style="display:none">
+      <div class="g2">
+        <div class="field"><label>Funcionário</label><input type="text" id="mreg-func" placeholder="Nome completo"></div>
+        <div class="field"><label>Unidade</label>
+          <select id="mreg-func-und"><option>Centro</option><option>Canto do Mar</option><option>Boiçucanga</option><option>Morro do Abrigo</option></select>
+        </div>
+      </div>
+      <div class="field"><label>Motivo</label>
+        <select id="mreg-motivo">
+          <option>Atestado médico</option><option>Licença</option><option>Falta não justificada</option>
+          <option>Trabalho remoto</option><option>Capacitação externa</option>
+        </select>
+      </div>
+    </div>
+    <div id="mf-ocorrencia" style="display:none">
+      <div class="g2">
+        <div class="field"><label>Unidade</label>
+          <select id="mreg-oc-und"><option>Centro</option><option>Canto do Mar</option><option>Boiçucanga</option><option>Morro do Abrigo</option></select>
+        </div>
+        <div class="field"><label>Severidade</label>
+          <select id="mreg-oc-sev">
+            <option value="r">🔴 Crítica</option><option value="a">🟡 Moderada</option><option value="g">🟢 Leve</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>Descrição</label><textarea id="mreg-oc-desc" placeholder="Descreva o problema..."></textarea></div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="closeModal('modal-reg')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveModalReg()">Salvar Registro</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ TOPBAR ══════════════════════ -->
+<header class="topbar">
+  <div class="topbar-brand">
+    <button class="ham-btn" id="ham" onclick="toggleSidebar()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+    <div class="brand-mark">GF</div>
+    <div class="brand-text">
+      <div class="brand-name">GOVFLOW</div>
+      <div class="brand-sub">CadÚnico · São Sebastião</div>
+    </div>
+  </div>
+  <div class="topbar-center">
+    <span class="tb-clock" id="clock">--:--:--</span>
+    <span class="tb-date" id="date-display">--</span>
+  </div>
+  <div class="topbar-right">
+    <span class="tb-pill tp-red" id="badge-urg">
+      <span class="live-dot" style="background:var(--red);box-shadow:none;animation:none"></span>
+      <span id="urg-count">3</span> Urgências
+    </span>
+    <span class="tb-pill tp-amber">⚡ Demanda Alta</span>
+    <span class="tb-pill tp-green">✓ Sistema OK</span>
+    <button class="btn-reg" onclick="openModal('modal-reg')">+ Registrar</button>
+    <div class="avatar-btn">CM</div>
+  </div>
+</header>
+
+<!-- ══════════════════════ SIDEBAR ══════════════════════ -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-section">Principal</div>
+  <button class="nav-item active" id="nav-dashboard" onclick="goTo('dashboard')">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Dashboard
+  </button>
+  <button class="nav-item" id="nav-registros" onclick="goTo('registros')">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 12H3m14-4H3m7 8H3"/><path d="M16 3l5 5-5 5"/></svg>
+    Registros
+  </button>
+  <button class="nav-item" id="nav-historico" onclick="goTo('historico')">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    Histórico
+    <span class="nav-badge" id="hist-badge">0</span>
+  </button>
+  <button class="nav-item" id="nav-relatorio" onclick="goTo('relatorio')">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+    Gerar Relatório
+  </button>
+
+  <div class="sidebar-section">Operação</div>
+  <button class="nav-item" onclick="goTo('dashboard');setTimeout(()=>scrollTo('sec-unidades'),120)">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/></svg>
+    Unidades
+  </button>
+  <button class="nav-item" onclick="goTo('dashboard');setTimeout(()=>scrollTo('sec-equipe'),120)">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+    Equipe
+  </button>
+  <button class="nav-item" onclick="goTo('dashboard');setTimeout(()=>scrollTo('sec-cenarios'),120)">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+    Cenários
+  </button>
+
+  <div class="sidebar-footer">
+    <div class="sf-user">
+      <div class="sf-av">CM</div>
+      <div class="sf-info">
+        <div class="sf-name">Coord. Municipal</div>
+        <div class="sf-role">São Sebastião · SP</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Overlay para fechar sidebar no mobile -->
+<div id="sidebar-overlay" style="display:none;position:fixed;inset:0;z-index:199;background:rgba(0,0,0,.4)" onclick="toggleSidebar()"></div>
+
+<!-- ══════════════════════ MAIN ══════════════════════ -->
+<div class="main">
+
+  <!-- ════════════════ DASHBOARD ════════════════ -->
+  <div class="screen active" id="screen-dashboard">
+
+    <!-- KPI STRIP -->
+    <div class="kpi-strip">
+      <div class="kpi-cell">
+        <div class="kpi-label">Atendimentos hoje</div>
+        <div class="kpi-value" style="color:var(--green)" id="kpi-atend">0</div>
+        <div class="kpi-sub"><span class="mp mp-g">▲ 14%</span><span style="color:var(--ink3)">vs ontem (111)</span></div>
+      </div>
+      <div class="kpi-cell">
+        <div class="kpi-label">Fila atual</div>
+        <div class="kpi-value" style="color:var(--amber)" id="kpi-fila">38</div>
+        <div class="kpi-sub"><span class="mp mp-a">~47min espera</span></div>
+      </div>
+      <div class="kpi-cell">
+        <div class="kpi-label">Demanda</div>
+        <div class="kpi-value" style="color:var(--red);font-size:20px;padding-top:5px">ALTA</div>
+        <div class="kpi-sub"><span class="mp mp-r">Acima do limite</span></div>
+      </div>
+      <div class="kpi-cell">
+        <div class="kpi-label">Funcionários ativos</div>
+        <div class="kpi-value">9<span style="font-size:15px;color:var(--ink3);font-weight:400">/12</span></div>
+        <div class="kpi-sub"><span class="mp mp-a">3 ausentes</span></div>
+      </div>
+      <div class="kpi-cell">
+        <div class="kpi-label">Revisões pendentes</div>
+        <div class="kpi-value" style="color:var(--red)">214</div>
+        <div class="kpi-sub"><span class="mp mp-r">Prazo: 15 dias</span></div>
+      </div>
+    </div>
+
+    <!-- BODY GRID -->
+    <div class="dash-grid">
+
+      <!-- COLUNA 1 -->
+      <div>
+        <!-- TAREFAS -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+              Afazeres
+            </div>
+            <span class="mp mp-r" id="pill-pend">5 pendentes</span>
+          </div>
+          <div class="task-section">HOJE</div>
+          <div id="lista-hoje">
+            <div class="task-item" data-done="false" onclick="toggleTask(this)">
+              <div class="task-dot" style="background:var(--red)"></div>
+              <div class="task-body"><div class="task-name">Responder memorando da Diretoria</div><div class="task-meta">Prazo: 12h00 · Metas mensais</div></div>
+              <span class="task-badge" style="background:var(--red2);color:var(--red)">Urgente</span>
+            </div>
+            <div class="task-item" data-done="false" onclick="toggleTask(this)">
+              <div class="task-dot" style="background:var(--red)"></div>
+              <div class="task-body"><div class="task-name">Enviar relatório ao SEDS/SP</div><div class="task-meta">Prazo: 14h00 · Mensal obrigatório</div></div>
+              <span class="task-badge" style="background:var(--red2);color:var(--red)">Urgente</span>
+            </div>
+            <div class="task-item" data-done="false" onclick="toggleTask(this)">
+              <div class="task-dot" style="background:var(--amber)"></div>
+              <div class="task-body"><div class="task-name">Folha de ponto — assinar e digitalizar</div><div class="task-meta">Prazo: 17h00 · RH</div></div>
+              <span class="task-badge" style="background:var(--amber2);color:var(--amber)">Atenção</span>
+            </div>
+            <div class="task-item" data-done="false" onclick="toggleTask(this)">
+              <div class="task-dot" style="background:var(--amber)"></div>
+              <div class="task-body"><div class="task-name">Repor estoque de papel A4 — Centro</div><div class="task-meta">Estoque crítico · 2 resmas restantes</div></div>
+              <span class="task-badge" style="background:var(--amber2);color:var(--amber)">Atenção</span>
+            </div>
+            <div class="task-item" data-done="true" onclick="toggleTask(this)">
+              <div class="task-dot" style="background:var(--green)"></div>
+              <div class="task-body"><div class="task-name done">Abrir sistema SIBEC pela manhã</div><div class="task-meta" style="opacity:.45">Concluído às 08:12</div></div>
+              <span class="task-badge" style="background:var(--green2);color:var(--green)">Feito</span>
+            </div>
+          </div>
+          <div class="task-section" style="margin-top:4px">ESTA SEMANA</div>
+          <div id="lista-semana">
+            <div class="task-item" data-done="false" onclick="toggleTask(this)">
+              <div class="task-dot" style="background:var(--red)"></div>
+              <div class="task-body"><div class="task-name">Reunião com Assistência Social — bloqueios BF</div><div class="task-meta">Quinta-feira 14h · Sala de reuniões</div></div>
+              <span class="task-badge" style="background:var(--red2);color:var(--red)">Urgente</span>
+            </div>
+            <div class="task-item" data-done="false" onclick="toggleTask(this)">
+              <div class="task-dot" style="background:var(--amber)"></div>
+              <div class="task-body"><div class="task-name">Capacitação de operadores — novos campos</div><div class="task-meta">Sexta-feira 09h · Plataforma MDS</div></div>
+              <span class="task-badge" style="background:var(--amber2);color:var(--amber)">Atenção</span>
+            </div>
+            <div class="task-item" data-done="true" onclick="toggleTask(this)">
+              <div class="task-dot" style="background:var(--green)"></div>
+              <div class="task-body"><div class="task-name done">Atualizar senhas dos terminais</div><div class="task-meta" style="opacity:.45">Concluído segunda</div></div>
+              <span class="task-badge" style="background:var(--green2);color:var(--green)">Feito</span>
+            </div>
+          </div>
+          <button class="add-btn" onclick="openModal('modal-tarefa')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Adicionar tarefa
+          </button>
+        </div>
+
+        <!-- MUTIRÕES -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+              Ações Móveis
+            </div>
+            <span class="mp mp-b">4 eventos</span>
+          </div>
+          <div class="mut-item"><div class="mut-date"><div class="mut-day">14</div><div class="mut-mon">Mai</div></div><div class="mut-body"><div class="mut-title">Mutirão CadÚnico — Boiçucanga</div><div class="mut-desc">80 famílias alvo · 2 cadastradores + van</div></div><span class="mp mp-a">Planejado</span></div>
+          <div class="mut-item"><div class="mut-date"><div class="mut-day">17</div><div class="mut-mon">Mai</div></div><div class="mut-body"><div class="mut-title">Visita domiciliar — Bloqueio BF</div><div class="mut-desc">23 famílias com pendência de documentação</div></div><span class="mp mp-r">Urgente</span></div>
+          <div class="mut-item"><div class="mut-date"><div class="mut-day">21</div><div class="mut-mon">Mai</div></div><div class="mut-body"><div class="mut-title">Mutirão Revisão — Morro do Abrigo</div><div class="mut-desc">60 cadastros vencidos · Prazo MDS: 31/05</div></div><span class="mp mp-a">Planejado</span></div>
+          <div class="mut-item"><div class="mut-date"><div class="mut-day">28</div><div class="mut-mon">Mai</div></div><div class="mut-body"><div class="mut-title">Ação Itinerante — Praça Central</div><div class="mut-desc">Orientação BF e NIS · Parceria com CRAS</div></div><span class="mp mp-g">Confirmado</span></div>
+        </div>
+      </div>
+
+      <!-- COLUNA 2 -->
+      <div id="sec-unidades">
+        <!-- PAINEL AO VIVO -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">
+              <span class="live-dot"></span>
+              Painel Ao Vivo
+            </div>
+            <span style="font-family:var(--mono);font-size:10.5px;color:var(--ink3)" id="last-upd">--:--:--</span>
+          </div>
+          <div class="live-row">
+            <div class="live-icon" style="background:var(--blue2)">🌤</div>
+            <div class="live-body"><div class="live-title">Clima — São Sebastião</div><div class="live-desc">Parcialmente nublado · Sem previsão de chuva</div></div>
+            <div class="live-value" style="color:var(--blue)">26°C</div>
+          </div>
+          <div class="live-row">
+            <div class="live-icon" style="background:var(--amber2)">🪑</div>
+            <div class="live-body"><div class="live-title">Fila de espera</div><div class="live-desc" id="fila-desc">38 pessoas · Tempo médio 47 min</div></div>
+            <div class="live-value" style="color:var(--amber)" id="live-fila">Alta</div>
+          </div>
+          <div class="live-row">
+            <div class="live-icon" style="background:var(--green2)">💻</div>
+            <div class="live-body"><div class="live-title">Atendimentos em andamento</div><div class="live-desc">7 guichês ativos · 2 em pausa</div></div>
+            <div class="live-value" style="color:var(--green)">7</div>
+          </div>
+          <div class="live-row">
+            <div class="live-icon" style="background:var(--teal2)">📊</div>
+            <div class="live-body"><div class="live-title">Cadastros processados</div><div class="live-desc" id="cad-desc">Novos: 14 · Atualizações: 38 · Revisões: 12</div></div>
+            <div class="live-value" style="color:var(--teal)" id="live-cad">64</div>
+          </div>
+        </div>
+
+        <!-- UNIDADES -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/></svg>
+              Unidades de Atendimento
+            </div>
+            <span class="mp mp-b">4 unidades</span>
+          </div>
+          <div class="unit-card" style="border-left:3px solid var(--amber)">
+            <div class="unit-header"><div class="unit-name">Boiçucanga</div><span class="mp mp-a">Atenção</span></div>
+            <div class="unit-metrics">
+              <div class="um"><div class="um-label">População</div><div class="um-value">9.200</div></div>
+              <div class="um"><div class="um-label">Famílias CAD</div><div class="um-value">1.480</div></div>
+              <div class="um"><div class="um-label">Atend. hoje</div><div class="um-value" style="color:var(--amber)" id="u-boicucanga">22</div></div>
+              <div class="um"><div class="um-label">Cobertura</div><div class="um-value" style="color:var(--amber)">61%</div></div>
+            </div>
+            <div class="u-bar"><div class="u-bar-fill" style="width:61%;background:var(--amber)"></div></div>
+            <div class="u-hint">Boiçucanga, Maresias, Paúba · 2 operadores</div>
+          </div>
+          <div class="unit-card" style="border-left:3px solid var(--green)">
+            <div class="unit-header"><div class="unit-name">Canto do Mar</div><span class="mp mp-g">OK</span></div>
+            <div class="unit-metrics">
+              <div class="um"><div class="um-label">População</div><div class="um-value">6.800</div></div>
+              <div class="um"><div class="um-label">Famílias CAD</div><div class="um-value">940</div></div>
+              <div class="um"><div class="um-label">Atend. hoje</div><div class="um-value" style="color:var(--green)" id="u-canto">31</div></div>
+              <div class="um"><div class="um-label">Cobertura</div><div class="um-value" style="color:var(--green)">82%</div></div>
+            </div>
+            <div class="u-bar"><div class="u-bar-fill" style="width:82%;background:var(--green)"></div></div>
+            <div class="u-hint">Canto do Mar, Juquehy, Juréia · 3 operadores</div>
+          </div>
+          <div class="unit-card" style="border-left:3px solid var(--red)">
+            <div class="unit-header"><div class="unit-name">Centro</div><span class="mp mp-r">Crítico</span></div>
+            <div class="unit-metrics">
+              <div class="um"><div class="um-label">População</div><div class="um-value">18.400</div></div>
+              <div class="um"><div class="um-label">Famílias CAD</div><div class="um-value">2.870</div></div>
+              <div class="um"><div class="um-label">Atend. hoje</div><div class="um-value" style="color:var(--red)" id="u-centro">58</div></div>
+              <div class="um"><div class="um-label">Cobertura</div><div class="um-value" style="color:var(--red)">44%</div></div>
+            </div>
+            <div class="u-bar"><div class="u-bar-fill" style="width:44%;background:var(--red)"></div></div>
+            <div class="u-hint">Centro, Topolândia, Arrastão · 3 op. · <span style="color:var(--red)">1 ausente</span></div>
+          </div>
+          <div class="unit-card" style="border-left:3px solid var(--red);margin-bottom:0">
+            <div class="unit-header"><div class="unit-name">Morro do Abrigo</div><span class="mp mp-r">Crítico</span></div>
+            <div class="unit-metrics">
+              <div class="um"><div class="um-label">População</div><div class="um-value">5.100</div></div>
+              <div class="um"><div class="um-label">Famílias CAD</div><div class="um-value">1.210</div></div>
+              <div class="um"><div class="um-label">Atend. hoje</div><div class="um-value" style="color:var(--red)" id="u-morro">16</div></div>
+              <div class="um"><div class="um-label">Cobertura</div><div class="um-value" style="color:var(--red)">38%</div></div>
+            </div>
+            <div class="u-bar"><div class="u-bar-fill" style="width:38%;background:var(--red)"></div></div>
+            <div class="u-hint">Morro do Abrigo, Barra do Una · 2 op. · <span style="color:var(--red)">acesso difícil</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUNA 3 -->
+      <div>
+        <!-- AÇÕES INTELIGENTES -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              Ações Inteligentes
+            </div>
+            <span class="mp mp-b">6 sugestões</span>
+          </div>
+          <div class="acao-item">
+            <div class="acao-num">01</div>
+            <div class="acao-body">
+              <div class="acao-title">Abrir guichê extra no Centro</div>
+              <div class="acao-desc">Fila crítica: 58 atendimentos, 1 operador ausente. Realocar 1 funcionário de outra unidade reduz espera em ~35 min.</div>
+              <div class="acao-impact"><span style="color:var(--green)">↑ 14 atendimentos a mais · -35min espera</span></div>
+            </div>
+            <span class="mp mp-r" style="flex-shrink:0;margin-top:2px">Urgente</span>
+          </div>
+          <div class="acao-item">
+            <div class="acao-num">02</div>
+            <div class="acao-body">
+              <div class="acao-title">Reforçar Morro do Abrigo</div>
+              <div class="acao-desc">Cobertura de 38%. Adicionar 1 cadastrador por 2 semanas eleva cobertura para ~60%, evitando risco de prazo MDS.</div>
+              <div class="acao-impact"><span style="color:var(--amber)">+120 cadastros antes de 31/05</span></div>
+            </div>
+            <span class="mp mp-r" style="flex-shrink:0;margin-top:2px">Urgente</span>
+          </div>
+          <div class="acao-item">
+            <div class="acao-num">03</div>
+            <div class="acao-body">
+              <div class="acao-title">Redistribuir demanda entre unidades</div>
+              <div class="acao-desc">Centro sobrecarregado vs. Canto do Mar ocioso. WhatsApp da secretaria orienta moradores do entorno.</div>
+              <div class="acao-impact"><span style="color:var(--green)">Equilíbrio de carga sem custo adicional</span></div>
+            </div>
+            <span class="mp mp-a" style="flex-shrink:0;margin-top:2px">Hoje</span>
+          </div>
+          <div class="acao-item">
+            <div class="acao-num">04</div>
+            <div class="acao-body">
+              <div class="acao-title">Repor papel A4 — Centro</div>
+              <div class="acao-desc">Apenas 2 resmas. Consumo médio: 1/dia. Risco de parada operacional amanhã.</div>
+              <div class="acao-impact"><span style="color:var(--amber)">Compra de emergência ou remanejamento</span></div>
+            </div>
+            <span class="mp mp-a" style="flex-shrink:0;margin-top:2px">Hoje</span>
+          </div>
+          <div class="acao-item">
+            <div class="acao-num">05</div>
+            <div class="acao-body">
+              <div class="acao-title">Renovar computadores — Boiçucanga</div>
+              <div class="acao-desc">2 máquinas com 7+ anos causando lentidão no Cadastra+. Solicitar pregão de locação ao TI.</div>
+              <div class="acao-impact"><span style="color:var(--blue)">+30% velocidade de atendimento</span></div>
+            </div>
+            <span class="mp mp-b" style="flex-shrink:0;margin-top:2px">Semana</span>
+          </div>
+          <div class="acao-item">
+            <div class="acao-num">06</div>
+            <div class="acao-body">
+              <div class="acao-title">Contactar famílias com revisão pendente</div>
+              <div class="acao-desc">214 revisões até 31/05. SMS/WhatsApp com orientação sobre documentos reduz retorno sem documento.</div>
+              <div class="acao-impact"><span style="color:var(--green)">Economiza ~40 min/atendimento</span></div>
+            </div>
+            <span class="mp mp-g" style="flex-shrink:0;margin-top:2px">Plano</span>
+          </div>
+        </div>
+
+        <!-- ANÁLISE DE GESTÃO -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Análise do Dia
+            </div>
+            <span class="mp mp-b" id="dia-nome">--</span>
+          </div>
+          <div class="analysis-text">
+            A operação desta <b id="dia-semana">terça-feira</b> apresenta <b>demanda acima da capacidade nominal</b>. Com 127 atendimentos projetados e apenas 9 dos 12 funcionários ativos, o sistema opera com <b>25% menos capacidade humana</b> — explicando a fila de 38 pessoas e espera média de 47 minutos.
+            <br><br>
+            A <b>unidade Centro</b> concentra 58 atendimentos (46% do total) e é o principal ponto de pressão. O Morro do Abrigo apresenta cobertura crítica de 38% — a maioria das famílias vulneráveis daquele território ainda não foi atingida.
+            <br><br>
+            As <b>214 revisões com prazo em 31/05</b> representam o risco mais estrutural. Descumprir o prazo do MDS pode resultar em bloqueio de benefícios e advertência formal ao município.
+          </div>
+          <div class="alert-box alert-red"><b>Alerta crítico:</b> Sem início imediato das revisões, o prazo MDS não será cumprido — impactando o Bolsa Família de até 214 famílias vulneráveis. Mutirão recomendado a partir de amanhã.</div>
+          <div class="alert-box alert-green"><b>Ponto positivo:</b> Canto do Mar opera bem (82% cobertura) e pode absorver demanda excedente do Centro sem custo adicional.</div>
+        </div>
+
+        <!-- DOCUMENTOS -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              Pendências e Processos
+            </div>
+          </div>
+          <div class="doc-item"><div class="doc-icon" style="background:var(--red2)">📋</div><div class="doc-body"><div class="doc-title">Revisões Cadastrais Pendentes</div><div class="doc-meta">Prazo MDS: 31/05 · Prioridade máxima</div></div><div class="doc-count" style="background:var(--red2);color:var(--red);border-color:var(--red3)">214</div></div>
+          <div class="doc-item"><div class="doc-icon" style="background:var(--amber2)">🔒</div><div class="doc-body"><div class="doc-title">Bloqueios Bolsa Família</div><div class="doc-meta">Aguardando documentação das famílias</div></div><div class="doc-count" style="background:var(--amber2);color:var(--amber);border-color:var(--amber3)">47</div></div>
+          <div class="doc-item"><div class="doc-icon" style="background:var(--amber2)">📝</div><div class="doc-body"><div class="doc-title">Novos Cadastros — Em análise</div><div class="doc-meta">Aguardando validação de renda e composição</div></div><div class="doc-count" style="background:var(--amber2);color:var(--amber);border-color:var(--amber3)">83</div></div>
+          <div class="doc-item"><div class="doc-icon" style="background:var(--green2)">✅</div><div class="doc-body"><div class="doc-title">NIS Emitidos — Semana atual</div><div class="doc-meta">Processados e enviados ao Ministério</div></div><div class="doc-count" style="background:var(--green2);color:var(--green);border-color:var(--green3)">62</div></div>
+          <div class="doc-item"><div class="doc-icon" style="background:var(--blue2)">🔄</div><div class="doc-body"><div class="doc-title">Transferências de Município</div><div class="doc-meta">Famílias vindas de outros municípios</div></div><div class="doc-count" style="background:var(--blue2);color:var(--blue);border-color:var(--blue3)">18</div></div>
+        </div>
+      </div>
+
+    </div><!-- /dash-grid -->
+
+    <!-- EQUIPE -->
+    <div class="section-sep" id="sec-equipe">Equipe — Presença de Hoje</div>
+    <div class="full-col">
+      <div class="card" style="margin-bottom:0">
+        <div class="team-grid" id="team-grid"></div>
+      </div>
+    </div>
+
+    <!-- CENÁRIOS FINANCEIROS -->
+    <div class="section-sep" id="sec-cenarios">Impacto Financeiro — Cenários de Decisão</div>
+    <div class="full-col">
+      <div class="card" style="margin-bottom:0">
+        <div class="cenario-grid">
+          <div class="cenario" style="background:var(--red2);border-color:var(--red3)">
+            <div class="cenario-label" style="color:var(--red)">Não agir</div>
+            <div class="cenario-value" style="color:var(--red)">-R$ 48.200</div>
+            <div class="cenario-desc" style="color:rgba(240,79,82,.8)">214 famílias com benefício bloqueado. Média R$ 225/família/mês. Risco de advertência MDS e suspensão de repasse municipal.</div>
+          </div>
+          <div class="cenario" style="background:var(--amber2);border-color:var(--amber3)">
+            <div class="cenario-label" style="color:var(--amber)">Ação parcial</div>
+            <div class="cenario-value" style="color:var(--amber)">-R$ 14.800</div>
+            <div class="cenario-desc" style="color:rgba(245,166,35,.8)">Revisão de 50% (107 casos). Mutirão 1x/semana + comunicação WhatsApp. Risco residual de ~R$ 14.800.</div>
+          </div>
+          <div class="cenario" style="background:var(--green2);border-color:var(--green3)">
+            <div class="cenario-label" style="color:var(--green)">Ação completa</div>
+            <div class="cenario-value" style="color:var(--green)">R$ 0 de perda</div>
+            <div class="cenario-desc" style="color:rgba(41,217,138,.8)">100% das revisões até 31/05. Zero bloqueios. Custo adicional: ~R$ 3.200. ROI social estimado: 15×.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GRÁFICOS -->
+    <div class="section-sep">Análise Gráfica — Atendimentos</div>
+    <div class="two-col" style="padding-bottom:20px">
+      <div class="card" style="margin-bottom:0">
+        <div class="card-head"><div class="card-title">Por unidade — hoje</div></div>
+        <div class="card-body"><div class="chart-wrap" style="height:200px"><canvas id="chartUnidades"></canvas></div></div>
+      </div>
+      <div class="card" style="margin-bottom:0">
+        <div class="card-head"><div class="card-title">Evolução ao longo do dia</div></div>
+        <div class="card-body"><div class="chart-wrap" style="height:200px"><canvas id="chartEvolucao"></canvas></div></div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div style="padding:14px 16px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <div style="font-family:var(--mono);font-size:11px;color:var(--ink3)">GOVFLOW v4 · CadÚnico · São Sebastião · SP</div>
+      <div style="font-size:11px;color:var(--ink3)" id="ultima-atualiz">--</div>
+    </div>
+
+  </div><!-- /screen-dashboard -->
+
+  <!-- ════════════════ REGISTROS ════════════════ -->
+  <div class="screen" id="screen-registros">
+    <div class="page-hd">
+      <div>
+        <div class="page-hd-title">Registros</div>
+        <div class="page-hd-sub">Insira atendimentos, fila, ausências e ocorrências</div>
+      </div>
+      <button class="btn btn-primary" onclick="openModal('modal-reg')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Registro Rápido
+      </button>
+    </div>
+    <div class="page-body">
+      <div class="form-section">
+        <div class="form-section-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Tipo de Registro
+        </div>
+        <div class="type-tabs">
+          <div class="type-tab sel" id="ttab-atend" onclick="selTab('atend')">
+            <div class="tt-icon">🗂️</div><div class="tt-lbl">Atendimento</div>
+          </div>
+          <div class="type-tab" id="ttab-fila" onclick="selTab('fila')">
+            <div class="tt-icon">🪑</div><div class="tt-lbl">Fila</div>
+          </div>
+          <div class="type-tab" id="ttab-ausencia" onclick="selTab('ausencia')">
+            <div class="tt-icon">👤</div><div class="tt-lbl">Ausência</div>
+          </div>
+          <div class="type-tab" id="ttab-ocorrencia" onclick="selTab('ocorrencia')">
+            <div class="tt-icon">⚠️</div><div class="tt-lbl">Ocorrência</div>
+          </div>
+        </div>
+
+        <!-- FORM ATENDIMENTO -->
+        <div id="frm-atend">
+          <div class="g2">
+            <div class="field"><label>Unidade</label>
+              <select id="freg-und"><option>Centro</option><option>Canto do Mar</option><option>Boiçucanga</option><option>Morro do Abrigo</option></select>
+            </div>
+            <div class="field"><label>Tipo de Atendimento</label>
+              <select id="freg-tatend">
+                <option>Novo Cadastro</option><option>Atualização Cadastral</option>
+                <option>Revisão (+24 meses)</option><option>Bloqueio Bolsa Família</option>
+                <option>Emissão NIS</option><option>Consulta / Orientação</option>
+                <option>Transferência de Município</option><option>BPC / Encaminhamento</option>
+              </select>
+            </div>
+          </div>
+          <div class="g2">
+            <div class="field"><label>Quantidade</label><input type="number" id="freg-qtd" value="1" min="1"></div>
+            <div class="field"><label>Operador Responsável</label><input type="text" id="freg-op" placeholder="Nome do operador"></div>
+          </div>
+          <div class="g2">
+            <div class="field"><label>Data e Hora</label><input type="datetime-local" id="freg-dt"></div>
+            <div class="field"><label>Família / NIS (opcional)</label><input type="text" id="freg-familia" placeholder="NIS ou nome da família"></div>
+          </div>
+          <div class="field"><label>Observação</label><textarea id="freg-obs" placeholder="Pendências, documentação faltante, situação especial..."></textarea></div>
+          <div style="display:flex;gap:8px;justify-content:flex-end">
+            <button class="btn btn-ghost" onclick="clearForm()">Limpar</button>
+            <button class="btn btn-primary" onclick="saveFormReg()">💾 Salvar Registro</button>
+          </div>
+        </div>
+
+        <!-- FORM FILA -->
+        <div id="frm-fila" style="display:none">
+          <div class="g2">
+            <div class="field"><label>Unidade</label>
+              <select id="freg-fila-und"><option>Centro</option><option>Canto do Mar</option><option>Boiçucanga</option><option>Morro do Abrigo</option></select>
+            </div>
+            <div class="field"><label>Data e Hora</label><input type="datetime-local" id="freg-fila-dt"></div>
+          </div>
+          <div class="g2">
+            <div class="field"><label>Nº de pessoas na fila</label><input type="number" id="freg-fila-n" placeholder="Ex: 42"></div>
+            <div class="field"><label>Tempo médio de espera (min)</label><input type="number" id="freg-fila-t" placeholder="Ex: 35"></div>
+          </div>
+          <div style="display:flex;gap:8px;justify-content:flex-end">
+            <button class="btn btn-ghost" onclick="clearForm()">Limpar</button>
+            <button class="btn btn-primary" onclick="saveFormReg()">💾 Salvar</button>
+          </div>
+        </div>
+
+        <!-- FORM AUSÊNCIA -->
+        <div id="frm-ausencia" style="display:none">
+          <div class="g2">
+            <div class="field"><label>Funcionário</label><input type="text" id="freg-func" placeholder="Nome completo"></div>
+            <div class="field"><label>Unidade</label>
+              <select id="freg-func-und"><option>Centro</option><option>Canto do Mar</option><option>Boiçucanga</option><option>Morro do Abrigo</option></select>
+            </div>
+          </div>
+          <div class="g2">
+            <div class="field"><label>Data</label><input type="date" id="freg-aus-dt"></div>
+            <div class="field"><label>Motivo</label>
+              <select id="freg-motivo">
+                <option>Atestado médico</option><option>Licença</option><option>Falta não justificada</option>
+                <option>Trabalho remoto</option><option>Capacitação externa</option>
+              </select>
+            </div>
+          </div>
+          <div class="field"><label>Observação</label><textarea id="freg-aus-obs" placeholder="Detalhes adicionais..."></textarea></div>
+          <div style="display:flex;gap:8px;justify-content:flex-end">
+            <button class="btn btn-ghost" onclick="clearForm()">Limpar</button>
+            <button class="btn btn-primary" onclick="saveFormReg()">💾 Salvar</button>
+          </div>
+        </div>
+
+        <!-- FORM OCORRÊNCIA -->
+        <div id="frm-ocorrencia" style="display:none">
+          <div class="g2">
+            <div class="field"><label>Unidade</label>
+              <select id="freg-oc-und"><option>Centro</option><option>Canto do Mar</option><option>Boiçucanga</option><option>Morro do Abrigo</option></select>
+            </div>
+            <div class="field"><label>Severidade</label>
+              <select id="freg-oc-sev">
+                <option value="r">🔴 Crítica</option><option value="a">🟡 Moderada</option><option value="g">🟢 Leve</option>
+              </select>
+            </div>
+          </div>
+          <div class="field"><label>Data e Hora</label><input type="datetime-local" id="freg-oc-dt"></div>
+          <div class="field"><label>Descrição detalhada</label><textarea id="freg-oc-desc" placeholder="Descreva o problema ou ocorrência em detalhes..."></textarea></div>
+          <div style="display:flex;gap:8px;justify-content:flex-end">
+            <button class="btn btn-ghost" onclick="clearForm()">Limpar</button>
+            <button class="btn btn-primary" onclick="saveFormReg()">💾 Salvar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ÚLTIMOS REGISTROS -->
+      <div class="card" style="margin-bottom:0">
+        <div class="card-head">
+          <div class="card-title">Registros desta sessão</div>
+          <span class="mp mp-b" id="session-count">0 registros</span>
+        </div>
+        <div id="recent-entries">
+          <div class="table-empty">Nenhum registro adicionado ainda nesta sessão.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════ HISTÓRICO ════════════════ -->
+  <div class="screen" id="screen-historico">
+    <div class="page-hd">
+      <div>
+        <div class="page-hd-title">Histórico de Registros</div>
+        <div class="page-hd-sub" id="hist-sub">0 registros salvos nesta sessão</div>
+      </div>
+      <button class="btn btn-red btn-sm" onclick="clearHistory()">🗑 Limpar tudo</button>
+    </div>
+    <div class="page-body">
+      <div class="hist-toolbar">
+        <div class="search-wrap">
+          <svg class="search-ico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="hist-q" placeholder="Buscar por tipo, unidade, operador..." oninput="renderHist()">
+        </div>
+        <select class="filt-sel" id="hist-ftipo" onchange="renderHist()">
+          <option value="">Todos os tipos</option>
+          <option value="atend">Atendimento</option>
+          <option value="fila">Fila</option>
+          <option value="ausencia">Ausência</option>
+          <option value="ocorrencia">Ocorrência</option>
+        </select>
+        <select class="filt-sel" id="hist-fund" onchange="renderHist()">
+          <option value="">Todas as unidades</option>
+          <option>Centro</option><option>Canto do Mar</option><option>Boiçucanga</option><option>Morro do Abrigo</option>
+        </select>
+      </div>
+
+      <div class="card" style="margin-bottom:0;overflow-x:auto">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>#</th><th>Tipo</th><th>Unidade</th><th>Detalhes</th><th>Operador</th><th>Data/Hora</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="hist-tbody">
+            <tr><td colspan="7" class="table-empty">Nenhum registro encontrado.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:8px;font-size:11px;color:var(--ink3)" id="hist-count">0 registros</div>
+    </div>
+  </div>
+
+  <!-- ════════════════ RELATÓRIO ════════════════ -->
+  <div class="screen" id="screen-relatorio">
+    <div class="page-hd">
+      <div>
+        <div class="page-hd-title">Gerar Relatório</div>
+        <div class="page-hd-sub">Relatório executivo completo com dados e análise de gestão</div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="rel-layout">
+
+        <!-- CONFIG -->
+        <div class="rel-config">
+          <div class="rel-config-title">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            Configurações
+          </div>
+          <div class="field"><label>Título</label><input type="text" id="rel-titulo" value="Relatório de Gestão — CadÚnico São Sebastião"></div>
+          <div class="g2">
+            <div class="field"><label>Período De</label><input type="date" id="rel-de"></div>
+            <div class="field"><label>Até</label><input type="date" id="rel-ate"></div>
+          </div>
+          <div class="field"><label>Unidade</label>
+            <select id="rel-und">
+              <option value="">Todas as unidades</option>
+              <option>Centro</option><option>Canto do Mar</option><option>Boiçucanga</option><option>Morro do Abrigo</option>
+            </select>
+          </div>
+          <div class="field"><label>Responsável / Assinatura</label><input type="text" id="rel-resp" placeholder="Nome do Coordenador Municipal"></div>
+          <div class="field">
+            <label>Seções do relatório</label>
+            <div style="display:flex;flex-direction:column;gap:7px;margin-top:6px">
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2);text-transform:none;letter-spacing:0"><input type="checkbox" id="rs-resumo" checked style="accent-color:var(--blue)"> Resumo executivo</label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2);text-transform:none;letter-spacing:0"><input type="checkbox" id="rs-unidades" checked style="accent-color:var(--blue)"> Atendimentos por unidade</label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2);text-transform:none;letter-spacing:0"><input type="checkbox" id="rs-tipos" checked style="accent-color:var(--blue)"> Tipos de atendimento</label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2);text-transform:none;letter-spacing:0"><input type="checkbox" id="rs-analise" checked style="accent-color:var(--blue)"> Análise de gestão</label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2);text-transform:none;letter-spacing:0"><input type="checkbox" id="rs-graficos" checked style="accent-color:var(--blue)"> Gráficos e visualizações</label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2);text-transform:none;letter-spacing:0"><input type="checkbox" id="rs-cenarios" checked style="accent-color:var(--blue)"> Cenários financeiros</label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2);text-transform:none;letter-spacing:0"><input type="checkbox" id="rs-ocorrencias" style="accent-color:var(--blue)"> Ocorrências registradas</label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2);text-transform:none;letter-spacing:0"><input type="checkbox" id="rs-equipe" style="accent-color:var(--blue)"> Presença da equipe</label>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-full" onclick="buildReport()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Gerar Relatório
+          </button>
+        </div>
+
+        <!-- PREVIEW -->
+        <div class="rel-preview" id="rel-preview-box">
+          <div style="display:flex;align-items:center;justify-content:center;min-height:300px;flex-direction:column;gap:12px;color:var(--ink3)">
+            <div style="font-size:36px;opacity:.4">📄</div>
+            <div style="font-size:13px">Configure e clique em "Gerar Relatório"</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIONS -->
+      <div id="rel-btn-row" style="display:none;margin-top:12px;display:none">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="printReport()">🖨️ Imprimir / PDF</button>
+          <button class="btn btn-ghost" onclick="copyReport()">📋 Copiar texto</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- ══════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════ -->
+<script>
+// ────────────────────────────────────────
+// SUPABASE CONFIG (substitua as credenciais)
+// ────────────────────────────────────────
+const SUPABASE_URL = 'SUPABASE_URL_AQUI';
+const SUPABASE_KEY = 'SUPABASE_KEY_AQUI';
+let db = null;
+try {
+  if (SUPABASE_URL !== 'SUPABASE_URL_AQUI') {
+    db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  }
+} catch(e) { console.warn('Supabase não configurado, modo offline.'); }
+
+// ────────────────────────────────────────
+// ESTADO GLOBAL
+// ────────────────────────────────────────
+const S = {
+  atendimentos: 127,
+  pendentes: 5,
+  registros: [],
+  nextId: 1,
+  hj: { novos:14, atualizacoes:38, revisoes:12, boicucanga:22, canto:31, centro:58, morro:16 }
+};
+
+// ────────────────────────────────────────
+// NAVEGAÇÃO
+// ────────────────────────────────────────
+function goTo(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  const ni = document.getElementById('nav-'+name);
+  if (ni) ni.classList.add('active');
+  if (window.innerWidth <= 820) closeSidebar();
+  window.scrollTo(0, 0);
+}
+function scrollTo(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('sidebar-overlay');
+  const open = sb.classList.toggle('open');
+  ov.style.display = open ? 'block' : 'none';
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').style.display = 'none';
+}
+
+// ────────────────────────────────────────
+// CLOCK
+// ────────────────────────────────────────
+const DAYS  = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+const DAYS2 = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+const MONTHS= ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+function updateClock() {
+  const n = new Date();
+  const h = String(n.getHours()).padStart(2,'0');
+  const m = String(n.getMinutes()).padStart(2,'0');
+  const s = String(n.getSeconds()).padStart(2,'0');
+  document.getElementById('clock').textContent = `${h}:${m}:${s}`;
+  document.getElementById('date-display').textContent = `${DAYS[n.getDay()]}, ${n.getDate()} ${MONTHS[n.getMonth()]} ${n.getFullYear()}`;
+  const dEl = document.getElementById('dia-semana');
+  if (dEl) dEl.textContent = DAYS2[n.getDay()];
+  const dN = document.getElementById('dia-nome');
+  if (dN) dN.textContent = DAYS[n.getDay()];
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// ────────────────────────────────────────
+// TIMESTAMP
+// ────────────────────────────────────────
+function nowISO() {
+  const d = new Date();
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().slice(0,16);
+}
+function markUpdate() {
+  const n = new Date();
+  const t = `${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')}`;
+  const el = document.getElementById('ultima-atualiz');
+  if (el) el.textContent = 'Última atualização: '+t;
+  const lu = document.getElementById('last-upd');
+  if (lu) lu.textContent = t;
+}
+markUpdate();
+
+// Init datetime fields
+document.querySelectorAll('input[type=datetime-local]').forEach(el => el.value = nowISO());
+document.querySelectorAll('input[type=date]').forEach(el => el.value = new Date().toISOString().slice(0,10));
+
+// ────────────────────────────────────────
+// KPI COUNTER ANIMATION
+// ────────────────────────────────────────
+function animCount(el, target) {
+  let v = 0, step = target / 35;
+  const t = setInterval(() => {
+    v = Math.min(v + step, target);
+    el.textContent = Math.round(v);
+    if (v >= target) clearInterval(t);
+  }, 28);
+}
+window.addEventListener('load', () => {
+  setTimeout(() => animCount(document.getElementById('kpi-atend'), S.atendimentos), 300);
+});
+
+// ────────────────────────────────────────
+// TOAST
+// ────────────────────────────────────────
+function toast(msg, type='ok') {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.style.borderColor = type === 'err' ? 'var(--red3)' : 'var(--green3)';
+  t.style.color       = type === 'err' ? 'var(--red)'  : 'var(--green)';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ────────────────────────────────────────
+// MODALS
+// ────────────────────────────────────────
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.overlay').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.querySelectorAll('.overlay.open').forEach(el => el.classList.remove('open'));
+});
+
+// ────────────────────────────────────────
+// MODAL REGISTER: TOGGLE FIELDS
+// ────────────────────────────────────────
+function updateModalFields() {
+  const t = document.getElementById('mreg-tipo').value;
+  ['atend','fila','ausencia','ocorrencia'].forEach(k => {
+    document.getElementById('mf-'+k).style.display = k === t ? '' : 'none';
+  });
+}
+
+// ────────────────────────────────────────
+// TASKS
+// ────────────────────────────────────────
+const PRIO_STYLES = {
+  r: ['var(--red)', 'var(--red2)', 'Urgente'],
+  a: ['var(--amber)', 'var(--amber2)', 'Atenção'],
+  g: ['var(--green)', 'var(--green2)', 'Normal']
+};
+function toggleTask(el) {
+  const done = el.dataset.done === 'true';
+  el.dataset.done = !done;
+  const nm = el.querySelector('.task-name');
+  const bd = el.querySelector('.task-badge');
+  if (!done) {
+    nm.classList.add('done');
+    bd.style.background = 'var(--green2)'; bd.style.color = 'var(--green)'; bd.textContent = 'Feito';
+    S.pendentes = Math.max(0, S.pendentes - 1);
+  } else {
+    nm.classList.remove('done');
+    bd.style.background = 'var(--amber2)'; bd.style.color = 'var(--amber)'; bd.textContent = 'Pendente';
+    S.pendentes++;
+  }
+  document.getElementById('pill-pend').textContent = S.pendentes + ' pendentes';
+  document.getElementById('urg-count').textContent = S.pendentes;
+  toast(done ? 'Tarefa reaberta' : 'Tarefa concluída ✓');
+}
+function saveTarefa() {
+  const desc = document.getElementById('task-desc').value.trim();
+  if (!desc) { toast('Informe a descrição', 'err'); return; }
+  const quando = document.getElementById('task-quando').value;
+  const prio   = document.getElementById('task-prio').value;
+  const hora   = document.getElementById('task-hora').value;
+  const obs    = document.getElementById('task-obs').value.trim();
+  const [col, bg, lbl] = PRIO_STYLES[prio];
+  const item = document.createElement('div');
+  item.className = 'task-item'; item.dataset.done = 'false';
+  item.innerHTML = `<div class="task-dot" style="background:${col}"></div>
+    <div class="task-body">
+      <div class="task-name">${desc}</div>
+      <div class="task-meta">${hora ? 'Horário: '+hora+' · ':''} ${obs||'Sem observação'}</div>
+    </div>
+    <span class="task-badge" style="background:${bg};color:${col}">${lbl}</span>`;
+  item.addEventListener('click', function(){ toggleTask(this); });
+  const lista = quando === 'hoje' ? document.getElementById('lista-hoje') : document.getElementById('lista-semana');
+  lista.insertBefore(item, lista.querySelector('[data-done="true"]') || null);
+  S.pendentes++;
+  document.getElementById('pill-pend').textContent = S.pendentes + ' pendentes';
+  ['task-desc','task-hora','task-obs'].forEach(id => document.getElementById(id).value = '');
+  closeModal('modal-tarefa');
+  toast('Tarefa adicionada');
+}
+
+// ────────────────────────────────────────
+// TEAM
+// ────────────────────────────────────────
+const TEAM = [
+  { i:'AP', n:'Ana Paula',  c:'Operadora',        u:'Centro',      s:'ativo',   cor:'#4f8ef7' },
+  { i:'CM', n:'Carlos M.',  c:'Coordenador',       u:'Centro',      s:'ativo',   cor:'#22d4c4' },
+  { i:'RS', n:'Rita S.',    c:'Assist. Social',    u:'Canto do Mar',s:'ativo',   cor:'#29d98a' },
+  { i:'JR', n:'João R.',    c:'Operador',          u:'Morro',       s:'ativo',   cor:'#a87fe8' },
+  { i:'MF', n:'Marcos F.',  c:'Operador',          u:'Centro',      s:'ausente', cor:'#f04f52' },
+  { i:'LO', n:'Lúcia O.',   c:'Cadastradora',      u:'Boiçucanga',  s:'ativo',   cor:'#f5a623' },
+  { i:'TS', n:'Thiago S.',  c:'Operador',          u:'Boiçucanga',  s:'ativo',   cor:'#4f8ef7' },
+  { i:'PC', n:'Paula C.',   c:'Assist. Social',    u:'Canto do Mar',s:'campo',   cor:'#22d4c4' },
+  { i:'EV', n:'Eliane V.',  c:'Cadastradora',      u:'Centro',      s:'ativo',   cor:'#29d98a' },
+  { i:'BN', n:'Bruno N.',   c:'Operador',          u:'Morro',       s:'ativo',   cor:'#a87fe8' },
+  { i:'GS', n:'Gisele S.',  c:'Coord. Adjunta',    u:'Centro',      s:'ausente', cor:'#f04f52' },
+  { i:'RF', n:'Rodrigo F.', c:'Operador',          u:'Boiçucanga',  s:'ausente', cor:'#f04f52' }
+];
+const STATUS_MAP = {
+  ativo:   { lbl:'Ativo',    bg:'var(--green2)', col:'var(--green)' },
+  ausente: { lbl:'Ausente',  bg:'var(--red2)',   col:'var(--red)' },
+  campo:   { lbl:'Em campo', bg:'var(--blue2)',  col:'var(--blue)' }
+};
+function renderTeam() {
+  const g = document.getElementById('team-grid');
+  g.innerHTML = '';
+  TEAM.forEach(f => {
+    const sm = STATUS_MAP[f.s];
+    g.innerHTML += `<div class="func-card">
+      <div class="func-av" style="background:${f.cor}22;color:${f.cor};border:1px solid ${f.cor}44">${f.i}</div>
+      <div class="func-name">${f.n}</div>
+      <div class="func-cargo">${f.c}</div>
+      <span class="func-status" style="background:${sm.bg};color:${sm.col}">${sm.lbl}</span>
+    </div>`;
+  });
+}
+renderTeam();
+
+// ────────────────────────────────────────
+// CHARTS
+// ────────────────────────────────────────
+const CHART_DEFAULTS = {
+  plugins: { legend: { display: false } },
+  scales: {
+    y: { beginAtZero: true, ticks: { color: '#49576e', font: { size: 10.5, family: "'JetBrains Mono', monospace" }}, grid: { color: 'rgba(255,255,255,0.04)' }},
+    x: { ticks: { color: '#49576e', font: { size: 10.5 }}, grid: { display: false }}
+  }
+};
+new Chart(document.getElementById('chartUnidades'), {
+  type: 'bar',
+  data: {
+    labels: ['Centro','Canto do Mar','Boiçucanga','Morro do Abrigo'],
+    datasets: [{
+      data: [S.hj.centro, S.hj.canto, S.hj.boicucanga, S.hj.morro],
+      backgroundColor: ['rgba(240,79,82,.15)','rgba(41,217,138,.15)','rgba(245,166,35,.15)','rgba(240,79,82,.15)'],
+      borderColor:     ['#f04f52','#29d98a','#f5a623','#f04f52'],
+      borderWidth: 2, borderRadius: 6, borderSkipped: false
+    }]
+  },
+  options: { responsive: true, maintainAspectRatio: false, ...CHART_DEFAULTS }
+});
+new Chart(document.getElementById('chartEvolucao'), {
+  type: 'line',
+  data: {
+    labels: ['07h','08h','09h','10h','11h','12h','13h','14h','15h','16h','17h'],
+    datasets: [{
+      data: [4,11,18,21,17,8,14,16,9,7,2],
+      borderColor: '#4f8ef7', backgroundColor: 'rgba(79,142,247,0.07)',
+      fill: true, tension: 0.45,
+      pointRadius: 4, pointBackgroundColor: '#4f8ef7',
+      pointBorderColor: '#07090f', pointBorderWidth: 2
+    }]
+  },
+  options: { responsive: true, maintainAspectRatio: false, ...CHART_DEFAULTS }
+});
+
+// ────────────────────────────────────────
+// REGISTRY: SHARED LOGIC
+// ────────────────────────────────────────
+const TYPE_LABELS = { atend:'Atendimento', fila:'Fila', ausencia:'Ausência', ocorrencia:'Ocorrência' };
+const TYPE_STYLE  = {
+  atend:      'background:var(--blue2);color:var(--blue)',
+  fila:       'background:var(--amber2);color:var(--amber)',
+  ausencia:   'background:var(--purple2);color:var(--purple)',
+  ocorrencia: 'background:var(--red2);color:var(--red)'
+};
+
+async function persistReg(rec) {
+  if (!db) return;
+  try {
+    const { error } = await db.from('registros').insert({
+      tipo: rec.tipo, unidade: rec.unidade || null,
+      detalhe: rec.detalhe || null, operador: rec.operador || null,
+      hora: new Date().toISOString()
+    });
+    if (error) console.error('Supabase insert error:', error);
+  } catch(e) { console.warn('Supabase unavailable'); }
+}
+
+function addReg(rec) {
+  S.registros.unshift(rec);
+  updateHistBadge();
+  renderRecent();
+  renderHist();
+  persistReg(rec);
+}
+function updateHistBadge() {
+  const n = S.registros.length;
+  document.getElementById('hist-badge').textContent = n;
+  document.getElementById('session-count').textContent = n + (n===1?' registro':' registros');
+  document.getElementById('hist-sub').textContent = n + ' registro' + (n===1?' salvo':' salvos') + ' nesta sessão';
+}
+function renderRecent() {
+  const c = document.getElementById('recent-entries');
+  if (!S.registros.length) {
+    c.innerHTML = '<div class="table-empty">Nenhum registro adicionado ainda nesta sessão.</div>';
+    return;
+  }
+  c.innerHTML = '';
+  S.registros.slice(0,6).forEach(r => {
+    c.innerHTML += `<div class="entry-row">
+      <span class="entry-id">#${r.id}</span>
+      <span class="mp" style="${TYPE_STYLE[r.tipo]}">${TYPE_LABELS[r.tipo]}</span>
+      <span style="flex:1;font-size:13px;color:var(--ink);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.detalhe}</span>
+      <span style="font-family:var(--mono);font-size:10.5px;color:var(--ink3);flex-shrink:0">${r.hora}</span>
+    </div>`;
+  });
+  if (S.registros.length > 6) {
+    c.innerHTML += `<div style="padding:8px 16px;font-size:11px;color:var(--blue);cursor:pointer" onclick="goTo('historico')">
+      + Ver todos no Histórico (${S.registros.length} registros)
+    </div>`;
+  }
+}
+function renderHist() {
+  const q    = document.getElementById('hist-q').value.toLowerCase();
+  const ftp  = document.getElementById('hist-ftipo').value;
+  const fund = document.getElementById('hist-fund').value;
+  const rows = S.registros.filter(r =>
+    (!q   || [r.detalhe,r.unidade,r.operador].join(' ').toLowerCase().includes(q)) &&
+    (!ftp  || r.tipo === ftp) &&
+    (!fund || r.unidade === fund)
+  );
+  document.getElementById('hist-count').textContent = rows.length + ' registro' + (rows.length===1?'':'s') + ' encontrado' + (rows.length===1?'':'s');
+  const tbody = document.getElementById('hist-tbody');
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="7" class="table-empty">${S.registros.length ? 'Nenhum registro corresponde aos filtros.' : 'Nenhum registro salvo ainda.'}</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = rows.map(r => `<tr>
+    <td style="font-family:var(--mono);font-size:10.5px;color:var(--ink3)">#${r.id}</td>
+    <td><span class="mp" style="${TYPE_STYLE[r.tipo]}">${TYPE_LABELS[r.tipo]}</span></td>
+    <td style="color:var(--ink)">${r.unidade||'—'}</td>
+    <td style="max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.detalhe}</td>
+    <td>${r.operador||'—'}</td>
+    <td style="font-family:var(--mono);font-size:10.5px">${r.hora}</td>
+    <td><button class="btn btn-red btn-sm" style="padding:3px 8px;font-size:10px" onclick="delReg(${r.id})">✕</button></td>
+  </tr>`).join('');
+}
+function delReg(id) {
+  S.registros = S.registros.filter(r => r.id !== id);
+  updateHistBadge(); renderRecent(); renderHist();
+  toast('Registro removido');
+}
+function clearHistory() {
+  if (!S.registros.length) { toast('Histórico já vazio', 'err'); return; }
+  if (!confirm('Limpar todo o histórico desta sessão?')) return;
+  S.registros = []; updateHistBadge(); renderRecent(); renderHist();
+  toast('Histórico limpo');
+}
+
+// ────────────────────────────────────────
+// QUICK MODAL SAVE
+// ────────────────────────────────────────
+function saveModalReg() {
+  const tipo = document.getElementById('mreg-tipo').value;
+  const rec  = { id: S.nextId++, tipo, hora: new Date().toLocaleTimeString('pt-BR') };
+  if (tipo === 'atend') {
+    const qtd = parseInt(document.getElementById('mreg-qtd').value)||1;
+    const und = document.getElementById('mreg-unidade').value;
+    const tp  = document.getElementById('mreg-tipo-atend').value;
+    const op  = document.getElementById('mreg-op').value;
+    S.atendimentos += qtd;
+    document.getElementById('kpi-atend').textContent = S.atendimentos;
+    if (tp.includes('Novo')) S.hj.novos += qtd;
+    else if (tp.includes('Atualização')) S.hj.atualizacoes += qtd;
+    else if (tp.includes('Revisão')) S.hj.revisoes += qtd;
+    const tot = S.hj.novos + S.hj.atualizacoes + S.hj.revisoes;
+    document.getElementById('live-cad').textContent = tot;
+    document.getElementById('cad-desc').textContent = `Novos: ${S.hj.novos} · Atualizações: ${S.hj.atualizacoes} · Revisões: ${S.hj.revisoes}`;
+    rec.unidade = und; rec.detalhe = tp+(qtd>1?` (×${qtd})`:''); rec.operador = op||'—';
+    toast('Atendimento registrado — '+und);
+  }
+  if (tipo === 'fila') {
+    const n = document.getElementById('mreg-fila-n').value;
+    const t = document.getElementById('mreg-fila-t').value;
+    if (n) {
+      document.getElementById('kpi-fila').textContent = n;
+      document.getElementById('fila-desc').textContent = n+' pessoas · Tempo médio '+(t||'?')+' min';
+      const nv = parseInt(n);
+      document.getElementById('live-fila').textContent = nv>=40?'Crítica':nv>=20?'Alta':'Normal';
+    }
+    rec.unidade = document.getElementById('mreg-fila-und').value;
+    rec.detalhe = (n||'?')+' pessoas · '+(t||'?')+' min'; rec.operador = '—';
+    toast('Fila atualizada');
+  }
+  if (tipo === 'ausencia') {
+    const nm = document.getElementById('mreg-func').value;
+    rec.unidade = document.getElementById('mreg-func-und').value;
+    rec.detalhe = (nm||'Funcionário')+' — '+document.getElementById('mreg-motivo').value;
+    rec.operador = '—';
+    toast('Ausência registrada'+(nm?' — '+nm:''));
+  }
+  if (tipo === 'ocorrencia') {
+    rec.unidade = document.getElementById('mreg-oc-und').value;
+    rec.detalhe = (document.getElementById('mreg-oc-desc').value||'—').substring(0,60);
+    rec.operador = '—';
+    toast('Ocorrência registrada');
+  }
+  addReg(rec); markUpdate(); closeModal('modal-reg');
+  document.getElementById('mreg-qtd').value = '1';
+  ['mreg-op','mreg-obs','mreg-fila-n','mreg-fila-t','mreg-func','mreg-oc-desc'].forEach(i => { const el = document.getElementById(i); if(el) el.value=''; });
+}
+
+// ────────────────────────────────────────
+// FORM SCREEN: TAB SWITCHER
+// ────────────────────────────────────────
+function selTab(t) {
+  ['atend','fila','ausencia','ocorrencia'].forEach(k => {
+    document.getElementById('ttab-'+k).classList.toggle('sel', k===t);
+    document.getElementById('frm-'+k).style.display = k===t ? '' : 'none';
+  });
+}
+function clearForm() {
+  document.querySelectorAll('#frm-atend input, #frm-atend textarea, #frm-fila input, #frm-ausencia input, #frm-ausencia textarea, #frm-ocorrencia input, #frm-ocorrencia textarea').forEach(el => {
+    if (el.type==='number') el.value = el.id==='freg-qtd'?'1':'';
+    else if (el.type==='datetime-local') el.value = nowISO();
+    else if (el.type==='date') el.value = new Date().toISOString().slice(0,10);
+    else el.value = '';
+  });
+}
+function saveFormReg() {
+  const selTab = document.querySelector('.type-tab.sel');
+  if (!selTab) return;
+  const tipo = selTab.id.replace('ttab-','');
+  const rec = { id: S.nextId++, tipo, hora: new Date().toLocaleString('pt-BR') };
+  if (tipo === 'atend') {
+    const qtd = parseInt(document.getElementById('freg-qtd').value)||1;
+    const und = document.getElementById('freg-und').value;
+    const tp  = document.getElementById('freg-tatend').value;
+    const op  = document.getElementById('freg-op').value;
+    S.atendimentos += qtd;
+    document.getElementById('kpi-atend').textContent = S.atendimentos;
+    if (tp.includes('Novo')) S.hj.novos += qtd;
+    else if (tp.includes('Atualização')) S.hj.atualizacoes += qtd;
+    else if (tp.includes('Revisão')) S.hj.revisoes += qtd;
+    document.getElementById('live-cad').textContent = S.hj.novos+S.hj.atualizacoes+S.hj.revisoes;
+    document.getElementById('cad-desc').textContent = `Novos: ${S.hj.novos} · Atualizações: ${S.hj.atualizacoes} · Revisões: ${S.hj.revisoes}`;
+    rec.unidade = und; rec.detalhe = tp+(qtd>1?` (×${qtd})`:''); rec.operador = op||'—';
+  }
+  if (tipo === 'fila') {
+    const n = document.getElementById('freg-fila-n').value;
+    const t = document.getElementById('freg-fila-t').value;
+    rec.unidade = document.getElementById('freg-fila-und').value;
+    rec.detalhe = (n||'?')+' pessoas · '+(t||'?')+' min'; rec.operador = '—';
+    if (n) {
+      document.getElementById('kpi-fila').textContent = n;
+      document.getElementById('fila-desc').textContent = n+' pessoas · Tempo médio '+(t||'?')+' min';
+      const nv = parseInt(n);
+      document.getElementById('live-fila').textContent = nv>=40?'Crítica':nv>=20?'Alta':'Normal';
+    }
+  }
+  if (tipo === 'ausencia') {
+    const nm = document.getElementById('freg-func').value;
+    if (!nm.trim()) { toast('Informe o nome do funcionário', 'err'); return; }
+    rec.unidade = document.getElementById('freg-func-und').value;
+    rec.detalhe = nm+' — '+document.getElementById('freg-motivo').value; rec.operador = '—';
+  }
+  if (tipo === 'ocorrencia') {
+    const desc = document.getElementById('freg-oc-desc').value.trim();
+    if (!desc) { toast('Informe a descrição da ocorrência', 'err'); return; }
+    rec.unidade = document.getElementById('freg-oc-und').value;
+    rec.detalhe = desc.substring(0,70)+(desc.length>70?'…':''); rec.operador = '—';
+  }
+  addReg(rec); markUpdate(); clearForm();
+  toast(`Registro #${rec.id} salvo com sucesso`);
+}
+
+// ────────────────────────────────────────
+// SUPABASE: LOAD HISTORY ON START
+// ────────────────────────────────────────
+async function loadFromSupabase() {
+  if (!db) return;
+  try {
+    const { data, error } = await db.from('registros').select('*').order('created_at', { ascending: false }).limit(200);
+    if (data && data.length) {
+      S.registros = data.map(r => ({
+        id: r.id, tipo: r.tipo||'atend', unidade: r.unidade||'',
+        detalhe: r.detalhe||'', operador: r.operador||'—',
+        hora: r.hora ? new Date(r.hora).toLocaleString('pt-BR') : '—'
+      }));
+      S.nextId = Math.max(...S.registros.map(r=>r.id)) + 1;
+      updateHistBadge(); renderRecent(); renderHist();
+    }
+  } catch(e) { console.warn('Could not load from Supabase'); }
+}
+loadFromSupabase();
+
+// ────────────────────────────────────────
+// RELATÓRIO
+// ────────────────────────────────────────
+let repChartBarra = null, repChartPizza = null;
+
+function buildReport() {
+  const titulo  = document.getElementById('rel-titulo').value || 'Relatório GOVFLOW';
+  const de      = document.getElementById('rel-de').value;
+  const ate     = document.getElementById('rel-ate').value;
+  const und     = document.getElementById('rel-und').value || 'Todas as unidades';
+  const resp    = document.getElementById('rel-resp').value;
+  const geradoEm = new Date().toLocaleString('pt-BR');
+
+  const cfg = {
+    resumo:    document.getElementById('rs-resumo').checked,
+    unidades:  document.getElementById('rs-unidades').checked,
+    tipos:     document.getElementById('rs-tipos').checked,
+    analise:   document.getElementById('rs-analise').checked,
+    graficos:  document.getElementById('rs-graficos').checked,
+    cenarios:  document.getElementById('rs-cenarios').checked,
+    ocorrencias:document.getElementById('rs-ocorrencias').checked,
+    equipe:    document.getElementById('rs-equipe').checked
+  };
+
+  const ocReg = S.registros.filter(r => r.tipo === 'ocorrencia');
+  const total = S.atendimentos;
+  const unisData = [
+    { n:'Centro',        q:S.hj.centro,     cob:44, st:'Crítico', stCol:'var(--red)' },
+    { n:'Canto do Mar',  q:S.hj.canto,      cob:82, st:'OK',      stCol:'var(--green)' },
+    { n:'Boiçucanga',    q:S.hj.boicucanga, cob:61, st:'Atenção', stCol:'var(--amber)' },
+    { n:'Morro do Abrigo',q:S.hj.morro,     cob:38, st:'Crítico', stCol:'var(--red)' }
+  ];
+
+  let html = `<div class="report-doc" id="report-inner">
+    <div class="report-header">
+      <div class="report-logo-line">
+        <div class="report-logo-box">GF</div>
+        <div class="report-logo-name">GOVFLOW · Central de Comando CadÚnico</div>
+      </div>
+      <div class="report-title">${titulo}</div>
+      <div class="report-meta">
+        Período: ${de||'—'} a ${ate||'—'} &nbsp;·&nbsp; Unidade: ${und}
+        ${resp ? ` &nbsp;·&nbsp; Responsável: ${resp}` : ''}
+        &nbsp;·&nbsp; Gerado em: ${geradoEm}
+      </div>
+    </div>`;
+
+  // RESUMO
+  if (cfg.resumo) {
+    html += `<div class="report-section">
+      <div class="report-section-title">Resumo Executivo</div>
+      <div class="rep-kpi-row">
+        <div class="rep-kpi"><div class="rep-kpi-val" style="color:var(--green)">${total}</div><div class="rep-kpi-lbl">Atendimentos do Dia</div></div>
+        <div class="rep-kpi"><div class="rep-kpi-val" style="color:var(--teal)">${S.hj.novos+S.hj.atualizacoes+S.hj.revisoes}</div><div class="rep-kpi-lbl">Cadastros Processados</div></div>
+        <div class="rep-kpi"><div class="rep-kpi-val" style="color:var(--amber)">38</div><div class="rep-kpi-lbl">Fila Atual</div></div>
+        <div class="rep-kpi"><div class="rep-kpi-val" style="color:var(--red)">214</div><div class="rep-kpi-lbl">Revisões Pendentes</div></div>
+        <div class="rep-kpi"><div class="rep-kpi-val">9/12</div><div class="rep-kpi-lbl">Funcionários Ativos</div></div>
+        <div class="rep-kpi"><div class="rep-kpi-val" style="color:var(--red)">47min</div><div class="rep-kpi-lbl">Tempo Médio Espera</div></div>
+      </div>
+    </div>`;
+  }
+
+  // ANÁLISE
+  if (cfg.analise) {
+    html += `<div class="report-section">
+      <div class="report-section-title">Análise de Gestão</div>
+      <div class="rep-analysis">
+        <b>Situação operacional:</b> A operação do dia apresenta <b>demanda acima da capacidade nominal</b>. Com 9 dos 12 funcionários ativos (25% menos capacidade), o sistema registra fila de 38 pessoas e espera média de 47 minutos — acima do parâmetro adequado de 30 minutos.
+      </div>
+      <div class="rep-analysis">
+        <b>Risco principal — revisões cadastrais:</b> Das 214 revisões com prazo em 31/05, nenhuma foi iniciada sistematicamente. Descumprir o prazo do MDS pode resultar em bloqueio do Bolsa Família para centenas de famílias vulneráveis e advertência formal ao município. <b>Ação imediata recomendada: mutirão a partir de amanhã.</b>
+      </div>
+      <div class="rep-analysis">
+        <b>Pontos de atenção territorial:</b> O Centro concentra 46% dos atendimentos (${S.hj.centro}) com cobertura de apenas 44%. O Morro do Abrigo apresenta cobertura crítica de 38% — maioria das famílias vulneráveis ainda não atingida. Boiçucanga e Canto do Mar apresentam desempenho intermediário (61% e 82% respectivamente).
+      </div>
+      <div class="rep-analysis">
+        <b>Oportunidade imediata:</b> Canto do Mar opera com capacidade ociosa (82% cobertura) e pode absorver demanda excedente do Centro sem custo adicional. Comunicado de orientação pelo WhatsApp da secretaria pode ser feito hoje.
+      </div>
+    </div>`;
+  }
+
+  // UNIDADES
+  if (cfg.unidades) {
+    const rows = und === 'Todas as unidades' ? unisData : unisData.filter(u => u.n === und);
+    html += `<div class="report-section">
+      <div class="report-section-title">Atendimentos por Unidade</div>
+      <table class="rep-table">
+        <tr><th>Unidade</th><th>Atend. Hoje</th><th>Cobertura</th><th>Famílias CAD</th><th>Status</th></tr>
+        ${rows.map(u => `<tr>
+          <td style="font-weight:600;color:var(--ink)">${u.n}</td>
+          <td style="font-family:var(--mono)">${u.q}</td>
+          <td><span style="color:${u.stCol};font-weight:600">${u.cob}%</span></td>
+          <td style="font-family:var(--mono)">${u.n==='Centro'?'2.870':u.n==='Canto do Mar'?'940':u.n==='Boiçucanga'?'1.480':'1.210'}</td>
+          <td><span style="color:${u.stCol}">${u.st}</span></td>
+        </tr>`).join('')}
+      </table>
+    </div>`;
+  }
+
+  // TIPOS
+  if (cfg.tipos) {
+    const outros = total - S.hj.novos - S.hj.atualizacoes - S.hj.revisoes;
+    html += `<div class="report-section">
+      <div class="report-section-title">Tipos de Atendimento</div>
+      <table class="rep-table">
+        <tr><th>Tipo</th><th>Quantidade</th><th>% do Total</th></tr>
+        <tr><td>Novos Cadastros (Inclusão)</td><td style="font-family:var(--mono)">${S.hj.novos}</td><td>${Math.round(S.hj.novos/total*100)}%</td></tr>
+        <tr><td>Atualizações Cadastrais</td><td style="font-family:var(--mono)">${S.hj.atualizacoes}</td><td>${Math.round(S.hj.atualizacoes/total*100)}%</td></tr>
+        <tr><td>Revisões (+24 meses)</td><td style="font-family:var(--mono)">${S.hj.revisoes}</td><td>${Math.round(S.hj.revisoes/total*100)}%</td></tr>
+        <tr><td>Demais (consultas, NIS, bloqueios…)</td><td style="font-family:var(--mono)">${outros}</td><td>${Math.round(outros/total*100)}%</td></tr>
+        <tr style="font-weight:700"><td>Total</td><td style="font-family:var(--mono);color:var(--green)">${total}</td><td>100%</td></tr>
+      </table>
+    </div>`;
+  }
+
+  // GRÁFICOS
+  if (cfg.graficos) {
+    html += `<div class="report-section">
+      <div class="report-section-title">Visualizações Gráficas</div>
+      <div class="rep-chart-row">
+        <div class="rep-chart-box">
+          <div class="rep-chart-title">Atendimentos por Unidade</div>
+          <div style="position:relative;height:160px"><canvas id="repChart1"></canvas></div>
+        </div>
+        <div class="rep-chart-box">
+          <div class="rep-chart-title">Distribuição por Tipo</div>
+          <div style="position:relative;height:160px"><canvas id="repChart2"></canvas></div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // CENÁRIOS
+  if (cfg.cenarios) {
+    html += `<div class="report-section">
+      <div class="report-section-title">Cenários de Impacto Financeiro e Social</div>
+      <table class="rep-table">
+        <tr><th>Cenário</th><th>Impacto Financeiro</th><th>Famílias Afetadas</th><th>Ação Necessária</th></tr>
+        <tr><td style="color:var(--red);font-weight:600">Não agir</td><td style="color:var(--red);font-family:var(--mono)">-R$ 48.200/mês</td><td>214</td><td>Nenhuma — risco máximo</td></tr>
+        <tr><td style="color:var(--amber);font-weight:600">Ação parcial</td><td style="color:var(--amber);font-family:var(--mono)">-R$ 14.800/mês</td><td>~107</td><td>Mutirão 1×/semana + WhatsApp</td></tr>
+        <tr><td style="color:var(--green);font-weight:600">Ação completa</td><td style="color:var(--green);font-family:var(--mono)">R$ 0 de perda</td><td>0</td><td>Mutirão diário + custo ~R$ 3.200</td></tr>
+      </table>
+      <div style="font-size:11px;color:var(--ink3);margin-top:8px">* Valores baseados na média de R$ 225/família/mês de benefício Bolsa Família afetado.</div>
+    </div>`;
+  }
+
+  // OCORRÊNCIAS
+  if (cfg.ocorrencias) {
+    html += `<div class="report-section">
+      <div class="report-section-title">Ocorrências Registradas</div>`;
+    if (!ocReg.length) {
+      html += `<div style="font-size:12px;color:var(--ink3);padding:8px 0">Nenhuma ocorrência registrada neste período.</div>`;
+    } else {
+      html += `<table class="rep-table">
+        <tr><th>#</th><th>Unidade</th><th>Descrição</th><th>Data/Hora</th></tr>
+        ${ocReg.map(r=>`<tr><td>#${r.id}</td><td>${r.unidade||'—'}</td><td>${r.detalhe}</td><td style="font-family:var(--mono);font-size:10.5px">${r.hora}</td></tr>`).join('')}
+      </table>`;
+    }
+    html += `</div>`;
+  }
+
+  // EQUIPE
+  if (cfg.equipe) {
+    const ativos   = TEAM.filter(f=>f.s==='ativo').length;
+    const ausentes = TEAM.filter(f=>f.s==='ausente').length;
+    const campo    = TEAM.filter(f=>f.s==='campo').length;
+    html += `<div class="report-section">
+      <div class="report-section-title">Presença da Equipe</div>
+      <table class="rep-table">
+        <tr><th>Status</th><th>Qtd.</th><th>%</th></tr>
+        <tr><td style="color:var(--green)">Ativos</td><td style="font-family:var(--mono)">${ativos}</td><td>${Math.round(ativos/TEAM.length*100)}%</td></tr>
+        <tr><td style="color:var(--red)">Ausentes</td><td style="font-family:var(--mono)">${ausentes}</td><td>${Math.round(ausentes/TEAM.length*100)}%</td></tr>
+        <tr><td style="color:var(--blue)">Em campo</td><td style="font-family:var(--mono)">${campo}</td><td>${Math.round(campo/TEAM.length*100)}%</td></tr>
+        <tr style="font-weight:600"><td>Total</td><td style="font-family:var(--mono)">${TEAM.length}</td><td>100%</td></tr>
+      </table>
+    </div>`;
+  }
+
+  // ASSINATURA
+  html += `<div class="rep-sign">
+    <span>${resp ? 'Assinatura: ' + resp : 'GOVFLOW · Central de Comando CadÚnico'}</span>
+    <span>São Sebastião · SP · Gerado em ${geradoEm}</span>
+  </div>`;
+
+  html += `</div>`;
+  document.getElementById('rel-preview-box').innerHTML = html;
+  document.getElementById('rel-btn-row').style.display = 'block';
+
+  // render charts inside report
+  if (cfg.graficos) {
+    setTimeout(() => {
+      if (repChartBarra) repChartBarra.destroy();
+      if (repChartPizza) repChartPizza.destroy();
+      const ctx1 = document.getElementById('repChart1');
+      const ctx2 = document.getElementById('repChart2');
+      if (ctx1) repChartBarra = new Chart(ctx1, {
+        type:'bar',
+        data:{
+          labels:['Centro','Canto do Mar','Boiçucanga','Morro do Abrigo'],
+          datasets:[{data:[S.hj.centro,S.hj.canto,S.hj.boicucanga,S.hj.morro],
+            backgroundColor:['rgba(240,79,82,.2)','rgba(41,217,138,.2)','rgba(245,166,35,.2)','rgba(240,79,82,.15)'],
+            borderColor:['#f04f52','#29d98a','#f5a623','#f04f52'],
+            borderWidth:2,borderRadius:5,borderSkipped:false}]
+        },
+        options:{responsive:true,maintainAspectRatio:false,...CHART_DEFAULTS}
+      });
+      if (ctx2) repChartPizza = new Chart(ctx2, {
+        type:'doughnut',
+        data:{
+          labels:['Novos Cadastros','Atualizações','Revisões','Demais'],
+          datasets:[{data:[S.hj.novos,S.hj.atualizacoes,S.hj.revisoes,S.atendimentos-S.hj.novos-S.hj.atualizacoes-S.hj.revisoes],
+            backgroundColor:['rgba(41,217,138,.25)','rgba(79,142,247,.25)','rgba(245,166,35,.25)','rgba(168,127,232,.25)'],
+            borderColor:['#29d98a','#4f8ef7','#f5a623','#a87fe8'],
+            borderWidth:2}]
+        },
+        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{color:'#8494b0',font:{size:10}}}}}
+      });
+    }, 80);
+  }
+  toast('Relatório gerado com sucesso');
+}
+
+function printReport() {
+  const inner = document.getElementById('report-inner');
+  if (!inner) { toast('Gere o relatório primeiro', 'err'); return; }
+  const win = window.open('','_blank','width=900,height=700');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Relatório GOVFLOW</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root{--green:#29d98a;--amber:#f5a623;--red:#f04f52;--blue:#4f8ef7;--teal:#22d4c4;--purple:#a87fe8;
+      --ink:#111827;--ink2:#374151;--ink3:#6b7280;--bg2:#f9fafb;--line:#e5e7eb;}
+    body{font-family:'Space Grotesk',sans-serif;font-size:13px;color:var(--ink);padding:32px;max-width:840px;margin:0 auto;background:#fff}
+    .report-doc{padding:0}
+    .report-header{margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid #3b82f6}
+    .report-logo-line{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+    .report-logo-box{width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,#3b82f6,#22d4c4);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10px;color:#fff}
+    .report-logo-name{font-size:12px;font-weight:600;color:#374151}
+    .report-title{font-size:20px;font-weight:700;color:#111827;letter-spacing:-.3px}
+    .report-meta{font-size:11px;color:#6b7280;margin-top:4px}
+    .report-section{margin-bottom:22px}
+    .report-section-title{font-size:9.5px;letter-spacing:.8px;text-transform:uppercase;color:#6b7280;font-weight:700;margin-bottom:10px;padding-bottom:5px;border-bottom:1px solid #e5e7eb}
+    .rep-kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+    .rep-kpi{background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:10px;text-align:center}
+    .rep-kpi-val{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:600;letter-spacing:-1px;line-height:1;margin-bottom:3px}
+    .rep-kpi-lbl{font-size:9.5px;color:#6b7280}
+    .rep-table{width:100%;border-collapse:collapse;margin-bottom:10px}
+    .rep-table th{font-size:9.5px;letter-spacing:.5px;text-transform:uppercase;color:#6b7280;font-weight:600;padding:6px 8px;background:#f9fafb;text-align:left}
+    .rep-table td{padding:7px 8px;border-bottom:1px solid #e5e7eb;font-size:12px;color:#374151}
+    .rep-analysis{background:#f0f9ff;border-left:3px solid #3b82f6;padding:10px 12px;font-size:12px;color:#374151;line-height:1.65;margin-bottom:10px;border-radius:0 6px 6px 0}
+    .rep-analysis b{color:#111827}
+    .rep-chart-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+    .rep-chart-box{background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:12px}
+    .rep-chart-title{font-size:9.5px;letter-spacing:.5px;text-transform:uppercase;color:#6b7280;font-weight:600;margin-bottom:8px}
+    .rep-sign{margin-top:24px;padding-top:12px;border-top:1px solid #e5e7eb;font-size:11px;color:#6b7280;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+    @media print{body{padding:16px}}
+  </style></head><body>${inner.outerHTML}</body></html>`);
+  win.document.close();
+  setTimeout(() => win.print(), 600);
+}
+
+function copyReport() {
+  const inner = document.getElementById('report-inner');
+  if (!inner) { toast('Gere o relatório primeiro', 'err'); return; }
+  navigator.clipboard.writeText(inner.innerText).then(
+    () => toast('Copiado para a área de transferência'),
+    () => toast('Não foi possível copiar automaticamente', 'err')
+  );
+}
+</script>
+</body>
+</html>
