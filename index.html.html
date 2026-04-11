@@ -4298,5 +4298,677 @@ function goTo(section) {
 })();
 </script>
 <!-- /CODEX GOVFLOW SUPABASE SIMPLES FINAL -->
+
+<!-- CODEX GOVFLOW RELATORIO PRINT ABNT FINAL -->
+<script>
+/* GOVFLOW - IMPRESSAO DE RELATORIO PADRONIZADA */
+(function () {
+  window.printReport = function printReport() {
+    const inner = document.getElementById('report-inner');
+    if (!inner) {
+      if (typeof toast === 'function') toast('Gere o relatorio primeiro', 'err');
+      else alert('Gere o relatorio primeiro.');
+      return;
+    }
+
+    const htmlRelatorio = inner.outerHTML.replace('class="report-doc"', 'class="report-doc abnt-report"');
+    const win = window.open('', '_blank', 'width=980,height=720');
+    if (!win) {
+      alert('O navegador bloqueou a janela de impressao. Libere pop-ups para imprimir o relatorio.');
+      return;
+    }
+
+    win.document.open();
+    win.document.write(`<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatorio GovFlow</title>
+<style>
+  @page {
+    size: A4;
+    margin: 3cm 2cm 2cm 3cm;
+  }
+
+  * {
+    box-sizing: border-box;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+    color: #111827;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+
+  body {
+    width: 100%;
+  }
+
+  .report-doc,
+  .abnt-report,
+  #report-inner {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+    color: #111827;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+
+  .report-header {
+    text-align: center;
+    margin: 0 0 18pt 0;
+    padding: 0 0 12pt 0;
+    border: 0;
+    border-bottom: 1px solid #d1d5db;
+    page-break-after: avoid;
+  }
+
+  .report-logo-line {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10pt;
+  }
+
+  .report-logo-box {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    background: #2563eb;
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9pt;
+    font-weight: 700;
+  }
+
+  .report-logo-name,
+  .report-meta {
+    color: #374151;
+    font-size: 10pt;
+  }
+
+  .report-title {
+    margin: 10pt 0 4pt 0;
+    color: #111827;
+    font-size: 14pt;
+    font-weight: 700;
+    line-height: 1.5;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .report-section {
+    margin: 16pt 0 0 0;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .report-section-title {
+    margin: 0 0 8pt 0;
+    padding: 0 0 4pt 0;
+    color: #111827;
+    border-bottom: 1px solid #d1d5db;
+    font-size: 12pt;
+    font-weight: 700;
+    line-height: 1.5;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    text-align: left;
+  }
+
+  p,
+  .rep-analysis,
+  .report-mini-note,
+  .abnt-cover-note {
+    margin: 0 0 10pt 0;
+    color: #111827;
+    font-size: 12pt;
+    line-height: 1.5;
+    text-align: justify;
+    text-indent: 1.25cm;
+  }
+
+  .rep-analysis {
+    padding: 0;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .rep-analysis b {
+    color: #111827;
+    font-weight: 700;
+  }
+
+  .rep-kpi-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8pt;
+    margin: 8pt 0 12pt 0;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .rep-kpi {
+    min-height: 52pt;
+    padding: 8pt;
+    text-align: center;
+    background: #f9fafb;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    color: #111827;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .rep-kpi-val {
+    color: #111827;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16pt;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 3pt;
+  }
+
+  .rep-kpi-lbl {
+    color: #374151;
+    font-size: 9pt;
+    line-height: 1.3;
+  }
+
+  table,
+  .rep-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8pt 0 12pt 0;
+    page-break-inside: auto;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  th,
+  td,
+  .rep-table th,
+  .rep-table td {
+    padding: 5pt 6pt;
+    color: #111827;
+    border: 1px solid #d1d5db;
+    font-size: 10pt;
+    line-height: 1.35;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th,
+  .rep-table th {
+    background: #f3f4f6;
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .rep-chart-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10pt;
+    margin: 10pt 0 12pt 0;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .rep-chart-box {
+    padding: 8pt;
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .rep-chart-title {
+    margin-bottom: 6pt;
+    color: #111827;
+    font-size: 10pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0;
+  }
+
+  canvas,
+  img,
+  svg {
+    max-width: 100%;
+    height: auto !important;
+  }
+
+  .rep-sign {
+    display: flex;
+    justify-content: space-between;
+    gap: 12pt;
+    margin-top: 24pt;
+    padding-top: 10pt;
+    border-top: 1px solid #d1d5db;
+    color: #374151;
+    font-size: 10pt;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  button,
+  .btn,
+  .no-print {
+    display: none !important;
+  }
+
+  @media print {
+    html,
+    body {
+      width: auto;
+      min-width: 0;
+    }
+
+    .report-doc,
+    .abnt-report,
+    #report-inner {
+      overflow: visible !important;
+    }
+  }
+</style>
+</head>
+<body>${htmlRelatorio}</body>
+</html>`);
+    win.document.close();
+    win.focus();
+    setTimeout(function () {
+      win.print();
+    }, 500);
+  };
+})();
+</script>
+<!-- /CODEX GOVFLOW RELATORIO PRINT ABNT FINAL -->
+
+<!-- CODEX GOVFLOW IA OPERACIONAL GRATIS FINAL -->
+<style>
+/* GOVFLOW - IA OPERACIONAL GRATUITA */
+.ia-operacional-panel {
+  margin: 18px auto 0;
+  border: 1px solid var(--line2, #e5e7eb);
+  border-radius: 12px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--bg1, #fff) 94%, #2563eb 6%), var(--bg1, #fff));
+  box-shadow: 0 18px 45px rgba(15, 23, 42, .10);
+  overflow: hidden;
+}
+.ia-operacional-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--line, #e5e7eb);
+}
+.ia-operacional-title {
+  color: var(--ink, #111827);
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+.ia-operacional-sub {
+  margin-top: 4px;
+  color: var(--ink3, #6b7280);
+  font-size: 13px;
+  line-height: 1.4;
+}
+.ia-operacional-badge {
+  flex: 0 0 auto;
+  border: 1px solid rgba(37,99,235,.35);
+  background: rgba(37,99,235,.10);
+  color: var(--ink, #111827);
+  border-radius: 999px;
+  padding: 7px 11px;
+  font-size: 12px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+.ia-operacional-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(280px, .85fr);
+  gap: 14px;
+  padding: 18px 20px 20px;
+}
+.ia-operacional-narrativa {
+  border: 1px solid var(--line, #e5e7eb);
+  border-radius: 8px;
+  background: var(--bg2, #f9fafb);
+  padding: 16px;
+  color: var(--ink2, #374151);
+  font-size: 15px;
+  line-height: 1.65;
+  text-align: justify;
+}
+.ia-operacional-lista {
+  display: grid;
+  gap: 10px;
+}
+.ia-insight {
+  border: 1px solid var(--line, #e5e7eb);
+  border-left-width: 4px;
+  border-radius: 8px;
+  background: var(--bg2, #f9fafb);
+  padding: 12px 13px;
+}
+.ia-insight strong {
+  display: block;
+  color: var(--ink, #111827);
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+.ia-insight span {
+  display: block;
+  color: var(--ink2, #374151);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.ia-insight.vermelho { border-left-color: var(--red, #f04f52); }
+.ia-insight.amarelo { border-left-color: var(--amber, #f5a623); }
+.ia-insight.verde { border-left-color: var(--green, #29d98a); }
+.ia-insight.azul { border-left-color: var(--blue, #4f8ef7); }
+.ia-operacional-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 0 20px 18px;
+}
+.ia-report-section .rep-analysis { text-align: justify; text-indent: 1.25cm; }
+@media (max-width: 900px) {
+  .ia-operacional-head, .ia-operacional-body { grid-template-columns: 1fr; }
+  .ia-operacional-head { align-items: flex-start; flex-direction: column; }
+  .ia-operacional-body { display: grid; }
+}
+@media print {
+  .ia-operacional-actions { display: none !important; }
+}
+</style>
+<script>
+/* GOVFLOW - IA OPERACIONAL GRATUITA, SEM API EXTERNA */
+(function () {
+  const IA_CACHE_KEY = 'govflow.ia.operacional.cache.v1';
+
+  function numero(valor) {
+    const match = String(valor || '').replace(',', '.').match(/\d+(\.\d+)?/);
+    const n = parseFloat(match ? match[0] : '0');
+    return isNaN(n) ? 0 : n;
+  }
+
+  function texto(valor) {
+    return String(valor || '').trim();
+  }
+
+  function formatarDataHora() {
+    return new Date().toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+  }
+
+  function registroAtendimento(registro) {
+    const tipo = texto(registro && registro.tipo).toLowerCase();
+    if (tipo === 'atend' || tipo === 'atendimento') {
+      const qtd = numero(registro.detalhe);
+      return qtd > 0 ? qtd : 1;
+    }
+    return 0;
+  }
+
+  function registroFila(registro) {
+    if (!registro) return 0;
+    if (registro.fila !== undefined && registro.fila !== null) return numero(registro.fila);
+    if (texto(registro.tipo).toLowerCase() === 'fila') return numero(registro.detalhe);
+    return 0;
+  }
+
+  function dataRegistro(registro) {
+    const bruto = registro && (registro.created_at || registro.hora || registro.data);
+    const data = bruto ? new Date(bruto) : null;
+    return data && !isNaN(data.getTime()) ? data : null;
+  }
+
+  function hoje(registro) {
+    const data = dataRegistro(registro);
+    if (!data) return true;
+    const agora = new Date();
+    return data.getFullYear() === agora.getFullYear() && data.getMonth() === agora.getMonth() && data.getDate() === agora.getDate();
+  }
+
+  function classeInsight(tipo) {
+    if (tipo === 'critico') return 'vermelho';
+    if (tipo === 'atencao') return 'amarelo';
+    if (tipo === 'ok') return 'verde';
+    return 'azul';
+  }
+
+  async function buscarRegistrosIA() {
+    try {
+      if (window.supabase && typeof window.supabase.from === 'function') {
+        const resposta = await window.supabase
+          .from('registros')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(500);
+        if (!resposta.error && Array.isArray(resposta.data)) return resposta.data;
+      }
+    } catch (e) {
+      console.warn('IA operacional usando dados locais:', e);
+    }
+    if (window.S && Array.isArray(window.S.registros)) return window.S.registros;
+    return [];
+  }
+
+  function calcularIA(registros) {
+    const base = Array.isArray(registros) ? registros : [];
+    const doDia = base.filter(hoje);
+    const fonte = doDia.length ? doDia : base;
+    const porUnidade = {};
+    const porHora = {};
+    let atendimentos = 0;
+    let somaFila = 0;
+    let qtdFila = 0;
+    let demandasUrgentes = 0;
+    let ocorrencias = 0;
+
+    fonte.forEach(function (registro) {
+      const atend = registroAtendimento(registro);
+      const fila = registroFila(registro);
+      const unidade = texto(registro.unidade) || 'Sem unidade';
+      const tipo = texto(registro.tipo).toLowerCase();
+      const detalhe = texto(registro.detalhe).toLowerCase();
+      const data = dataRegistro(registro);
+      const hora = data ? String(data.getHours()).padStart(2, '0') + 'h' : 'Sem hora';
+
+      atendimentos += atend;
+      porUnidade[unidade] = (porUnidade[unidade] || 0) + atend;
+      porHora[hora] = (porHora[hora] || 0) + atend;
+
+      if (fila > 0) {
+        somaFila += fila;
+        qtdFila += 1;
+      }
+
+      if (tipo === 'ocorrencia' || tipo === 'demanda') ocorrencias += 1;
+      if (/urgente|alta|vermelh|crit/i.test(tipo + ' ' + detalhe)) demandasUrgentes += 1;
+    });
+
+    const filaMedia = qtdFila ? Math.round(somaFila / qtdFila) : 0;
+    const unidadeTop = Object.keys(porUnidade).sort(function (a, b) { return porUnidade[b] - porUnidade[a]; })[0] || 'Sem unidade';
+    const horaTop = Object.keys(porHora).sort(function (a, b) { return porHora[b] - porHora[a]; })[0] || 'Sem pico identificado';
+    const maiorUnidade = porUnidade[unidadeTop] || 0;
+    const concentracao = atendimentos > 0 ? Math.round((maiorUnidade / atendimentos) * 100) : 0;
+
+    let estoqueAlertas = 0;
+    try {
+      if (typeof window.getStockAlerts === 'function') estoqueAlertas = window.getStockAlerts().length;
+    } catch (e) {}
+
+    const insights = [];
+
+    if (!fonte.length) {
+      insights.push({ tipo: 'atencao', titulo: 'Sem dados suficientes', texto: 'Ainda nao existem registros reais suficientes para a IA operacional gerar uma leitura confiavel.' });
+    }
+
+    if (filaMedia >= 40) {
+      insights.push({ tipo: 'critico', titulo: 'Fila critica', texto: 'A fila media esta em ' + filaMedia + '. Recomenda-se reforcar atendimento e priorizar triagem.' });
+    } else if (filaMedia >= 20) {
+      insights.push({ tipo: 'atencao', titulo: 'Fila em atencao', texto: 'A fila media esta em ' + filaMedia + '. Acompanhe a evolucao antes do pico do periodo.' });
+    } else {
+      insights.push({ tipo: 'ok', titulo: 'Fila sob controle', texto: 'A fila media esta em ' + filaMedia + ', dentro de uma faixa operacional administravel.' });
+    }
+
+    if (concentracao >= 55 && atendimentos > 0) {
+      insights.push({ tipo: 'atencao', titulo: 'Concentracao por unidade', texto: unidadeTop + ' concentra ' + concentracao + '% dos atendimentos. Avalie redistribuicao da equipe ou agenda.' });
+    }
+
+    if (horaTop !== 'Sem pico identificado' && (porHora[horaTop] || 0) > 0) {
+      insights.push({ tipo: 'info', titulo: 'Pico de atendimento', texto: 'O maior volume aparece em ' + horaTop + '. Use esse horario para orientar escala e pausas.' });
+    }
+
+    if (demandasUrgentes > 0) {
+      insights.push({ tipo: 'critico', titulo: 'Demandas urgentes', texto: demandasUrgentes + ' demanda(s) com sinal de urgencia foram identificadas nos registros.' });
+    }
+
+    if (estoqueAlertas > 0) {
+      insights.push({ tipo: 'atencao', titulo: 'Estoque em alerta', texto: estoqueAlertas + ' item(ns) abaixo do minimo precisam de reposicao ou acompanhamento.' });
+    }
+
+    if (insights.length < 4) {
+      insights.push({ tipo: 'ok', titulo: 'Recomendacao de rotina', texto: 'Mantenha os registros atualizados ao longo do dia para que os relatorios saiam mais completos.' });
+    }
+
+    const status = filaMedia >= 40 || demandasUrgentes > 0 ? 'Vermelho' : filaMedia >= 20 || estoqueAlertas > 0 ? 'Amarelo' : 'Verde';
+    const narrativa = 'A IA operacional analisou ' + fonte.length + ' registro(s) e identificou ' + atendimentos + ' atendimento(s), com fila media de ' + filaMedia + '. A unidade com maior volume foi ' + unidadeTop + ', representando aproximadamente ' + concentracao + '% do total analisado. O horario de maior movimento foi ' + horaTop + '. O status geral do periodo ficou classificado como ' + status + ', considerando fila, demandas urgentes, ocorrencias e alertas de estoque.';
+
+    return {
+      atualizadoEm: formatarDataHora(),
+      fonte: fonte.length,
+      atendimentos: atendimentos,
+      filaMedia: filaMedia,
+      unidadeTop: unidadeTop,
+      horaTop: horaTop,
+      ocorrencias: ocorrencias,
+      demandasUrgentes: demandasUrgentes,
+      estoqueAlertas: estoqueAlertas,
+      status: status,
+      narrativa: narrativa,
+      insights: insights.slice(0, 6)
+    };
+  }
+
+  function inserirPainelIA() {
+    const dash = document.getElementById('screen-dashboard');
+    if (!dash || document.getElementById('ia-operacional-panel')) return;
+
+    const panel = document.createElement('section');
+    panel.id = 'ia-operacional-panel';
+    panel.className = 'ia-operacional-panel dash-panel dash-panel-resumo active';
+    panel.innerHTML = '<div class="ia-operacional-head"><div><div class="ia-operacional-title">IA Operacional</div><div class="ia-operacional-sub">Analise gratuita por regras, usando os dados reais do sistema.</div></div><div class="ia-operacional-badge" id="ia-status">Calculando</div></div><div class="ia-operacional-body"><div class="ia-operacional-narrativa" id="ia-narrativa">Aguardando dados do dashboard.</div><div class="ia-operacional-lista" id="ia-insights"></div></div><div class="ia-operacional-actions"><button class="btn btn-primary btn-sm" onclick="atualizarIAOperacional()">Atualizar IA</button><button class="btn btn-ghost btn-sm" onclick="copiarTextoIAOperacional()">Copiar analise</button></div>';
+
+    const alvo = document.getElementById('dash-overview') || document.querySelector('#screen-dashboard .dashboard-tabs') || document.querySelector('#screen-dashboard .kpi-strip');
+    if (alvo && alvo.parentNode) alvo.insertAdjacentElement('afterend', panel);
+    else dash.appendChild(panel);
+  }
+
+  function renderizarIA(resultado) {
+    inserirPainelIA();
+    const status = document.getElementById('ia-status');
+    const narrativa = document.getElementById('ia-narrativa');
+    const lista = document.getElementById('ia-insights');
+
+    if (status) status.innerText = 'Status ' + resultado.status + ' - ' + resultado.atualizadoEm;
+    if (narrativa) narrativa.innerText = resultado.narrativa;
+    if (lista) {
+      lista.innerHTML = resultado.insights.map(function (item) {
+        return '<div class="ia-insight ' + classeInsight(item.tipo) + '"><strong>' + item.titulo + '</strong><span>' + item.texto + '</span></div>';
+      }).join('');
+    }
+  }
+
+  window.atualizarIAOperacional = async function atualizarIAOperacional() {
+    const registros = await buscarRegistrosIA();
+    const resultado = calcularIA(registros);
+    try { localStorage.setItem(IA_CACHE_KEY, JSON.stringify(resultado)); } catch (e) {}
+    renderizarIA(resultado);
+    return resultado;
+  };
+
+  window.copiarTextoIAOperacional = function copiarTextoIAOperacional() {
+    let dados = null;
+    try { dados = JSON.parse(localStorage.getItem(IA_CACHE_KEY) || 'null'); } catch (e) {}
+    const textoIA = dados ? dados.narrativa + '\n\n' + dados.insights.map(function (i) { return '- ' + i.titulo + ': ' + i.texto; }).join('\n') : '';
+    if (!textoIA) return alert('Atualize a IA operacional primeiro.');
+    if (navigator.clipboard) navigator.clipboard.writeText(textoIA).then(function () { alert('Analise da IA copiada.'); });
+    else alert(textoIA);
+  };
+
+  function anexarIAAoRelatorio() {
+    const report = document.getElementById('report-inner');
+    if (!report || report.querySelector('.ia-report-section')) return;
+    let dados = null;
+    try { dados = JSON.parse(localStorage.getItem(IA_CACHE_KEY) || 'null'); } catch (e) {}
+    if (!dados) return;
+
+    const section = document.createElement('div');
+    section.className = 'report-section ia-report-section';
+    section.innerHTML = '<div class="report-section-title">Analise da IA Operacional</div><div class="rep-analysis">' + dados.narrativa + '</div><table class="rep-table"><thead><tr><th>Prioridade</th><th>Insight</th><th>Recomendacao</th></tr></thead><tbody>' + dados.insights.map(function (item) { return '<tr><td>' + item.tipo + '</td><td>' + item.titulo + '</td><td>' + item.texto + '</td></tr>'; }).join('') + '</tbody></table>';
+
+    const assinatura = report.querySelector('.rep-sign');
+    if (assinatura) report.insertBefore(section, assinatura);
+    else report.appendChild(section);
+  }
+
+  const carregarDashboardAnterior = window.carregarDashboard;
+  if (typeof carregarDashboardAnterior === 'function') {
+    window.carregarDashboard = async function carregarDashboard() {
+      const retorno = await carregarDashboardAnterior.apply(this, arguments);
+      await window.atualizarIAOperacional();
+      return retorno;
+    };
+  }
+
+  const buildReportAnterior = window.buildReport;
+  if (typeof buildReportAnterior === 'function') {
+    window.buildReport = function buildReport() {
+      const retorno = buildReportAnterior.apply(this, arguments);
+      setTimeout(function () {
+        window.atualizarIAOperacional().then(anexarIAAoRelatorio);
+      }, 80);
+      return retorno;
+    };
+  }
+
+  window.addEventListener('load', function () {
+    inserirPainelIA();
+    window.atualizarIAOperacional();
+    setInterval(window.atualizarIAOperacional, 60000);
+  });
+})();
+</script>
+<!-- /CODEX GOVFLOW IA OPERACIONAL GRATIS FINAL -->
 </body>
 </html>
