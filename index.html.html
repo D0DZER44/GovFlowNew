@@ -4778,7 +4778,7 @@ function goTo(section) {
     } catch (e) {
       console.warn('IA operacional usando dados locais:', e);
     }
-    if (window.S && Array.isArray(window.S.registros)) return window.S.registros;
+    if (typeof S !== 'undefined' && Array.isArray(S.registros)) return S.registros;
     return [];
   }
 
@@ -4970,5 +4970,961 @@ function goTo(section) {
 })();
 </script>
 <!-- /CODEX GOVFLOW IA OPERACIONAL GRATIS FINAL -->
+
+<!-- CODEX GOVFLOW CLEAN START + LEGIBILITY FINAL -->
+<style>
+/* GOVFLOW - LIMPEZA INICIAL, TOPO DIREITO E FONTE MAIOR */
+html { font-size: 17px; }
+body { font-size: 16.5px !important; }
+.topbar {
+  display: grid !important;
+  grid-template-columns: auto minmax(160px, 1fr) auto !important;
+  align-items: center !important;
+  column-gap: 16px !important;
+  padding-right: 16px !important;
+}
+.topbar-center {
+  justify-self: center !important;
+  min-width: 0 !important;
+}
+.topbar-right {
+  justify-self: end !important;
+  margin-left: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+  flex-wrap: nowrap !important;
+  min-width: max-content !important;
+}
+#theme-toggle,
+.theme-toggle,
+#user-session-pill,
+#logout-btn,
+.logout-btn,
+.avatar-btn {
+  flex: 0 0 auto !important;
+}
+#user-session-pill {
+  max-width: 280px !important;
+  min-height: 38px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+}
+.logout-btn,
+.btn-reg,
+.theme-toggle {
+  min-height: 38px !important;
+  font-size: 14px !important;
+  font-weight: 850 !important;
+}
+.avatar-btn {
+  width: 38px !important;
+  height: 38px !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+}
+.brand-name { font-size: 15px !important; }
+.brand-sub { font-size: 12.5px !important; }
+.nav-item { font-size: 15.5px !important; min-height: 42px !important; }
+.sidebar-section { font-size: 12px !important; }
+.card-title, .page-hd-title, .ia-operacional-title { font-size: 18px !important; }
+.page-hd-sub, .card-sub, .saas-row-desc, .integration-desc, .overview-label { font-size: 14.5px !important; line-height: 1.55 !important; }
+.kpi-label { font-size: 13.5px !important; }
+.kpi-value { font-size: 34px !important; line-height: 1.05 !important; }
+.kpi-sub, .mp, .task-meta, .rep-kpi-lbl { font-size: 13px !important; }
+.task-name, .saas-row-title, .func-name, .unit-name { font-size: 15.5px !important; line-height: 1.4 !important; }
+.task-item, .saas-row, .func-card, .unit-card { font-size: 15px !important; }
+input, select, textarea, button { font-size: 15px !important; }
+.empty-state-clean {
+  border: 1px dashed var(--line2, #d1d5db);
+  border-radius: 8px;
+  background: var(--bg2, #f9fafb);
+  color: var(--ink3, #6b7280);
+  padding: 16px;
+  font-size: 15px;
+  line-height: 1.55;
+  text-align: center;
+}
+@media (max-width: 820px) {
+  html { font-size: 16px; }
+  .topbar { grid-template-columns: auto 1fr !important; row-gap: 8px !important; height: auto !important; min-height: var(--topbar); }
+  .topbar-center { display: none !important; }
+  .topbar-right { min-width: 0 !important; gap: 8px !important; }
+  #user-session-pill { max-width: 150px !important; }
+  .kpi-value { font-size: 30px !important; }
+}
+</style>
+<script>
+/* GOVFLOW - ZERAR DEMONSTRACAO SEM APAGAR FUTUROS REGISTROS */
+(function () {
+  const CLEAN_FLAG = 'govflow.clean.start.2026-04-11.v2';
+  const LOCAL_KEYS_TO_EMPTY = [
+    'govflow.registros.v2',
+    'govflow.stock.v1',
+    'govflow.orders.v1',
+    'govflow.queue.v1'
+  ];
+
+  function setText(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.innerText = value;
+  }
+
+  function setHtml(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = value;
+  }
+
+  function emptyBox(text) {
+    return '<div class="empty-state-clean">' + text + '</div>';
+  }
+
+  function limparLocalStorageUmaVez() {
+    try {
+      if (localStorage.getItem(CLEAN_FLAG) === '1') return;
+      LOCAL_KEYS_TO_EMPTY.forEach(function (key) {
+        if (key === 'govflow.queue.v1') {
+          localStorage.setItem(key, JSON.stringify({ slug: '', publicUrl: '', current: 0, avg: 0, enabled: false }));
+        } else {
+          localStorage.setItem(key, JSON.stringify([]));
+        }
+      });
+      localStorage.setItem('govflow.ia.operacional.cache.v1', '');
+      localStorage.setItem(CLEAN_FLAG, '1');
+    } catch (e) {
+      console.warn('Nao foi possivel limpar dados locais de demonstracao:', e);
+    }
+  }
+
+  function zerarEstadoMemoria() {
+    if (typeof S !== 'undefined') {
+      S.atendimentos = 0;
+      S.pendentes = 0;
+      S.registros = [];
+      S.nextId = 1;
+      S.hj = { novos: 0, atualizacoes: 0, revisoes: 0, boicucanga: 0, canto: 0, centro: 0, morro: 0 };
+    }
+  }
+
+  function zerarIndicadoresVisuais() {
+    ['kpi-atend','kpi-fila','live-cad','u-boicucanga','u-canto','u-centro','u-morro','overview-atend','overview-fila','overview-ausencias','overview-revisoes','overview-registros','overview-alertas','urg-count'].forEach(function (id) {
+      setText(id, '0');
+    });
+
+    const demanda = document.querySelector('.kpi-cell:nth-child(3) .kpi-value');
+    if (demanda) demanda.innerText = 'NORMAL';
+    const demandaSub = document.querySelector('.kpi-cell:nth-child(3) .kpi-sub');
+    if (demandaSub) demandaSub.innerHTML = '<span class="mp mp-g">Sem alertas</span>';
+
+    const funcKpi = document.querySelector('.kpi-cell:nth-child(4) .kpi-value');
+    if (funcKpi) funcKpi.innerHTML = '0<span style="font-size:15px;color:var(--ink3);font-weight:400">/0</span>';
+    const funcSub = document.querySelector('.kpi-cell:nth-child(4) .kpi-sub');
+    if (funcSub) funcSub.innerHTML = '<span class="mp mp-g">sem ausencias</span>';
+
+    const revKpi = document.querySelector('.kpi-cell:nth-child(5) .kpi-value');
+    if (revKpi) revKpi.innerText = '0';
+    const revSub = document.querySelector('.kpi-cell:nth-child(5) .kpi-sub');
+    if (revSub) revSub.innerHTML = '<span class="mp mp-g">sem pendencias</span>';
+
+    setText('live-fila', 'Normal');
+    setText('fila-desc', '0 pessoas - tempo medio 0 min');
+    setText('cad-desc', 'Novos: 0 - Atualizacoes: 0 - Revisoes: 0');
+    setText('pill-pend', '0 pendentes');
+  }
+
+  function limparAfazeres() {
+    setHtml('lista-hoje', emptyBox('Nenhum afazer cadastrado para hoje. Use o botao Adicionar tarefa para registrar as demandas do dia.'));
+    setHtml('lista-semana', emptyBox('Nenhum compromisso cadastrado para esta semana.'));
+    setText('pill-pend', '0 pendentes');
+  }
+
+  function limparCardsDemo() {
+    document.querySelectorAll('.card').forEach(function (card) {
+      const title = card.querySelector('.card-title');
+      const text = title ? title.innerText.toLowerCase() : '';
+      if (text.includes('acoes moveis') || text.includes('ações móveis')) {
+        const badge = card.querySelector('.mp');
+        if (badge) badge.innerText = '0 eventos';
+        const body = card.querySelector('.card-body') || card;
+        const items = card.querySelectorAll('.event-item, .task-item, .timeline-item, .row-item');
+        if (items.length) items.forEach(function (el) { el.remove(); });
+        if (!card.querySelector('.empty-state-clean')) body.insertAdjacentHTML('beforeend', emptyBox('Nenhuma acao movel cadastrada.'));
+      }
+    });
+  }
+
+  function renderStockLimpo() {
+    setHtml('stock-metrics', '<div class="saas-card"><div class="saas-card-body"><div class="saas-metric">0</div><div class="saas-label">itens</div></div></div><div class="saas-card"><div class="saas-card-body"><div class="saas-metric">0</div><div class="saas-label">alertas de minimo</div></div></div><div class="saas-card"><div class="saas-card-body"><div class="saas-metric">0</div><div class="saas-label">saldo total</div></div></div>');
+    setHtml('stock-list', emptyBox('Nenhum item de estoque cadastrado. Use Adicionar item para montar sua lista real.'));
+  }
+
+  function renderOrdersLimpo() {
+    setText('orders-count', '0 ordens');
+    setHtml('orders-list', emptyBox('Nenhuma ordem de servico aberta.'));
+  }
+
+  function renderPerformanceLimpo() {
+    setHtml('perf-grid', '<div class="saas-card"><div class="saas-card-body"><div class="saas-metric">0</div><div class="saas-label">atendimentos</div></div></div><div class="saas-card"><div class="saas-card-body"><div class="saas-metric">0</div><div class="saas-label">fila atual</div></div></div><div class="saas-card"><div class="saas-card-body"><div class="saas-metric">0</div><div class="saas-label">ausencias registradas</div></div></div><div class="saas-card"><div class="saas-card-body"><div class="saas-metric">0m</div><div class="saas-label">tempo medio</div></div></div>');
+  }
+
+  function limparDemandasDemo() {
+    document.querySelectorAll('.demanda-list').forEach(function (list) {
+      list.innerHTML = emptyBox('Nenhuma demanda cadastrada nesta prioridade.');
+    });
+  }
+
+  function ajustarTopoDireito() {
+    const right = document.querySelector('.topbar-right');
+    if (!right) return;
+    const theme = document.getElementById('theme-toggle');
+    const pill = document.getElementById('user-session-pill');
+    const logout = document.getElementById('logout-btn');
+    const avatar = right.querySelector('.avatar-btn');
+    [theme, pill, logout, avatar].forEach(function (el) {
+      if (el && el.parentElement === right) right.appendChild(el);
+    });
+  }
+
+  function atualizarGraficosZerados() {
+    if (typeof Chart === 'undefined') return;
+    ['chartUnidades','chartEvolucao'].forEach(function (id) {
+      const canvas = document.getElementById(id);
+      const chart = canvas ? Chart.getChart(canvas) : null;
+      if (!chart) return;
+      chart.data.labels = id === 'chartUnidades' ? ['Sem dados'] : ['Hoje'];
+      chart.data.datasets.forEach(function (dataset) { dataset.data = [0]; });
+      chart.update();
+    });
+  }
+
+  const renderStockAnterior = window.renderStock;
+  window.renderStock = function renderStock() {
+    try {
+      const raw = localStorage.getItem('govflow.stock.v1');
+      const rows = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(rows) || rows.length === 0) return renderStockLimpo();
+    } catch (e) { return renderStockLimpo(); }
+    if (typeof renderStockAnterior === 'function') return renderStockAnterior.apply(this, arguments);
+    renderStockLimpo();
+  };
+
+  const renderOrdersAnterior = window.renderOrders;
+  window.renderOrders = function renderOrders() {
+    try {
+      const raw = localStorage.getItem('govflow.orders.v1');
+      const rows = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(rows) || rows.length === 0) return renderOrdersLimpo();
+    } catch (e) { return renderOrdersLimpo(); }
+    if (typeof renderOrdersAnterior === 'function') return renderOrdersAnterior.apply(this, arguments);
+    renderOrdersLimpo();
+  };
+
+  const renderPerformanceAnterior = window.renderPerformance;
+  window.renderPerformance = function renderPerformance() {
+    if (typeof S !== 'undefined' && (!Array.isArray(S.registros) || S.registros.length === 0)) return renderPerformanceLimpo();
+    if (typeof renderPerformanceAnterior === 'function') return renderPerformanceAnterior.apply(this, arguments);
+    renderPerformanceLimpo();
+  };
+
+  function aplicarLimpezaInicial() {
+    limparLocalStorageUmaVez();
+    zerarEstadoMemoria();
+    zerarIndicadoresVisuais();
+    limparAfazeres();
+    limparCardsDemo();
+    limparDemandasDemo();
+    renderStockLimpo();
+    renderOrdersLimpo();
+    renderPerformanceLimpo();
+    atualizarGraficosZerados();
+    ajustarTopoDireito();
+  }
+
+  window.govflowAplicarLimpezaInicial = aplicarLimpezaInicial;
+
+  window.addEventListener('load', function () {
+    aplicarLimpezaInicial();
+    setTimeout(aplicarLimpezaInicial, 500);
+    setTimeout(aplicarLimpezaInicial, 1500);
+  });
+})();
+</script>
+<!-- /CODEX GOVFLOW CLEAN START + LEGIBILITY FINAL -->
+
+<!-- CODEX GOVFLOW DASHBOARD CLEAN SINCE FINAL -->
+<script>
+/* GOVFLOW - DASHBOARD COMECA DO ZERO SEM APAGAR O BANCO */
+(function () {
+  const CLEAN_SINCE_KEY = 'govflow.clean.since.2026-04-11.v1';
+
+  function ensureCleanSince() {
+    try {
+      let since = localStorage.getItem(CLEAN_SINCE_KEY);
+      if (!since) {
+        since = new Date().toISOString();
+        localStorage.setItem(CLEAN_SINCE_KEY, since);
+      }
+      return since;
+    } catch (e) {
+      return new Date().toISOString();
+    }
+  }
+
+  function numero(valor) {
+    const match = String(valor || '').replace(',', '.').match(/\d+(\.\d+)?/);
+    const n = parseFloat(match ? match[0] : '0');
+    return isNaN(n) ? 0 : n;
+  }
+
+  function atendimento(registro) {
+    const tipo = String(registro && registro.tipo || '').toLowerCase();
+    if (tipo === 'atend' || tipo === 'atendimento') {
+      const qtd = numero(registro.detalhe);
+      return qtd > 0 ? qtd : 1;
+    }
+    return 0;
+  }
+
+  function fila(registro) {
+    if (!registro) return 0;
+    if (registro.fila !== undefined && registro.fila !== null) return numero(registro.fila);
+    if (String(registro.tipo || '').toLowerCase() === 'fila') return numero(registro.detalhe);
+    return 0;
+  }
+
+  function setText(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.innerText = value;
+  }
+
+  function atualizarChart(id, labels, data) {
+    if (typeof Chart === 'undefined') return;
+    const canvas = document.getElementById(id);
+    const chart = canvas ? Chart.getChart(canvas) : null;
+    if (!chart) return;
+    chart.data.labels = labels.length ? labels : ['Sem dados'];
+    chart.data.datasets.forEach(function (dataset) {
+      dataset.data = data.length ? data : [0];
+    });
+    chart.update();
+  }
+
+  window.govflowReiniciarDoZero = function govflowReiniciarDoZero() {
+    try {
+      localStorage.setItem(CLEAN_SINCE_KEY, new Date().toISOString());
+      localStorage.setItem('govflow.registros.v2', JSON.stringify([]));
+      localStorage.setItem('govflow.stock.v1', JSON.stringify([]));
+      localStorage.setItem('govflow.orders.v1', JSON.stringify([]));
+      localStorage.setItem('govflow.queue.v1', JSON.stringify({ slug: '', publicUrl: '', current: 0, avg: 0, enabled: false }));
+    } catch (e) {}
+    if (typeof S !== 'undefined') {
+      S.registros = [];
+      S.atendimentos = 0;
+      S.pendentes = 0;
+      S.hj = { novos: 0, atualizacoes: 0, revisoes: 0, boicucanga: 0, canto: 0, centro: 0, morro: 0 };
+    }
+    if (typeof window.govflowAplicarLimpezaInicial === 'function') window.govflowAplicarLimpezaInicial();
+    window.carregarDashboard();
+  };
+
+  window.carregarDashboard = async function carregarDashboard() {
+    const since = ensureCleanSince();
+    let registros = [];
+
+    try {
+      if (window.supabase && typeof window.supabase.from === 'function') {
+        const resposta = await window.supabase
+          .from('registros')
+          .select('*')
+          .gte('created_at', since)
+          .order('created_at', { ascending: true });
+        if (!resposta.error && Array.isArray(resposta.data)) registros = resposta.data;
+      }
+    } catch (e) {
+      console.warn('Dashboard usando dados locais apos limpeza:', e);
+    }
+
+    if (!registros.length) {
+      try {
+        const locais = JSON.parse(localStorage.getItem('govflow.registros.v2') || '[]');
+        if (Array.isArray(locais)) registros = locais.filter(function (r) {
+          const raw = r.created_at || r.hora || r.data;
+          if (!raw) return true;
+          const d = new Date(raw);
+          return !isNaN(d.getTime()) && d.toISOString() >= since;
+        });
+      } catch (e) {}
+    }
+
+    let total = 0;
+    let somaFila = 0;
+    let qtdFila = 0;
+    const unidades = {};
+    const horas = {};
+
+    registros.forEach(function (r) {
+      const atend = atendimento(r);
+      const f = fila(r);
+      const unidade = String(r.unidade || '').trim() || 'Sem unidade';
+      total += atend;
+      unidades[unidade] = (unidades[unidade] || 0) + atend;
+      if (f > 0) { somaFila += f; qtdFila += 1; }
+      if (r.created_at) {
+        const d = new Date(r.created_at);
+        if (!isNaN(d.getTime())) {
+          const h = String(d.getHours()).padStart(2, '0') + 'h';
+          horas[h] = (horas[h] || 0) + atend;
+        }
+      }
+    });
+
+    const mediaFila = qtdFila ? Math.round(somaFila / qtdFila) : 0;
+    setText('kpi-atend', total);
+    setText('kpi-fila', mediaFila);
+    setText('overview-atend', total);
+    setText('overview-fila', mediaFila);
+    setText('overview-registros', registros.length);
+    setText('live-fila', mediaFila >= 40 ? 'Critica' : mediaFila >= 20 ? 'Alta' : 'Normal');
+    setText('fila-desc', mediaFila + ' pessoas - tempo medio 0 min');
+
+    const labelsUnidades = Object.keys(unidades);
+    atualizarChart('chartUnidades', labelsUnidades, labelsUnidades.map(function (k) { return unidades[k]; }));
+    const labelsHoras = Object.keys(horas);
+    atualizarChart('chartEvolucao', labelsHoras, labelsHoras.map(function (k) { return horas[k]; }));
+
+    if (typeof S !== 'undefined') {
+      S.registros = registros;
+      S.atendimentos = total;
+    }
+
+    if (typeof window.atualizarIAOperacional === 'function') window.atualizarIAOperacional();
+  };
+
+  ensureCleanSince();
+})();
+</script>
+<!-- /CODEX GOVFLOW DASHBOARD CLEAN SINCE FINAL -->
+
+<!-- CODEX GOVFLOW GOOGLE AUTH PERMITIDOS FINAL -->
+<style>
+/* GOVFLOW - LOGIN GOOGLE COM USUARIOS PERMITIDOS */
+body.auth-locked .topbar,
+body.auth-locked .sidebar,
+body.auth-locked .main {
+  filter: blur(3px);
+  pointer-events: none;
+  user-select: none;
+}
+.auth-secure-shell {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(3, 7, 18, .82);
+  backdrop-filter: blur(18px);
+}
+.auth-secure-shell.open { display: flex; }
+.auth-secure-card {
+  width: min(440px, 100%);
+  border: 1px solid rgba(148, 163, 184, .26);
+  border-radius: 12px;
+  background: var(--bg1, #ffffff);
+  color: var(--ink, #111827);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, .35);
+  padding: 28px;
+}
+.auth-secure-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.auth-secure-mark {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #2563eb, #0891b2);
+  color: #fff;
+  font-weight: 900;
+}
+.auth-secure-title {
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+.auth-secure-sub {
+  margin-top: 4px;
+  color: var(--ink3, #6b7280);
+  font-size: 14px;
+  line-height: 1.45;
+}
+.auth-google-btn {
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid var(--line2, #d1d5db);
+  border-radius: 8px;
+  background: var(--bg2, #f9fafb);
+  color: var(--ink, #111827);
+  font-size: 15px;
+  font-weight: 900;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.auth-google-btn:hover { border-color: #2563eb; }
+.auth-secure-msg {
+  min-height: 22px;
+  margin-top: 14px;
+  color: var(--red, #ef4444);
+  font-size: 14px;
+  line-height: 1.45;
+  font-weight: 800;
+}
+.auth-secure-note {
+  margin-top: 16px;
+  color: var(--ink3, #6b7280);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+</style>
+<script>
+/* GOVFLOW - AUTENTICACAO FECHADA COM GOOGLE E usuarios_permitidos */
+(function () {
+  const AUTH_PROFILE_KEY = 'govflow.auth.profile.v1';
+
+  function getSupabaseClient() {
+    try {
+      if (
+        window.supabase &&
+        typeof window.supabase.from !== 'function' &&
+        typeof window.supabase.createClient === 'function' &&
+        typeof SUPABASE_URL !== 'undefined' &&
+        typeof SUPABASE_KEY !== 'undefined'
+      ) {
+        window.supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      }
+      if (window.supabase && typeof window.supabase.from === 'function') return window.supabase;
+    } catch (e) {
+      console.warn('Supabase Auth indisponivel:', e);
+    }
+    return null;
+  }
+
+  function ensureLoginScreen() {
+    let shell = document.getElementById('auth-secure-shell');
+    if (shell) return shell;
+
+    shell = document.createElement('div');
+    shell.id = 'auth-secure-shell';
+    shell.className = 'auth-secure-shell';
+    shell.innerHTML = '<div class="auth-secure-card"><div class="auth-secure-brand"><div class="auth-secure-mark">GF</div><div><div class="auth-secure-title">Entrar no GovFlow</div><div class="auth-secure-sub">Acesso restrito aos usuarios autorizados pela coordenacao.</div></div></div><button class="auth-google-btn" onclick="loginGoogle()"><span>G</span><span>Entrar com Google</span></button><div class="auth-secure-msg" id="auth-secure-msg"></div><div class="auth-secure-note">Seu e-mail precisa estar cadastrado na tabela usuarios_permitidos do Supabase e marcado como ativo.</div></div>';
+    document.body.appendChild(shell);
+    return shell;
+  }
+
+  function setAuthMessage(message, type) {
+    const el = document.getElementById('auth-secure-msg');
+    if (!el) return;
+    el.innerText = message || '';
+    el.style.color = type === 'ok' ? 'var(--green, #16a34a)' : 'var(--red, #ef4444)';
+  }
+
+  function showLogin(message) {
+    const shell = ensureLoginScreen();
+    shell.classList.add('open');
+    document.body.classList.add('auth-locked');
+    if (message) setAuthMessage(message, 'err');
+  }
+
+  function hideLogin() {
+    const shell = ensureLoginScreen();
+    shell.classList.remove('open');
+    document.body.classList.remove('auth-locked');
+    setAuthMessage('', 'ok');
+  }
+
+  function renderUsuarioAutorizado(perfil) {
+    try { localStorage.setItem(AUTH_PROFILE_KEY, JSON.stringify(perfil)); } catch (e) {}
+
+    const right = document.querySelector('.topbar-right');
+    if (!right) return;
+
+    let pill = document.getElementById('user-session-pill');
+    if (!pill) {
+      pill = document.createElement('span');
+      pill.id = 'user-session-pill';
+      pill.className = 'user-pill';
+      right.insertBefore(pill, right.querySelector('.avatar-btn'));
+    }
+    pill.innerText = (perfil.nome || perfil.email) + ' · ' + (perfil.perfil || 'Usuario');
+
+    let out = document.getElementById('logout-btn');
+    if (!out) {
+      out = document.createElement('button');
+      out.id = 'logout-btn';
+      out.className = 'logout-btn';
+      out.innerText = 'Sair';
+      right.insertBefore(out, right.querySelector('.avatar-btn'));
+    }
+    out.onclick = logout;
+
+    const avatar = right.querySelector('.avatar-btn');
+    if (avatar) {
+      const base = (perfil.nome || perfil.email || 'U').trim();
+      const initials = base.split(/\s+/).slice(0, 2).map(function (p) { return p.charAt(0).toUpperCase(); }).join('');
+      avatar.innerText = initials || 'U';
+    }
+  }
+
+  window.loginGoogle = async function loginGoogle() {
+    const sb = getSupabaseClient();
+    if (!sb || !sb.auth || typeof sb.auth.signInWithOAuth !== 'function') {
+      showLogin('Supabase Auth nao esta configurado corretamente.');
+      return;
+    }
+
+    setAuthMessage('Abrindo login do Google...', 'ok');
+
+    const { error } = await sb.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.href.split('#')[0]
+      }
+    });
+
+    if (error) {
+      showLogin('Nao foi possivel iniciar login com Google.');
+      console.error('Erro login Google:', error);
+    }
+  };
+
+  window.logout = async function logout() {
+    const sb = getSupabaseClient();
+    try {
+      if (sb && sb.auth) await sb.auth.signOut();
+      localStorage.removeItem(AUTH_PROFILE_KEY);
+    } catch (e) {
+      console.warn('Erro ao sair:', e);
+    }
+    showLogin('Sessao encerrada. Entre novamente com Google.');
+  };
+
+  window.verificarAcesso = async function verificarAcesso() {
+    const sb = getSupabaseClient();
+    ensureLoginScreen();
+
+    if (!sb || !sb.auth || typeof sb.auth.getSession !== 'function') {
+      showLogin('Supabase Auth nao esta configurado.');
+      return false;
+    }
+
+    const sessionResult = await sb.auth.getSession();
+    const session = sessionResult && sessionResult.data ? sessionResult.data.session : null;
+    const user = session && session.user ? session.user : null;
+
+    if (!user || !user.email) {
+      showLogin('Entre com Google para acessar o sistema.');
+      return false;
+    }
+
+    const email = String(user.email).trim().toLowerCase();
+
+    const { data, error } = await sb
+      .from('usuarios_permitidos')
+      .select('email,nome,perfil,ativo')
+      .eq('email', email)
+      .maybeSingle();
+
+    if (error) {
+      console.error('Erro ao verificar usuarios_permitidos:', error);
+      await sb.auth.signOut();
+      showLogin('Nao foi possivel validar seu acesso. Verifique a tabela usuarios_permitidos.');
+      return false;
+    }
+
+    if (!data || data.ativo === false) {
+      await sb.auth.signOut();
+      localStorage.removeItem(AUTH_PROFILE_KEY);
+      showLogin('Acesso nao autorizado');
+      return false;
+    }
+
+    const perfil = {
+      email: data.email || email,
+      nome: data.nome || user.user_metadata?.full_name || email,
+      perfil: data.perfil || 'Usuario',
+      ativo: data.ativo !== false
+    };
+
+    renderUsuarioAutorizado(perfil);
+    hideLogin();
+    return true;
+  };
+
+  window.addEventListener('load', function () {
+    verificarAcesso();
+
+    const sb = getSupabaseClient();
+    if (sb && sb.auth && typeof sb.auth.onAuthStateChange === 'function') {
+      sb.auth.onAuthStateChange(function () {
+        verificarAcesso();
+      });
+    }
+  });
+})();
+</script>
+<!-- /CODEX GOVFLOW GOOGLE AUTH PERMITIDOS FINAL -->
+
+<!-- CODEX GOVFLOW INSIGHTS AUTOMATICOS FINAL -->
+<style>
+/* GOVFLOW - INSIGHTS AUTOMATICOS */
+.insights-auto-panel {
+  margin: 18px auto 0;
+  border: 1px solid var(--line2, #e5e7eb);
+  border-radius: 12px;
+  background: var(--bg1, #ffffff);
+  box-shadow: 0 16px 42px rgba(15, 23, 42, .08);
+  overflow: hidden;
+}
+.insights-auto-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--line, #e5e7eb);
+}
+.insights-auto-title {
+  color: var(--ink, #111827);
+  font-size: 18px;
+  font-weight: 900;
+}
+.insights-auto-sub {
+  margin-top: 4px;
+  color: var(--ink3, #6b7280);
+  font-size: 14px;
+  line-height: 1.45;
+}
+.insights-auto-badge {
+  border: 1px solid rgba(37,99,235,.32);
+  border-radius: 999px;
+  padding: 7px 11px;
+  background: rgba(37,99,235,.10);
+  color: var(--ink, #111827);
+  font-size: 12px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+.insights-auto-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding: 16px 20px 20px;
+}
+.insight-auto-card {
+  border: 1px solid var(--line, #e5e7eb);
+  border-left: 5px solid var(--blue, #2563eb);
+  border-radius: 8px;
+  background: var(--bg2, #f9fafb);
+  padding: 14px;
+}
+.insight-auto-card.vermelho { border-left-color: var(--red, #ef4444); }
+.insight-auto-card.amarelo { border-left-color: var(--amber, #f59e0b); }
+.insight-auto-card.azul { border-left-color: var(--blue, #2563eb); }
+.insight-auto-card.verde { border-left-color: var(--green, #16a34a); }
+.insight-auto-card strong {
+  display: block;
+  color: var(--ink, #111827);
+  font-size: 15px;
+  line-height: 1.35;
+  margin-bottom: 7px;
+}
+.insight-auto-card p {
+  margin: 0 0 9px;
+  color: var(--ink2, #374151);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.insight-auto-card span {
+  display: block;
+  color: var(--ink, #111827);
+  font-size: 13.5px;
+  line-height: 1.45;
+  font-weight: 800;
+}
+@media (max-width: 980px) {
+  .insights-auto-list { grid-template-columns: 1fr; }
+  .insights-auto-head { align-items: flex-start; flex-direction: column; }
+}
+</style>
+<script>
+/* GOVFLOW - INSIGHTS AUTOMATICOS SEM BIBLIOTECAS */
+(function () {
+  function numero(valor) {
+    const match = String(valor || '').replace(',', '.').match(/\d+(\.\d+)?/);
+    const n = parseFloat(match ? match[0] : '0');
+    return isNaN(n) ? 0 : n;
+  }
+
+  function atendimento(registro) {
+    const tipo = String(registro && registro.tipo || '').toLowerCase();
+    if (tipo === 'atend' || tipo === 'atendimento') {
+      const qtd = numero(registro.detalhe || registro.quantidade || registro.qtd);
+      return qtd > 0 ? qtd : 1;
+    }
+    return 0;
+  }
+
+  function fila(registro) {
+    if (!registro) return 0;
+    if (registro.fila !== undefined && registro.fila !== null) return numero(registro.fila);
+    if (String(registro.tipo || '').toLowerCase() === 'fila') return numero(registro.detalhe);
+    return 0;
+  }
+
+  function dataRegistro(registro) {
+    const raw = registro && (registro.created_at || registro.hora || registro.data);
+    const d = raw ? new Date(raw) : null;
+    return d && !isNaN(d.getTime()) ? d : null;
+  }
+
+  function normalizarDados(dados) {
+    const registros = Array.isArray(dados) ? dados : Array.isArray(dados && dados.registros) ? dados.registros : (typeof S !== 'undefined' && Array.isArray(S.registros) ? S.registros : []);
+    let totalAtendimentos = dados && typeof dados.totalAtendimentos === 'number' ? dados.totalAtendimentos : 0;
+    let filaMedia = dados && typeof dados.filaMedia === 'number' ? dados.filaMedia : 0;
+    let eficiencia = dados && typeof dados.eficiencia === 'number' ? dados.eficiencia : null;
+
+    let somaFila = 0;
+    let qtdFila = 0;
+    const porHora = {};
+
+    registros.forEach(function (r) {
+      const atend = atendimento(r);
+      const f = fila(r);
+      totalAtendimentos += atend;
+      if (f > 0) { somaFila += f; qtdFila += 1; }
+
+      const d = dataRegistro(r);
+      if (d) {
+        const h = String(d.getHours()).padStart(2, '0') + 'h';
+        porHora[h] = (porHora[h] || 0) + atend;
+      }
+    });
+
+    if (!filaMedia) filaMedia = qtdFila ? Math.round(somaFila / qtdFila) : numero(document.getElementById('kpi-fila')?.innerText);
+    if (!totalAtendimentos) totalAtendimentos = numero(document.getElementById('kpi-atend')?.innerText);
+    if (eficiencia === null) eficiencia = totalAtendimentos + filaMedia > 0 ? Math.round((totalAtendimentos / (totalAtendimentos + filaMedia)) * 100) : 100;
+
+    const horas = Object.keys(porHora).sort();
+    const metade = Math.ceil(horas.length / 2);
+    const primeiraMetade = horas.slice(0, metade).reduce(function (acc, h) { return acc + porHora[h]; }, 0);
+    const segundaMetade = horas.slice(metade).reduce(function (acc, h) { return acc + porHora[h]; }, 0);
+    const atendimentosCaindo = horas.length >= 4 && segundaMetade < primeiraMetade;
+
+    return { registros, totalAtendimentos, filaMedia, eficiencia, atendimentosCaindo, primeiraMetade, segundaMetade };
+  }
+
+  window.gerarInsights = function gerarInsights(dados) {
+    const m = normalizarDados(dados || {});
+    const insights = [];
+
+    if (m.filaMedia > 30) {
+      insights.push({
+        cor: 'vermelho',
+        titulo: 'Fila elevada detectada',
+        explicacao: 'A fila media esta em ' + m.filaMedia + ', acima do limite operacional de 30.',
+        acao: 'Sugestao: aumentar equipe no turno de maior movimento e priorizar triagem inicial.'
+      });
+    }
+
+    if (m.eficiencia < 50) {
+      insights.push({
+        cor: 'amarelo',
+        titulo: 'Eficiencia baixa',
+        explicacao: 'A eficiencia estimada ficou em ' + m.eficiencia + '%, abaixo do minimo recomendado de 50%.',
+        acao: 'Sugestao: revisar triagem inicial, redistribuir senhas e reduzir retrabalho.'
+      });
+    }
+
+    if (m.atendimentosCaindo) {
+      insights.push({
+        cor: 'azul',
+        titulo: 'Atendimentos em queda',
+        explicacao: 'O volume mais recente ficou menor que o volume do inicio do periodo analisado.',
+        acao: 'Sugestao: verificar pausas, disponibilidade da equipe e possivel gargalo de sistema.'
+      });
+    }
+
+    if (!insights.length) {
+      insights.push({
+        cor: 'verde',
+        titulo: 'Operacao dentro do esperado',
+        explicacao: 'Nao foram detectados sinais criticos de fila, eficiencia ou queda de atendimentos neste momento.',
+        acao: 'Sugestao: manter acompanhamento e registrar mudancas relevantes durante o dia.'
+      });
+    }
+
+    return insights;
+  };
+
+  function criarPainelInsights() {
+    let panel = document.getElementById('insights-auto-panel');
+    if (panel) return panel;
+
+    panel = document.createElement('section');
+    panel.id = 'insights-auto-panel';
+    panel.className = 'insights-auto-panel dash-panel dash-panel-resumo active';
+    panel.innerHTML = '<div class="insights-auto-head"><div><div class="insights-auto-title">Insights Automáticos</div><div class="insights-auto-sub">Regras operacionais geradas a partir dos dados do dashboard.</div></div><div class="insights-auto-badge" id="insights-auto-badge">Atualizando</div></div><div class="insights-auto-list" id="insights-auto-list"></div>';
+
+    const alvo = document.getElementById('ia-operacional-panel') || document.getElementById('dash-overview') || document.querySelector('#screen-dashboard .dashboard-tabs') || document.querySelector('#screen-dashboard .kpi-strip');
+    if (alvo && alvo.parentElement) alvo.insertAdjacentElement('afterend', panel);
+    else document.getElementById('screen-dashboard')?.appendChild(panel);
+
+    return panel;
+  }
+
+  window.renderInsights = function renderInsights(dados) {
+    const panel = criarPainelInsights();
+    const lista = document.getElementById('insights-auto-list');
+    const badge = document.getElementById('insights-auto-badge');
+    const insights = window.gerarInsights(dados || {});
+
+    if (badge) badge.innerText = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    if (lista) {
+      lista.innerHTML = insights.map(function (item) {
+        return '<div class="insight-auto-card ' + item.cor + '"><strong>' + item.titulo + '</strong><p>' + item.explicacao + '</p><span>' + item.acao + '</span></div>';
+      }).join('');
+    }
+
+    return panel;
+  };
+
+  const carregarDashboardAnterior = window.carregarDashboard;
+  if (typeof carregarDashboardAnterior === 'function') {
+    window.carregarDashboard = async function carregarDashboard() {
+      const retorno = await carregarDashboardAnterior.apply(this, arguments);
+      window.renderInsights();
+      return retorno;
+    };
+  }
+
+  window.addEventListener('load', function () {
+    criarPainelInsights();
+    window.renderInsights();
+  });
+})();
+</script>
+<!-- /CODEX GOVFLOW INSIGHTS AUTOMATICOS FINAL -->
 </body>
 </html>
