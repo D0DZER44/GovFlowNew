@@ -996,6 +996,109 @@ body { font-size: 16px; line-height: 1.62; }
 @media (max-width: 760px) {
   .real-data-note, .report-period-box, .report-period-box .period-extra { grid-template-columns:1fr; display:grid; }
 }
+/* CODEX GOVFLOW PROFESSIONAL CENTERED LAYOUT */
+:root { --content-max: 1320px; --content-gutter: clamp(16px, 2.4vw, 34px); }
+.main {
+  width: calc(100% - var(--sidebar));
+  max-width: none;
+  margin-left: var(--sidebar);
+  margin-right: 0;
+  padding-top: var(--topbar);
+  min-height: 100vh;
+  background: var(--bg);
+}
+.screen {
+  width: 100%;
+  min-width: 0;
+}
+.screen.active {
+  display: block;
+}
+.screen > * {
+  width: min(calc(100% - (var(--content-gutter) * 2)), var(--content-max));
+  margin-left: auto;
+  margin-right: auto;
+}
+.screen > .kpi-strip,
+.screen > .dashboard-tabs,
+.screen > .dash-panel,
+.screen > .dashboard-charts-top,
+.screen > .two-col,
+.screen > .page-hd,
+.screen > .page-body {
+  max-width: var(--content-max);
+}
+.page-hd,
+.page-body {
+  padding-left: 0;
+  padding-right: 0;
+}
+#screen-dashboard .kpi-strip {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-top: var(--content-gutter);
+}
+#screen-dashboard .dashboard-tabs {
+  margin-top: 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg1);
+}
+#screen-dashboard .dashboard-charts-top,
+#screen-dashboard .two-col,
+#screen-dashboard .dash-overview,
+#screen-dashboard .attention-panel,
+#screen-dashboard .real-data-note {
+  margin-top: 16px;
+}
+#screen-registros .page-hd,
+#screen-registros .page-body,
+#screen-historico .page-hd,
+#screen-historico .page-body,
+#screen-relatorio .page-hd,
+#screen-relatorio .page-body {
+  max-width: var(--content-max);
+}
+.topbar-center {
+  max-width: min(520px, calc(100vw - var(--sidebar) - 460px));
+}
+@media (max-width: 1100px) {
+  :root { --content-max: 1180px; --content-gutter: clamp(14px, 2.2vw, 24px); }
+  .topbar-center { max-width: 360px; }
+}
+@media (max-width: 820px) {
+  :root { --sidebar: 0px; --content-gutter: 14px; }
+  .main {
+    width: 100%;
+    margin-left: 0;
+  }
+  .screen > * {
+    width: calc(100% - (var(--content-gutter) * 2));
+  }
+  .page-hd,
+  .page-body {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  #screen-dashboard .kpi-strip { margin-top: 14px; }
+}
+@media (max-width: 560px) {
+  :root { --content-gutter: 10px; }
+  .screen > * { width: calc(100% - (var(--content-gutter) * 2)); }
+  #screen-dashboard .kpi-strip,
+  #screen-dashboard .dashboard-tabs { border-radius: 8px; }
+}
+/* CODEX GOVFLOW REPORT GENERAL + TAB ISOLATION */
+#screen-dashboard .dash-panel:not(.active) { display: none !important; }
+#screen-dashboard .dash-grid .card.dash-panel:not(.active) { display: none !important; }
+#screen-dashboard .dash-grid { align-items: start; }
+#screen-dashboard .dash-grid > div:empty { display: none !important; }
+.module-report-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.module-report-tabs .report-model-general { grid-column: 1 / -1; }
+.report-section + .report-section { margin-top: 14px; }
+.report-mini-note { color: var(--ink2); font-size: 13px; line-height: 1.55; margin-top: 8px; }
+@media (min-width: 980px) { .module-report-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); } .module-report-tabs .report-model-general { grid-column: auto; } }
 </style>
 </head>
 <body>
@@ -3322,6 +3425,191 @@ function injectRealDataNote() {
   tabs.insertAdjacentElement('afterend', note);
 }
 setTimeout(() => { injectRealDataNote(); enhanceReportWorkspace(); updateDashboardFromHistory(); }, 900);
+// CODEX GOVFLOW REPORT GENERAL + TAB ISOLATION SCRIPT
+const GF_COUNTER_RESET_AT = 'govflow.counterResetAt.v3';
+function gfCounterResetAt() {
+  try {
+    let raw = localStorage.getItem(GF_COUNTER_RESET_AT);
+    if (!raw) {
+      raw = new Date().toISOString();
+      localStorage.setItem(GF_COUNTER_RESET_AT, raw);
+    }
+    const d = new Date(raw);
+    return Number.isNaN(d.getTime()) ? new Date() : d;
+  } catch(e) { return new Date(); }
+}
+function gfTodayCounterRows() {
+  const todayKey = gfLocalDateKey(new Date());
+  const resetAt = gfCounterResetAt();
+  return (S.registros || []).filter(r => gfLocalDateKey(gfParseRecordDate(r)) === todayKey && gfParseRecordDate(r) >= resetAt);
+}
+function gfZeroVisibleCounters() {
+  const zeroIds = ['kpi-atend','kpi-fila','live-cad','u-boicucanga','u-canto','u-centro','u-morro','overview-atend','overview-fila','overview-ausencias','overview-revisoes','overview-registros','urg-count'];
+  zeroIds.forEach(id => gfSetText(id, 0));
+  gfSetText('live-fila', 'Normal');
+  gfSetText('fila-desc', '0 pessoas · Tempo médio 0 min');
+  gfSetText('cad-desc', 'Novos: 0 · Atualizações: 0 · Revisões: 0');
+}
+function updateDashboardFromHistory() {
+  normalizeHistory();
+  const stats = gfDailyStats(gfTodayCounterRows());
+  S.atendimentos = stats.atend;
+  S.pendentes = 0;
+  S.hj = stats.hj;
+  gfZeroVisibleCounters();
+  gfSetText('kpi-atend', stats.atend);
+  gfSetText('kpi-fila', stats.fila);
+  gfSetText('live-fila', stats.fila >= 40 ? 'Crítica' : stats.fila >= 20 ? 'Alta' : 'Normal');
+  gfSetText('fila-desc', stats.fila + ' pessoas · Tempo médio ' + stats.espera + ' min');
+  gfSetText('live-cad', stats.hj.novos + stats.hj.atualizacoes + stats.hj.revisoes);
+  gfSetText('cad-desc', 'Novos: ' + stats.hj.novos + ' · Atualizações: ' + stats.hj.atualizacoes + ' · Revisões: ' + stats.hj.revisoes);
+  gfSetText('u-boicucanga', stats.hj.boicucanga);
+  gfSetText('u-canto', stats.hj.canto);
+  gfSetText('u-centro', stats.hj.centro);
+  gfSetText('u-morro', stats.hj.morro);
+  gfSetText('overview-atend', stats.atend);
+  gfSetText('overview-fila', stats.fila);
+  gfSetText('overview-ausencias', stats.ausencias);
+  gfSetText('overview-revisoes', stats.hj.revisoes);
+  gfSetText('overview-registros', gfTodayCounterRows().length);
+  gfSetText('overview-alertas', stats.ocorrencias + (typeof getStockAlerts === 'function' ? getStockAlerts().length : 0));
+  gfSetText('urg-count', stats.ocorrencias);
+  gfSetSubText('.kpi-cell:nth-child(1) .kpi-sub', 'Hoje · zerado nesta versão');
+  gfSetSubText('.kpi-cell:nth-child(2) .kpi-sub', 'Dia atual · sem soma duplicada');
+  gfSetSubText('.kpi-cell:nth-child(3) .kpi-sub', 'Histórico preservado para relatórios');
+  gfSetSubText('#hist-sub', (S.registros || []).length + ' registros no histórico · ' + gfTodayCounterRows().length + ' contando no dashboard');
+  const activeCount = Math.max(0, (TEAM?.length || 0) - stats.ausencias);
+  const activeKpi = document.querySelector('.kpi-cell:nth-child(4) .kpi-value');
+  if (activeKpi) activeKpi.innerHTML = activeCount + '<span style="font-size:15px;color:var(--ink3);font-weight:400">/' + (TEAM?.length || 0) + '</span>';
+  const activeSub = document.querySelector('.kpi-cell:nth-child(4) .kpi-sub .mp') || document.querySelector('.kpi-cell:nth-child(4) .kpi-sub');
+  if (activeSub) activeSub.textContent = stats.ausencias + ' ausentes hoje';
+  const chartUnits = (typeof Chart !== 'undefined' && document.getElementById('chartUnidades')) ? Chart.getChart(document.getElementById('chartUnidades')) : null;
+  if (chartUnits) { chartUnits.data.datasets[0].data = [stats.hj.centro, stats.hj.canto, stats.hj.boicucanga, stats.hj.morro]; chartUnits.update(); }
+  const chartTipos = (typeof Chart !== 'undefined' && document.getElementById('chartTipos')) ? Chart.getChart(document.getElementById('chartTipos')) : null;
+  if (chartTipos) { chartTipos.data.datasets[0].data = [stats.hj.novos, stats.hj.atualizacoes, stats.hj.revisoes]; chartTipos.update(); }
+  if (typeof renderUnitBriefs === 'function') renderUnitBriefs();
+  if (typeof renderPerformance === 'function') renderPerformance();
+  if (typeof refreshAttentionPanel === 'function') refreshAttentionPanel();
+}
+function hardenDashboardPanels() {
+  const dash = document.getElementById('screen-dashboard');
+  if (!dash) return;
+  const dashGrid = dash.querySelector('.dash-grid');
+  if (dashGrid) {
+    dashGrid.classList.add('dash-panel-host');
+    const cols = Array.from(dashGrid.children);
+    if (cols[0]) Array.from(cols[0].querySelectorAll('.card')).forEach(c => c.classList.add('dash-panel','dash-panel-afazeres'));
+    if (cols[1]) Array.from(cols[1].querySelectorAll('.card')).forEach(c => {
+      const text = c.textContent || '';
+      c.classList.add('dash-panel', /Unidades de Atendimento/i.test(text) ? 'dash-panel-unidades' : 'dash-panel-resumo');
+    });
+    if (cols[2]) Array.from(cols[2].querySelectorAll('.card')).forEach(c => c.classList.add('dash-panel','dash-panel-acoes'));
+  }
+  const equipeSep = document.getElementById('sec-equipe');
+  if (equipeSep) { equipeSep.classList.add('dash-panel','dash-panel-equipe'); if (equipeSep.nextElementSibling) equipeSep.nextElementSibling.classList.add('dash-panel','dash-panel-equipe'); }
+  const cenSep = document.getElementById('sec-cenarios');
+  if (cenSep) { cenSep.classList.add('dash-panel','dash-panel-cenarios'); if (cenSep.nextElementSibling) cenSep.nextElementSibling.classList.add('dash-panel','dash-panel-cenarios'); }
+  Array.from(dash.querySelectorAll('.section-sep')).forEach(sep => {
+    if (/An.lise Gr/i.test(sep.textContent || '')) { sep.classList.add('dashboard-charts-top','dash-panel','dash-panel-resumo'); if (sep.nextElementSibling) sep.nextElementSibling.classList.add('dash-panel','dash-panel-resumo'); }
+  });
+  const footer = Array.from(dash.children).find(el => /GOVFLOW v/i.test(el.textContent || ''));
+  if (footer) footer.classList.add('dash-panel','dash-panel-resumo');
+}
+function setDashTab(name) {
+  hardenDashboardPanels();
+  const targetName = name || 'resumo';
+  document.querySelectorAll('#screen-dashboard .dash-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === targetName));
+  document.querySelectorAll('#screen-dashboard .dash-panel').forEach(p => {
+    const shouldShow = p.classList.contains('dash-panel-' + targetName);
+    p.classList.toggle('active', shouldShow);
+    p.style.display = shouldShow ? '' : 'none';
+  });
+  const tabs = document.querySelector('#screen-dashboard .dashboard-tabs');
+  if (tabs) tabs.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+function addReportModelControls() {
+  const cfg = document.querySelector('.rel-config');
+  if (!cfg) return;
+  let box = document.getElementById('report-model-tabs');
+  const html = '<button class="btn btn-primary btn-sm report-model-general" onclick="setReportModel(\'geral\')">Geral</button><button class="btn btn-ghost btn-sm" onclick="setReportModel(\'executivo\')">Executivo</button><button class="btn btn-ghost btn-sm" onclick="setReportModel(\'estoque\')">Estoque</button><button class="btn btn-ghost btn-sm" onclick="setReportModel(\'ordens\')">Ordens</button><button class="btn btn-ghost btn-sm" onclick="setReportModel(\'fila\')">Fila</button>';
+  if (!box) {
+    box = document.createElement('div');
+    box.id = 'report-model-tabs';
+    box.className = 'module-report-tabs';
+    box.innerHTML = html;
+    cfg.insertBefore(box, cfg.firstElementChild ? cfg.firstElementChild.nextSibling : cfg.firstChild);
+  } else if (!box.querySelector('.report-model-general')) {
+    box.innerHTML = html;
+  }
+}
+function setReportModel(model) {
+  window.govflowReportModel = model;
+  const title = document.getElementById('rel-titulo');
+  if (title) {
+    const names = { geral:'Relatório Geral GovFlow', executivo:'Relatório Executivo GovFlow', estoque:'Relatório de Estoque CadÚnico', ordens:'Relatório de Ordens de Serviço', fila:'Relatório da Fila Pública' };
+    title.value = names[model] || names.geral;
+  }
+  document.querySelectorAll('#report-model-tabs button').forEach(btn => btn.classList.toggle('btn-primary', btn.textContent.trim().toLowerCase() === String(model).toLowerCase()));
+  toast('Modelo de relatório: ' + model);
+}
+function gfReportUnitRows(stats) {
+  return [['Centro', stats.hj.centro], ['Canto do Mar', stats.hj.canto], ['Boiçucanga', stats.hj.boicucanga], ['Morro do Abrigo', stats.hj.morro]];
+}
+function buildReport() {
+  const model = window.govflowReportModel || 'geral';
+  const title = document.getElementById('rel-titulo')?.value || 'Relatório Geral GovFlow';
+  const und = document.getElementById('rel-und')?.value || 'Todas as unidades';
+  const report = gfRecordsForReport();
+  const stock = typeof gfRead === 'function' ? gfRead(GF_STOCK_KEY, GF_SEED_STOCK) : [];
+  const low = stock.filter(i => i.qty <= i.min);
+  const orders = typeof gfRead === 'function' ? gfRead(GF_ORDERS_KEY, GF_SEED_ORDERS) : [];
+  const openOrders = orders.filter(o => o.status !== 'Concluída');
+  const filaRows = report.rows.filter(r => r.tipo === 'fila');
+  const ocRows = report.rows.filter(r => r.tipo === 'ocorrencia');
+  const ausRows = report.rows.filter(r => r.tipo === 'ausencia');
+  const meta = 'Unidade: ' + und + ' · Período: ' + report.range.label + ' · Gerado em ' + new Date().toLocaleString('pt-BR');
+  let body = '';
+  if (model === 'estoque') {
+    body += '<div class="report-section"><div class="report-section-title">Resumo de Estoque</div><div class="rep-kpi-row"><div class="rep-kpi"><div class="rep-kpi-val">' + stock.length + '</div><div class="rep-kpi-lbl">Itens</div></div><div class="rep-kpi"><div class="rep-kpi-val" style="color:var(--amber)">' + low.length + '</div><div class="rep-kpi-lbl">Alertas</div></div><div class="rep-kpi"><div class="rep-kpi-val">' + stock.reduce((a,b)=>a+b.qty,0) + '</div><div class="rep-kpi-lbl">Saldo total</div></div></div><table class="rep-table"><tr><th>Item</th><th>Qtd.</th><th>Mínimo</th><th>Local</th><th>Status</th></tr>' + tableRows(stock.map(i => [i.item, i.qty + ' ' + i.unit, i.min + ' ' + i.unit, i.place, i.qty <= i.min ? 'Repor' : 'OK'])) + '</table></div>';
+  } else if (model === 'ordens') {
+    body += '<div class="report-section"><div class="report-section-title">Ordens de Serviço</div><div class="rep-kpi-row"><div class="rep-kpi"><div class="rep-kpi-val">' + orders.length + '</div><div class="rep-kpi-lbl">Total</div></div><div class="rep-kpi"><div class="rep-kpi-val">' + openOrders.length + '</div><div class="rep-kpi-lbl">Abertas</div></div><div class="rep-kpi"><div class="rep-kpi-val">' + orders.filter(o=>o.priority==='Alta').length + '</div><div class="rep-kpi-lbl">Alta prioridade</div></div></div><table class="rep-table"><tr><th>#</th><th>Ordem</th><th>Unidade</th><th>Responsável</th><th>Status</th></tr>' + tableRows(orders.map(o => [o.id, o.title, o.unit, o.owner, o.status])) + '</table></div>';
+  } else if (model === 'fila') {
+    const last = filaRows[0];
+    body += '<div class="report-section"><div class="report-section-title">Fila Pública</div><div class="rep-kpi-row"><div class="rep-kpi"><div class="rep-kpi-val">' + report.stats.fila + '</div><div class="rep-kpi-lbl">Última fila</div></div><div class="rep-kpi"><div class="rep-kpi-val">' + report.stats.espera + 'm</div><div class="rep-kpi-lbl">Espera média</div></div><div class="rep-kpi"><div class="rep-kpi-val">' + filaRows.length + '</div><div class="rep-kpi-lbl">Registros</div></div></div><div class="rep-analysis"><b>Última atualização:</b> ' + (last ? last.hora + ' · ' + last.detalhe : 'sem registro no período') + '</div></div>';
+  } else {
+    body += '<div class="report-section"><div class="report-section-title">Relatório Geral</div><div class="rep-kpi-row"><div class="rep-kpi"><div class="rep-kpi-val">' + report.stats.atend + '</div><div class="rep-kpi-lbl">Atendimentos</div></div><div class="rep-kpi"><div class="rep-kpi-val">' + report.stats.fila + '</div><div class="rep-kpi-lbl">Fila registrada</div></div><div class="rep-kpi"><div class="rep-kpi-val">' + report.rows.length + '</div><div class="rep-kpi-lbl">Registros</div></div><div class="rep-kpi"><div class="rep-kpi-val">' + ausRows.length + '</div><div class="rep-kpi-lbl">Ausências</div></div><div class="rep-kpi"><div class="rep-kpi-val">' + low.length + '</div><div class="rep-kpi-lbl">Alertas estoque</div></div><div class="rep-kpi"><div class="rep-kpi-val">' + openOrders.length + '</div><div class="rep-kpi-lbl">Ordens abertas</div></div></div><div class="report-mini-note">Este relatório reúne atendimento, fila, unidades, equipe, ocorrências, estoque e ordens de serviço do período selecionado.</div></div>';
+    body += '<div class="report-section"><div class="report-section-title">Atendimentos por Unidade</div><table class="rep-table"><tr><th>Unidade</th><th>Atendimentos</th></tr>' + tableRows(gfReportUnitRows(report.stats)) + '</table></div>';
+    body += '<div class="report-section"><div class="report-section-title">Tipos de Atendimento</div><table class="rep-table"><tr><th>Tipo</th><th>Total</th></tr>' + tableRows([['Novos', report.stats.hj.novos], ['Atualizações', report.stats.hj.atualizacoes], ['Revisões', report.stats.hj.revisoes]]) + '</table></div>';
+    body += '<div class="report-section"><div class="report-section-title">Ocorrências e Equipe</div><table class="rep-table"><tr><th>Indicador</th><th>Total</th></tr>' + tableRows([['Ocorrências', ocRows.length], ['Ausências registradas', ausRows.length], ['Equipe total', TEAM?.length || 0], ['Funcionários ativos estimados', Math.max(0, (TEAM?.length || 0) - ausRows.length)]]) + '</table></div>';
+    body += '<div class="report-section"><div class="report-section-title">Estoque e Ordens</div><table class="rep-table"><tr><th>Área</th><th>Situação</th><th>Detalhe</th></tr>' + tableRows([['Estoque', low.length ? 'Atenção' : 'OK', low.length ? low.map(i => i.item + ': ' + i.qty + ' ' + i.unit).join('; ') : 'Sem alerta crítico'], ['Ordens', openOrders.length ? 'Abertas' : 'OK', openOrders.length + ' abertas de ' + orders.length]]) + '</table></div>';
+    body += '<div class="report-section"><div class="report-section-title">Registros do Período</div><table class="rep-table"><tr><th>Tipo</th><th>Unidade</th><th>Detalhe</th><th>Data/Hora</th></tr>' + tableRows(report.rows.slice(0,60).map(r => [r.tipo, r.unidade || '-', r.detalhe || '-', r.hora || '-'])) + '</table></div>';
+  }
+  document.getElementById('rel-preview-box').innerHTML = reportShell(title, meta, body);
+  const row = document.getElementById('rel-btn-row'); if (row) row.style.display = 'block';
+  toast('Relatório gerado');
+}
+function initFinalReportAndTabsFix() {
+  hardenDashboardPanels();
+  addReportModelControls();
+  if (!window.govflowReportModel) setReportModel('geral');
+  updateDashboardFromHistory();
+  setDashTab(document.querySelector('#screen-dashboard .dash-tab.active')?.dataset.tab || 'resumo');
+}
+setTimeout(initFinalReportAndTabsFix, 1200);
+// CODEX GOVFLOW ZERO KPI FINISH
+function gfZeroVisibleCounters() {
+  const zeroIds = ['kpi-atend','kpi-fila','live-cad','u-boicucanga','u-canto','u-centro','u-morro','overview-atend','overview-fila','overview-ausencias','overview-revisoes','overview-registros','urg-count'];
+  zeroIds.forEach(id => gfSetText(id, 0));
+  gfSetText('live-fila', 'Normal');
+  gfSetText('fila-desc', '0 pessoas · Tempo médio 0 min');
+  gfSetText('cad-desc', 'Novos: 0 · Atualizações: 0 · Revisões: 0');
+  const demand = document.querySelector('.kpi-cell:nth-child(3) .kpi-value');
+  if (demand) { demand.textContent = 'NORMAL'; demand.style.color = 'var(--green)'; }
+  const pending = document.querySelector('.kpi-cell:nth-child(5) .kpi-value');
+  if (pending) { pending.textContent = '0'; pending.style.color = 'var(--green)'; }
+  gfSetText('pill-pend', '0 pendentes');
+}
+setTimeout(() => { updateDashboardFromHistory(); setDashTab(document.querySelector('#screen-dashboard .dash-tab.active')?.dataset.tab || 'resumo'); }, 1600);
 </script>
 </body>
 </html>
