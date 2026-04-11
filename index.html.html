@@ -984,6 +984,18 @@ body { font-size: 16px; line-height: 1.62; }
 #screen-dashboard .dashboard-charts-top + .two-col:not(.dash-panel-resumo) { display: none !important; }
 #screen-dashboard .dash-panel:not(.active) canvas { visibility: hidden; }
 @media (max-width: 820px) { :root { --sidebar: 0px; } #screen-registros .page-hd, #screen-registros .page-body, #screen-historico .page-hd, #screen-historico .page-body, #screen-relatorio .page-hd, #screen-relatorio .page-body { max-width: none; } }
+/* CODEX GOVFLOW REAL DATA DAILY RESET */
+.real-data-note { display:flex; align-items:center; justify-content:space-between; gap:14px; margin:0 0 16px; padding:14px 16px; border:1px solid var(--line2); background:var(--bg1); border-radius:8px; color:var(--ink2); font-size:14px; }
+.real-data-note strong { color:var(--ink); font-size:15px; }
+.real-data-note span:last-child { font-family:var(--mono); color:var(--green); font-size:12px; }
+.report-period-box { display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:14px; border:1px solid var(--line); border-radius:8px; background:var(--bg1); margin:12px 0; }
+.report-period-box .field { margin:0; }
+.report-period-box .period-extra { grid-column:1 / -1; display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.sidebar-live-card .live-row { padding:12px 0; }
+.sidebar-live-card .live-value { font-size:20px; }
+@media (max-width: 760px) {
+  .real-data-note, .report-period-box, .report-period-box .period-extra { grid-template-columns:1fr; display:grid; }
+}
 </style>
 </head>
 <body>
@@ -2316,7 +2328,7 @@ function gfSetText(id, value) { const el = document.getElementById(id); if (el) 
 function saveLocalRecords() { try { localStorage.setItem(GF_STORE_KEY, JSON.stringify(S.registros)); } catch(e) { console.warn('Historico local indisponivel'); } }
 function loadLocalRecords() { try { const raw = localStorage.getItem(GF_STORE_KEY); if (!raw) return false; const rows = JSON.parse(raw); if (!Array.isArray(rows)) return false; S.registros = rows; S.nextId = Math.max(0, ...S.registros.map(r => parseInt(r.id,10) || 0)) + 1; return true; } catch(e) { console.warn('Nao foi possivel ler o historico local'); return false; } }
 function mergeRecords(rows) { const seen = new Set(S.registros.map(r => [r.id, r.tipo, r.unidade, r.detalhe, r.hora].join('|'))); rows.forEach(r => { const key = [r.id, r.tipo, r.unidade, r.detalhe, r.hora].join('|'); if (!seen.has(key)) { S.registros.push(r); seen.add(key); } }); S.registros.sort((a,b) => (parseInt(b.id,10)||0) - (parseInt(a.id,10)||0)); S.nextId = Math.max(0, ...S.registros.map(r => parseInt(r.id,10) || 0)) + 1; }
-function updateDashboardFromHistory() { const hj = JSON.parse(JSON.stringify(GF_BASE.hj)); let atend = GF_BASE.atendimentos, fila = GF_BASE.fila, espera = GF_BASE.espera; let ausencias = TEAM.filter(f => f.s === 'ausente').length; S.registros.slice().reverse().forEach(r => { const qtd = gfQty(r.detalhe); const key = GF_UNIT_KEYS[r.unidade] || GF_UNIT_KEYS[String(r.unidade || '').trim()]; if (r.tipo === 'atend') { atend += qtd; if (key && hj[key] !== undefined) hj[key] += qtd; if (/Novo/i.test(r.detalhe)) hj.novos += qtd; else if (/Atualiza/i.test(r.detalhe)) hj.atualizacoes += qtd; else if (/Revis/i.test(r.detalhe)) hj.revisoes += qtd; } if (r.tipo === 'fila') { const n = gfFila(r.detalhe); if (n !== null) fila = n; const wait = String(r.detalhe || '').match(/·\s*(\d+)/) || String(r.detalhe || '').match(/(\d+)\s*min/i); if (wait) espera = parseInt(wait[1],10); } }); ausencias += S.registros.filter(r => r.tipo === 'ausencia').length; S.atendimentos = atend; S.hj = hj; gfSetText('kpi-atend', atend); gfSetText('kpi-fila', fila); gfSetText('live-fila', fila >= 40 ? 'Critica' : fila >= 20 ? 'Alta' : 'Normal'); gfSetText('fila-desc', fila + ' pessoas · Tempo medio ' + espera + ' min'); gfSetText('live-cad', hj.novos + hj.atualizacoes + hj.revisoes); gfSetText('cad-desc', 'Novos: ' + hj.novos + ' · Atualizacoes: ' + hj.atualizacoes + ' · Revisoes: ' + hj.revisoes); gfSetText('u-boicucanga', hj.boicucanga); gfSetText('u-canto', hj.canto); gfSetText('u-centro', hj.centro); gfSetText('u-morro', hj.morro); gfSetText('overview-atend', atend); gfSetText('overview-fila', fila); gfSetText('overview-ausencias', ausencias); gfSetText('overview-revisoes', hj.revisoes); gfSetText('overview-registros', S.registros.length); gfSetText('overview-alertas', S.registros.filter(r => r.tipo === 'ocorrencia').length + 3); const activeCount = Math.max(0, TEAM.length - ausencias); const activeKpi = document.querySelector('.kpi-cell:nth-child(4) .kpi-value'); if (activeKpi) activeKpi.innerHTML = activeCount + '<span style="font-size:15px;color:var(--ink3);font-weight:400">/' + TEAM.length + '</span>'; const activeSub = document.querySelector('.kpi-cell:nth-child(4) .kpi-sub .mp'); if (activeSub) activeSub.textContent = ausencias + ' ausentes'; const chartUnits = document.getElementById('chartUnidades') ? Chart.getChart(document.getElementById('chartUnidades')) : null; if (chartUnits) { chartUnits.data.datasets[0].data = [hj.centro, hj.canto, hj.boicucanga, hj.morro]; chartUnits.update(); } renderUnitBriefs(); }
+function updateDashboardFromHistory() { const hj = JSON.parse(JSON.stringify(GF_BASE.hj)); let atend = GF_BASE.atendimentos, fila = GF_BASE.fila, espera = GF_BASE.espera; let ausencias = TEAM.filter(f => f.s === 'ausente').length; S.registros.slice().reverse().forEach(r => { const qtd = gfQty(r.detalhe); const key = GF_UNIT_KEYS[r.unidade] || GF_UNIT_KEYS[String(r.unidade || '').trim()]; if (r.tipo === 'atend') { atend += qtd; if (key && hj[key] !== undefined) hj[key] += qtd; if (/Novo/i.test(r.detalhe)) hj.novos += qtd; else if (/Atualiza/i.test(r.detalhe)) hj.atualizacoes += qtd; else if (/Revis/i.test(r.detalhe)) hj.revisoes += qtd; } if (r.tipo === 'fila') { const n = gfFila(r.detalhe); if (n !== null) fila = n; const wait = String(r.detalhe || '').match(/·\s*(\d+)/) || String(r.detalhe || '').match(/(\d+)\s*min/i); if (wait) espera = parseInt(wait[1],10); } }); ausencias += S.registros.filter(r => r.tipo === 'ausencia').length; S.atendimentos = atend; S.hj = hj; gfSetText('kpi-atend', atend); gfSetText('kpi-fila', fila); gfSetText('live-fila', fila >= 40 ? 'Critica' : fila >= 20 ? 'Alta' : 'Normal'); gfSetText('fila-desc', fila + ' pessoas · Tempo medio ' + espera + ' min'); gfSetText('live-cad', hj.novos + hj.atualizacoes + hj.revisoes); gfSetText('cad-desc', 'Novos: ' + hj.novos + ' · Atualizacoes: ' + hj.atualizacoes + ' · Revisoes: ' + hj.revisoes); gfSetText('u-boicucanga', hj.boicucanga); gfSetText('u-canto', hj.canto); gfSetText('u-centro', hj.centro); gfSetText('u-morro', hj.morro); gfSetText('overview-atend', atend); gfSetText('overview-fila', fila); gfSetText('overview-ausencias', ausencias); gfSetText('overview-revisoes', hj.revisoes); gfSetText('overview-registros', S.registros.length); gfSetText('overview-alertas', S.registros.filter(r => r.tipo === 'ocorrencia').length + 3); const activeCount = Math.max(0, TEAM.length - ausencias); const activeKpi = document.querySelector('.kpi-cell:nth-child(4) .kpi-value'); if (activeKpi) activeKpi.innerHTML = activeCount + '<span style="font-size:15px;color:var(--ink3);font-weight:400">/' + TEAM.length + '</span>'; const activeSub = document.querySelector('.kpi-cell:nth-child(4) .kpi-sub .mp'); if (activeSub) activeSub.textContent = ausencias + ' ausentes'; const chartUnits = (typeof Chart !== 'undefined' && document.getElementById('chartUnidades')) ? Chart.getChart(document.getElementById('chartUnidades')) : null; if (chartUnits) { chartUnits.data.datasets[0].data = [hj.centro, hj.canto, hj.boicucanga, hj.morro]; chartUnits.update(); } renderUnitBriefs(); }
 function renderUnitBriefs() { const map = [['Boi', 'boicucanga'], ['Canto', 'canto'], ['Centro', 'centro'], ['Morro', 'morro']]; document.querySelectorAll('.unit-card').forEach(card => { const name = card.querySelector('.unit-name')?.textContent || ''; const found = map.find(([label]) => name.includes(label)); if (!found) return; const key = found[1], u = GF_UNITS[key], atual = S.hj[key]; let brief = card.querySelector('.unit-brief'); if (!brief) { brief = document.createElement('div'); brief.className = 'unit-brief'; card.querySelector('.unit-name').appendChild(brief); } brief.textContent = atual + ' atend. · fila ' + u.fila + ' · ' + u.ativos + ' ativos · ' + u.inativos + ' inativos'; }); }
 function updateHistBadge() { const n = S.registros.length; gfSetText('hist-badge', n); gfSetText('session-count', n + (n===1 ? ' registro salvo' : ' registros salvos')); gfSetText('hist-sub', n + ' registro' + (n===1 ? '' : 's') + ' salvo' + (n===1 ? '' : 's') + ' no historico permanente'); }
 function addReg(rec) { S.registros.unshift(rec); updateHistBadge(); renderRecent(); renderHist(); saveLocalRecords(); updateDashboardFromHistory(); persistReg(rec); markUpdate(); }
@@ -3019,6 +3031,297 @@ function initLiveScriptRefinement() {
   if (!window.govflowLiveTimer) window.govflowLiveTimer = setInterval(autoUpdateLivePanel, 30000);
 }
 setTimeout(initLiveScriptRefinement, 700);
+// CODEX GOVFLOW REAL DATA DAILY RESET SCRIPT
+const GF_REAL_DAY_KEY = 'govflow.currentDay.v1';
+function gfLocalDateKey(date) {
+  const d = date instanceof Date && !Number.isNaN(date.getTime()) ? date : new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return y + '-' + m + '-' + day;
+}
+function gfParseRecordDate(rec) {
+  if (!rec) return new Date();
+  const direct = rec.created_at || rec.createdAt || rec.data || rec.dia;
+  if (direct) {
+    const d = new Date(direct);
+    if (!Number.isNaN(d.getTime())) return d;
+    const br = String(direct).match(/(\d{2})\/(\d{2})\/(\d{4})(?:,?\s*(\d{2}):(\d{2})(?::(\d{2}))?)?/);
+    if (br) return new Date(Number(br[3]), Number(br[2]) - 1, Number(br[1]), Number(br[4] || 0), Number(br[5] || 0), Number(br[6] || 0));
+  }
+  const h = String(rec.hora || '').trim();
+  if (h) {
+    const iso = new Date(h);
+    if (!Number.isNaN(iso.getTime())) return iso;
+    const br = h.match(/(\d{2})\/(\d{2})\/(\d{4})(?:,?\s*(\d{2}):(\d{2})(?::(\d{2}))?)?/);
+    if (br) return new Date(Number(br[3]), Number(br[2]) - 1, Number(br[1]), Number(br[4] || 0), Number(br[5] || 0), Number(br[6] || 0));
+  }
+  return new Date();
+}
+function gfNormalizeRecord(rec) {
+  const next = Object.assign({}, rec || {});
+  const timeOnlyLegacy = !next.created_at && !next.createdAt && !next.data && !next.dia && /^\d{1,2}:\d{2}(:\d{2})?$/.test(String(next.hora || '').trim());
+  const d = timeOnlyLegacy ? new Date(2000, 0, 1) : gfParseRecordDate(next);
+  if (!next.created_at) next.created_at = d.toISOString();
+  if (!next.dia) next.dia = gfLocalDateKey(d);
+  if (timeOnlyLegacy) next.hora = 'Legado sem data · ' + String(next.hora || '');
+  else if (!next.hora || /^\d{1,2}:\d{2}(:\d{2})?$/.test(String(next.hora).trim())) next.hora = d.toLocaleString('pt-BR');
+  if (!next.operador || String(next.operador).trim() === '—') next.operador = '-';
+  return next;
+}
+function recordKey(r) {
+  const rec = gfNormalizeRecord(r || {});
+  return [rec.created_at || rec.hora || rec.dia, rec.tipo, rec.unidade, rec.detalhe, rec.operador].map(gfNorm).join('|');
+}
+function normalizeHistory() {
+  const seen = new Set();
+  S.registros = (S.registros || []).map(gfNormalizeRecord).filter(r => {
+    const key = recordKey(r);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  }).sort((a,b) => gfParseRecordDate(b).getTime() - gfParseRecordDate(a).getTime());
+  S.nextId = Math.max(0, ...S.registros.map(r => parseInt(r.id,10) || 0)) + 1;
+}
+function gfRecordsForDay(dayKey) {
+  return (S.registros || []).filter(r => gfLocalDateKey(gfParseRecordDate(r)) === dayKey);
+}
+function gfQtySafe(text) { return typeof gfQty === 'function' ? gfQty(text) : (parseInt(String(text || '').match(/\d+/)?.[0] || '1', 10) || 1); }
+function gfFilaSafe(text) { return typeof gfFila === 'function' ? gfFila(text) : (parseInt(String(text || '').match(/\d+/)?.[0] || '0', 10) || 0); }
+function gfWaitSafe(text, fila) {
+  const raw = String(text || '');
+  const m = raw.match(/·\s*(\d+)/) || raw.match(/(\d+)\s*min/i);
+  return m ? parseInt(m[1], 10) : Math.max(0, Math.round((fila || 0) * 1.2));
+}
+function gfDailyStats(rows) {
+  const hj = { novos:0, atualizacoes:0, revisoes:0, boicucanga:0, canto:0, centro:0, morro:0 };
+  let atend = 0, fila = 0, espera = 0, ausencias = 0, ocorrencias = 0;
+  rows.forEach(r => {
+    const qtd = gfQtySafe(r.detalhe);
+    const key = GF_UNIT_KEYS?.[r.unidade] || GF_UNIT_KEYS?.[String(r.unidade || '').trim()];
+    if (r.tipo === 'atend') {
+      atend += qtd;
+      if (key && hj[key] !== undefined) hj[key] += qtd;
+      if (/Novo/i.test(r.detalhe)) hj.novos += qtd;
+      else if (/Atualiza/i.test(r.detalhe)) hj.atualizacoes += qtd;
+      else if (/Revis/i.test(r.detalhe)) hj.revisoes += qtd;
+    }
+    if (r.tipo === 'fila') {
+      const n = gfFilaSafe(r.detalhe);
+      fila = n;
+      espera = gfWaitSafe(r.detalhe, n);
+    }
+    if (r.tipo === 'ausencia') ausencias += 1;
+    if (r.tipo === 'ocorrencia') ocorrencias += 1;
+  });
+  return { atend, fila, espera, ausencias, ocorrencias, hj };
+}
+function gfCurrentStats() { return gfDailyStats(gfRecordsForDay(gfLocalDateKey(new Date()))); }
+function gfSetSubText(selector, text) { const el = document.querySelector(selector); if (el) el.textContent = text; }
+function updateDashboardFromHistory() {
+  normalizeHistory();
+  const todayKey = gfLocalDateKey(new Date());
+  try { localStorage.setItem(GF_REAL_DAY_KEY, todayKey); } catch(e) {}
+  const stats = gfDailyStats(gfRecordsForDay(todayKey));
+  S.atendimentos = stats.atend;
+  S.pendentes = 0;
+  S.hj = stats.hj;
+  gfSetText('kpi-atend', stats.atend);
+  gfSetText('kpi-fila', stats.fila);
+  gfSetText('live-fila', stats.fila >= 40 ? 'Crítica' : stats.fila >= 20 ? 'Alta' : 'Normal');
+  gfSetText('fila-desc', stats.fila + ' pessoas · Tempo médio ' + stats.espera + ' min');
+  gfSetText('live-cad', stats.hj.novos + stats.hj.atualizacoes + stats.hj.revisoes);
+  gfSetText('cad-desc', 'Novos: ' + stats.hj.novos + ' · Atualizações: ' + stats.hj.atualizacoes + ' · Revisões: ' + stats.hj.revisoes);
+  gfSetText('u-boicucanga', stats.hj.boicucanga);
+  gfSetText('u-canto', stats.hj.canto);
+  gfSetText('u-centro', stats.hj.centro);
+  gfSetText('u-morro', stats.hj.morro);
+  gfSetText('overview-atend', stats.atend);
+  gfSetText('overview-fila', stats.fila);
+  gfSetText('overview-ausencias', stats.ausencias);
+  gfSetText('overview-revisoes', stats.hj.revisoes);
+  gfSetText('overview-registros', gfRecordsForDay(todayKey).length);
+  gfSetText('overview-alertas', stats.ocorrencias + (typeof getStockAlerts === 'function' ? getStockAlerts().length : 0));
+  gfSetText('urg-count', stats.ocorrencias);
+  gfSetSubText('.kpi-cell:nth-child(1) .kpi-sub', 'Hoje · dados do banco');
+  gfSetSubText('.kpi-cell:nth-child(2) .kpi-sub', 'Dia atual · zera automaticamente');
+  gfSetSubText('.kpi-cell:nth-child(3) .kpi-sub', 'Histórico preservado para relatórios');
+  gfSetSubText('#hist-sub', (S.registros || []).length + ' registros no banco/local · ' + gfRecordsForDay(todayKey).length + ' hoje');
+  const activeCount = Math.max(0, (TEAM?.length || 0) - stats.ausencias);
+  const activeKpi = document.querySelector('.kpi-cell:nth-child(4) .kpi-value');
+  if (activeKpi) activeKpi.innerHTML = activeCount + '<span style="font-size:15px;color:var(--ink3);font-weight:400">/' + (TEAM?.length || 0) + '</span>';
+  const activeSub = document.querySelector('.kpi-cell:nth-child(4) .kpi-sub .mp') || document.querySelector('.kpi-cell:nth-child(4) .kpi-sub');
+  if (activeSub) activeSub.textContent = stats.ausencias + ' ausentes hoje';
+  const chartUnits = (typeof Chart !== 'undefined' && document.getElementById('chartUnidades')) ? Chart.getChart(document.getElementById('chartUnidades')) : null;
+  if (chartUnits) { chartUnits.data.datasets[0].data = [stats.hj.centro, stats.hj.canto, stats.hj.boicucanga, stats.hj.morro]; chartUnits.update(); }
+  const chartTipos = (typeof Chart !== 'undefined' && document.getElementById('chartTipos')) ? Chart.getChart(document.getElementById('chartTipos')) : null;
+  if (chartTipos) { chartTipos.data.datasets[0].data = [stats.hj.novos, stats.hj.atualizacoes, stats.hj.revisoes]; chartTipos.update(); }
+  if (typeof renderUnitBriefs === 'function') renderUnitBriefs();
+  if (typeof renderPerformance === 'function') renderPerformance();
+  if (typeof refreshAttentionPanel === 'function') refreshAttentionPanel();
+}
+async function persistReg(rec) {
+  if (!db) return;
+  const clean = gfNormalizeRecord(rec);
+  try {
+    await db.from('registros').insert({ tipo: clean.tipo || 'atend', unidade: clean.unidade || null, detalhe: clean.detalhe || '', operador: clean.operador || '-', hora: clean.created_at });
+  } catch(e) { console.warn('Nao foi possivel salvar no Supabase'); }
+}
+function addReg(rec) {
+  const incoming = Object.assign({}, rec || {});
+  if (!incoming.created_at && !incoming.createdAt && !incoming.data && !incoming.dia) incoming.created_at = new Date().toISOString();
+  const clean = gfNormalizeRecord(incoming);
+  forgetDeleted(clean);
+  if (!S.registros.some(r => recordKey(r) === recordKey(clean))) S.registros.unshift(clean);
+  normalizeHistory(); updateHistBadge(); renderRecent(); renderHist(); saveLocalRecords(); updateDashboardFromHistory(); persistReg(clean); markUpdate();
+}
+function gfMapRemoteRecord(r) {
+  const when = r.hora || r.created_at || new Date().toISOString();
+  return gfNormalizeRecord({ id: r.id, tipo: r.tipo || 'atend', unidade: r.unidade || '', detalhe: r.detalhe || '', operador: r.operador || '-', hora: when, created_at: when });
+}
+async function initPersistentHistory() {
+  loadLocalRecords();
+  normalizeHistory();
+  const skipRemote = localStorage.getItem(GF_CLEAR_REMOTE) === '1' && S.registros.length === 0;
+  if (db && !skipRemote) {
+    try {
+      const { data, error } = await db.from('registros').select('*').order('created_at', { ascending: false }).limit(1000);
+      if (!error && data && data.length) { mergeRecords(data.map(gfMapRemoteRecord)); saveLocalRecords(); }
+    } catch(e) { console.warn('Supabase indisponivel; usando historico local'); }
+  }
+  updateHistBadge(); renderRecent(); renderHist(); enhanceDashboard(); updateDashboardFromHistory();
+}
+async function loginGovflow() {
+  const email = document.getElementById('login-email')?.value.trim().toLowerCase();
+  const pass = document.getElementById('login-pass')?.value;
+  if (!email || !pass) { toast('Preencha e-mail e senha', 'err'); return; }
+  if (db && db.auth && db.auth.signInWithPassword) {
+    try {
+      const auth = await db.auth.signInWithPassword({ email, password: pass });
+      if (!auth.error && auth.data?.user) {
+        const users = gfRead(GF_USERS_KEY, GF_SEED_USERS);
+        const local = users.find(u => u.email.toLowerCase() === email) || { name: auth.data.user.email, email, role:'Funcionário', active:true };
+        if (local.active === false) { toast('Usuário bloqueado pela coordenação', 'err'); return; }
+        gfWrite(GF_SESSION_KEY, { name:local.name, email:local.email, role:local.role });
+        showAuth(false); renderUserSession(); renderFuncionarios(); toast('Bem-vindo, ' + local.name); return;
+      }
+    } catch(e) { console.warn('Auth online indisponivel; usando controle local'); }
+  }
+  const users = gfRead(GF_USERS_KEY, GF_SEED_USERS);
+  const user = users.find(u => u.email.toLowerCase() === email && u.password === pass && u.active !== false);
+  if (!user) { toast('E-mail ou senha não autorizado', 'err'); return; }
+  gfWrite(GF_SESSION_KEY, { name:user.name, email:user.email, role:user.role }); showAuth(false); renderUserSession(); renderFuncionarios(); toast('Bem-vindo, ' + user.name);
+}
+function gfReportRange() {
+  const mode = document.getElementById('report-period-mode')?.value || 'dia';
+  const today = gfLocalDateKey(new Date());
+  const selected = document.getElementById('report-period-value')?.value || today;
+  let from, to;
+  if (mode === 'ano') {
+    const year = parseInt(selected, 10) || new Date().getFullYear();
+    from = new Date(year, 0, 1);
+    to = new Date(year, 11, 31, 23, 59, 59, 999);
+  } else if (mode === 'mes') {
+    const parts = selected.match(/^(\d{4})-(\d{2})$/) || today.slice(0,7).match(/^(\d{4})-(\d{2})$/);
+    const year = parseInt(parts[1], 10), month = parseInt(parts[2], 10) - 1;
+    from = new Date(year, month, 1);
+    to = new Date(year, month + 1, 0, 23, 59, 59, 999);
+  } else {
+    const date = new Date((/^\d{4}-\d{2}-\d{2}$/.test(selected) ? selected : today) + 'T00:00:00');
+    from = new Date(date);
+    to = new Date(date);
+    to.setHours(23,59,59,999);
+  }
+  return { mode, from, to, label: from.toLocaleDateString('pt-BR') + (gfLocalDateKey(from) === gfLocalDateKey(to) ? '' : ' a ' + to.toLocaleDateString('pt-BR')) };
+}
+function gfRecordsForReport() {
+  const range = gfReportRange();
+  const und = document.getElementById('rel-und')?.value || 'Todas as unidades';
+  const rows = (S.registros || []).filter(r => {
+    const d = gfParseRecordDate(r);
+    const unitOk = und === 'Todas as unidades' || !und || r.unidade === und;
+    return unitOk && d >= range.from && d <= range.to;
+  });
+  return { range, rows, stats: gfDailyStats(rows) };
+}
+function enhanceReportWorkspace() {
+  if (typeof addReportModelControls === 'function') addReportModelControls();
+  const cfg = document.querySelector('.rel-config');
+  if (cfg && !document.getElementById('report-period-box')) {
+    const today = gfLocalDateKey(new Date());
+    const box = document.createElement('div');
+    box.id = 'report-period-box';
+    box.className = 'report-period-box';
+    box.innerHTML = '<div class="field"><label>Período do relatório</label><select id="report-period-mode" onchange="syncReportPeriodInput()"><option value="dia">Dia</option><option value="mes">Mês</option><option value="ano">Ano</option></select></div><div class="field"><label>Data base</label><input id="report-period-value" type="date" value="' + today + '"></div><div class="period-extra"><div class="auth-sub">O painel diário zera sozinho, mas o histórico fica salvo para puxar relatório por dia, mês ou ano.</div></div>';
+    cfg.insertBefore(box, document.getElementById('report-model-tabs')?.nextSibling || cfg.firstChild);
+  }
+  const preview = document.getElementById('rel-preview-box');
+  if (preview && !document.getElementById('report-layout-help')) {
+    preview.innerHTML = '<div id="report-layout-help" style="max-width:760px;margin:60px auto;text-align:center;color:var(--ink2)"><div style="font-size:22px;font-weight:800;color:var(--ink);margin-bottom:8px">Escolha o período e o modelo</div><div>Os relatórios usam os registros salvos no histórico/banco e podem ser puxados por dia, mês ou ano.</div></div>';
+  }
+}
+function syncReportPeriodInput() {
+  const mode = document.getElementById('report-period-mode')?.value || 'dia';
+  const value = document.getElementById('report-period-value');
+  if (!value) return;
+  value.type = mode === 'ano' ? 'number' : (mode === 'mes' ? 'month' : 'date');
+  if (mode === 'ano' && !/^\d{4}$/.test(value.value)) value.value = String(new Date().getFullYear());
+  if (mode === 'mes' && !/^\d{4}-\d{2}$/.test(value.value)) value.value = gfLocalDateKey(new Date()).slice(0,7);
+  if (mode === 'dia' && !/^\d{4}-\d{2}-\d{2}$/.test(value.value)) value.value = gfLocalDateKey(new Date());
+}
+function buildReport() {
+  const model = window.govflowReportModel || 'executivo';
+  const title = document.getElementById('rel-titulo')?.value || 'Relatório GovFlow';
+  const und = document.getElementById('rel-und')?.value || 'Todas as unidades';
+  const report = gfRecordsForReport();
+  const meta = 'Unidade: ' + und + ' · Período: ' + report.range.label + ' · Gerado em ' + new Date().toLocaleString('pt-BR');
+  let body = '';
+  if (model === 'estoque') {
+    const stock = gfRead(GF_STOCK_KEY, GF_SEED_STOCK);
+    const low = stock.filter(i => i.qty <= i.min);
+    body += '<div class="report-section"><div class="report-section-title">Resumo de Estoque</div><div class="rep-kpi-row"><div class="rep-kpi"><div class="rep-kpi-val">' + stock.length + '</div><div class="rep-kpi-lbl">Itens</div></div><div class="rep-kpi"><div class="rep-kpi-val" style="color:var(--amber)">' + low.length + '</div><div class="rep-kpi-lbl">Alertas</div></div><div class="rep-kpi"><div class="rep-kpi-val">' + stock.reduce((a,b)=>a+b.qty,0) + '</div><div class="rep-kpi-lbl">Saldo total</div></div></div><table class="rep-table"><tr><th>Item</th><th>Qtd.</th><th>Mínimo</th><th>Local</th><th>Status</th></tr>' + tableRows(stock.map(i => [i.item, i.qty + ' ' + i.unit, i.min + ' ' + i.unit, i.place, i.qty <= i.min ? 'Repor' : 'OK'])) + '</table></div>';
+  } else if (model === 'ordens') {
+    const orders = gfRead(GF_ORDERS_KEY, GF_SEED_ORDERS);
+    body += '<div class="report-section"><div class="report-section-title">Ordens de Serviço</div><div class="rep-kpi-row"><div class="rep-kpi"><div class="rep-kpi-val">' + orders.length + '</div><div class="rep-kpi-lbl">Total</div></div><div class="rep-kpi"><div class="rep-kpi-val">' + orders.filter(o=>o.status!=="Concluída").length + '</div><div class="rep-kpi-lbl">Abertas</div></div><div class="rep-kpi"><div class="rep-kpi-val">' + orders.filter(o=>o.priority==='Alta').length + '</div><div class="rep-kpi-lbl">Alta prioridade</div></div></div><table class="rep-table"><tr><th>#</th><th>Ordem</th><th>Unidade</th><th>Responsável</th><th>Status</th></tr>' + tableRows(orders.map(o => [o.id, o.title, o.unit, o.owner, o.status])) + '</table></div>';
+  } else if (model === 'fila') {
+    const filaRows = report.rows.filter(r => r.tipo === 'fila');
+    const last = filaRows[0];
+    body += '<div class="report-section"><div class="report-section-title">Fila Pública</div><div class="rep-kpi-row"><div class="rep-kpi"><div class="rep-kpi-val">' + report.stats.fila + '</div><div class="rep-kpi-lbl">Última fila</div></div><div class="rep-kpi"><div class="rep-kpi-val">' + report.stats.espera + 'm</div><div class="rep-kpi-lbl">Espera média</div></div><div class="rep-kpi"><div class="rep-kpi-val">' + filaRows.length + '</div><div class="rep-kpi-lbl">Registros no período</div></div></div><div class="rep-analysis"><b>Última atualização:</b> ' + (last ? last.hora + ' · ' + last.detalhe : 'sem registro no período') + '</div></div>';
+  } else {
+    const stockAlerts = typeof getStockAlerts === 'function' ? getStockAlerts() : [];
+    const ocRows = report.rows.filter(r => r.tipo === 'ocorrencia');
+    body += '<div class="report-section"><div class="report-section-title">Resumo Executivo</div><div class="rep-kpi-row"><div class="rep-kpi"><div class="rep-kpi-val">' + report.stats.atend + '</div><div class="rep-kpi-lbl">Atendimentos</div></div><div class="rep-kpi"><div class="rep-kpi-val">' + report.stats.fila + '</div><div class="rep-kpi-lbl">Fila registrada</div></div><div class="rep-kpi"><div class="rep-kpi-val">' + report.rows.length + '</div><div class="rep-kpi-lbl">Registros</div></div><div class="rep-kpi"><div class="rep-kpi-val">' + ocRows.length + '</div><div class="rep-kpi-lbl">Ocorrências</div></div></div><div class="rep-analysis"><b>Atenção:</b> ' + (stockAlerts.length ? stockAlerts.map(i => i.item + ' abaixo do mínimo').join('; ') : 'sem alertas críticos de estoque.') + '</div><table class="rep-table"><tr><th>Tipo</th><th>Unidade</th><th>Detalhe</th><th>Data/Hora</th></tr>' + tableRows(report.rows.slice(0,40).map(r => [r.tipo, r.unidade || '-', r.detalhe || '-', r.hora || '-'])) + '</table></div>';
+  }
+  document.getElementById('rel-preview-box').innerHTML = reportShell(title, meta, body);
+  const row = document.getElementById('rel-btn-row'); if (row) row.style.display = 'block';
+  toast('Relatório gerado');
+}
+function autoUpdateLivePanel() {
+  updateDashboardFromHistory();
+  markUpdate();
+  const liveCard = document.querySelector('.sidebar-live-card');
+  if (liveCard) { liveCard.classList.add('live-pulse'); setTimeout(() => liveCard.classList.remove('live-pulse'), 700); }
+  const stats = gfCurrentStats();
+  const rows = document.querySelectorAll('.sidebar-live-card .live-row');
+  if (rows[2]) {
+    const desc = rows[2].querySelector('.live-desc');
+    const val = rows[2].querySelector('.live-value');
+    const ongoing = Math.max(0, Math.min(9, Math.round(stats.fila / 6)));
+    if (desc) desc.textContent = ongoing + ' guichês ativos · dados do dia';
+    if (val) val.textContent = ongoing;
+  }
+  if (typeof refreshAttentionPanel === 'function') refreshAttentionPanel();
+}
+function injectRealDataNote() {
+  const tabs = document.querySelector('.dashboard-tabs');
+  if (!tabs || document.getElementById('real-data-note')) return;
+  const note = document.createElement('div');
+  note.id = 'real-data-note';
+  note.className = 'real-data-note dash-panel dash-panel-resumo active';
+  note.innerHTML = '<div><strong>Dashboard de hoje</strong><br>Os contadores começam em 0 a cada dia. O histórico fica salvo para relatórios por dia, mês e ano.</div><span>Dados do banco/local</span>';
+  tabs.insertAdjacentElement('afterend', note);
+}
+setTimeout(() => { injectRealDataNote(); enhanceReportWorkspace(); updateDashboardFromHistory(); }, 900);
 </script>
 </body>
 </html>
