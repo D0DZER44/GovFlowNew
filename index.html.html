@@ -1156,6 +1156,25 @@ body { font-size: 16px; line-height: 1.62; }
 .abnt-report .rep-table th, .abnt-report .rep-table td { color: #111827; border-color: #d1d5db; }
 .abnt-report .abnt-cover-note { margin-top: 24px; text-align: center; color: #374151; font-size: 12px; }
 @media (max-width: 760px) { .abnt-report { padding: 32px 22px; } .abnt-report .rep-kpi-row { grid-template-columns: 1fr; } #user-session-pill { display:none; } }
+/* CODEX GOVFLOW ADMIN DEMANDA AGENDA FINAL */
+#nav-fila, #screen-fila { display: none !important; }
+.demanda-board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.demanda-col { border: 1px solid var(--line); border-radius: 12px; background: var(--bg1); overflow: hidden; }
+.demanda-col-head { padding: 14px 16px; font-weight: 900; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
+.demanda-list { display: grid; gap: 10px; padding: 14px; }
+.demanda-card { border: 1px solid var(--line2); border-radius: 8px; padding: 12px; background: var(--bg2); }
+.demanda-card strong { display:block; color: var(--ink); font-size: 14.5px; margin-bottom: 4px; }
+.demanda-card span { display:block; color: var(--ink2); font-size: 13px; line-height: 1.45; }
+.demanda-red { border-color: var(--red3); }
+.demanda-yellow { border-color: var(--amber3); }
+.demanda-green { border-color: var(--green3); }
+.admin-user-row { display:grid; grid-template-columns:minmax(160px,1fr) minmax(220px,1.2fr) 150px 110px auto; align-items:center; gap:10px; }
+.admin-user-actions { display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap; }
+.abnt-report { font-family: Arial, Helvetica, sans-serif !important; font-size: 12pt !important; line-height: 1.5 !important; padding: 3cm 2cm 2cm 3cm !important; }
+.abnt-report p, .abnt-report .rep-analysis, .abnt-report .report-mini-note { text-align: justify !important; text-indent: 1.25cm; font-size: 12pt !important; line-height: 1.5 !important; color: #111827 !important; }
+.abnt-report .report-section-title { text-align: left !important; font-weight: 700 !important; font-size: 12pt !important; margin-top: 18pt; }
+.abnt-report table { font-size: 10pt !important; }
+@media (max-width: 980px) { .demanda-board { grid-template-columns: 1fr; } .admin-user-row { grid-template-columns: 1fr; align-items:start; } .admin-user-actions { justify-content:flex-start; } .abnt-report { padding: 28px 18px !important; } }
 </style>
 </head>
 <body>
@@ -2176,20 +2195,19 @@ function saveTarefa() {
 // TEAM
 // ────────────────────────────────────────
 const TEAM = [
-  { i:'AP', n:'Ana Paula',  c:'Operadora',        u:'Centro',      s:'ativo',   cor:'#4f8ef7' },
-  { i:'CM', n:'Carlos M.',  c:'Coordenador',       u:'Centro',      s:'ativo',   cor:'#22d4c4' },
-  { i:'RS', n:'Rita S.',    c:'Assist. Social',    u:'Canto do Mar',s:'ativo',   cor:'#29d98a' },
-  { i:'JR', n:'João R.',    c:'Operador',          u:'Morro',       s:'ativo',   cor:'#a87fe8' },
-  { i:'MF', n:'Marcos F.',  c:'Operador',          u:'Centro',      s:'ausente', cor:'#f04f52' },
-  { i:'LO', n:'Lúcia O.',   c:'Cadastradora',      u:'Boiçucanga',  s:'ativo',   cor:'#f5a623' },
-  { i:'TS', n:'Thiago S.',  c:'Operador',          u:'Boiçucanga',  s:'ativo',   cor:'#4f8ef7' },
-  { i:'PC', n:'Paula C.',   c:'Assist. Social',    u:'Canto do Mar',s:'campo',   cor:'#22d4c4' },
-  { i:'EV', n:'Eliane V.',  c:'Cadastradora',      u:'Centro',      s:'ativo',   cor:'#29d98a' },
-  { i:'BN', n:'Bruno N.',   c:'Operador',          u:'Morro',       s:'ativo',   cor:'#a87fe8' },
-  { i:'GS', n:'Gisele S.',  c:'Coord. Adjunta',    u:'Centro',      s:'ausente', cor:'#f04f52' },
-  { i:'RF', n:'Rodrigo F.', c:'Operador',          u:'Boiçucanga',  s:'ausente', cor:'#f04f52' }
-];
-const STATUS_MAP = {
+  { i:'F01', n:'Funcionário 01', c:'Atendimento',  u:'Centro',          s:'ativo',   cor:'#2563eb' },
+  { i:'F02', n:'Funcionário 02', c:'Coordenação',  u:'Centro',          s:'ativo',   cor:'#0891b2' },
+  { i:'F03', n:'Funcionário 03', c:'Cadastro',     u:'Canto do Mar',    s:'ativo',   cor:'#0f9f6e' },
+  { i:'F04', n:'Funcionário 04', c:'Cadastro',     u:'Morro',           s:'campo',   cor:'#8b5cf6' },
+  { i:'F05', n:'Funcionário 05', c:'Atendimento',  u:'Centro',          s:'ausente', cor:'#dc2626' },
+  { i:'F06', n:'Funcionário 06', c:'Cadastro',     u:'Boiçucanga',      s:'ativo',   cor:'#d97706' },
+  { i:'F07', n:'Funcionário 07', c:'Atendimento',  u:'Boiçucanga',      s:'ativo',   cor:'#2563eb' },
+  { i:'F08', n:'Funcionário 08', c:'Serviço Social',u:'Canto do Mar',   s:'campo',   cor:'#0891b2' },
+  { i:'F09', n:'Funcionário 09', c:'Cadastro',     u:'Centro',          s:'ativo',   cor:'#0f9f6e' },
+  { i:'F10', n:'Funcionário 10', c:'Atendimento',  u:'Morro',           s:'ativo',   cor:'#8b5cf6' },
+  { i:'F11', n:'Funcionário 11', c:'Coordenação',  u:'Centro',          s:'ausente', cor:'#dc2626' },
+  { i:'F12', n:'Funcionário 12', c:'Atendimento',  u:'Boiçucanga',      s:'ausente', cor:'#dc2626' }
+];const STATUS_MAP = {
   ativo:   { lbl:'Ativo',    bg:'var(--green2)', col:'var(--green)' },
   ausente: { lbl:'Ausente',  bg:'var(--red2)',   col:'var(--red)' },
   campo:   { lbl:'Em campo', bg:'var(--blue2)',  col:'var(--blue)' }
@@ -3790,6 +3808,133 @@ function initPremiumFinal() {
   window.govflowLiveTimer = setInterval(autoUpdateLivePanel, 15000);
 }
 setTimeout(initPremiumFinal, 1900);
+// CODEX GOVFLOW ADMIN DEMANDA AGENDA FINAL SCRIPT
+function anonymizeDemoPeople() {
+  if (typeof TEAM !== 'undefined' && Array.isArray(TEAM)) {
+    const generic = [
+      ['F01','Funcionário 01','Atendimento','Centro','ativo','#2563eb'],
+      ['F02','Funcionário 02','Coordenação','Centro','ativo','#0891b2'],
+      ['F03','Funcionário 03','Cadastro','Boiçucanga','campo','#0f9f6e'],
+      ['F04','Funcionário 04','Atendimento','Canto do Mar','ativo','#d97706'],
+      ['F05','Funcionário 05','Cadastro','Morro do Abrigo','ativo','#8b5cf6'],
+      ['F06','Funcionário 06','Atendimento','Centro','ausente','#dc2626'],
+      ['F07','Funcionário 07','Cadastro','Boiçucanga','campo','#0f9f6e'],
+      ['F08','Funcionário 08','Atendimento','Canto do Mar','ativo','#2563eb'],
+      ['F09','Funcionário 09','Cadastro','Morro do Abrigo','ativo','#0891b2'],
+      ['F10','Funcionário 10','Atendimento','Centro','ativo','#0f9f6e'],
+      ['F11','Funcionário 11','Coordenação','Centro','ausente','#dc2626'],
+      ['F12','Funcionário 12','Cadastro','Boiçucanga','ativo','#d97706']
+    ].map(([i,n,c,u,s,cor]) => ({ i,n,c,u,s,cor }));
+    TEAM.splice(0, TEAM.length, ...generic);
+    if (typeof renderTeam === 'function') renderTeam();
+  }
+  const cleanUsers = [
+    { name:'Administrador', email:'admin@govflow.com.br', password:'Admin123', role:'Administrador', active:true, lastAccess:'-' },
+    { name:'Coordenação', email:'coordenacao@govflow.com.br', password:'Coord123', role:'Coordenação', active:true, lastAccess:'-' },
+    { name:'Atendimento', email:'atendimento@govflow.com.br', password:'Atend123', role:'Atendente', active:true, lastAccess:'-' }
+  ];
+  try {
+    const current = JSON.parse(localStorage.getItem(GF_USERS_KEY) || '[]');
+    const hasDemoNames = JSON.stringify(current).match(/Ana|Carlos|Paula|Marcos|Gisele|Admin GovFlow|Coordenação CadÚnico/i);
+    if (!current.length || hasDemoNames) localStorage.setItem(GF_USERS_KEY, JSON.stringify(cleanUsers));
+  } catch(e) { try { localStorage.setItem(GF_USERS_KEY, JSON.stringify(cleanUsers)); } catch(_) {} }
+}
+function removeFilaPublicaModule() {
+  document.getElementById('nav-fila')?.remove();
+  document.getElementById('screen-fila')?.remove();
+  document.querySelectorAll('.nav-item').forEach(btn => { if (/Fila Pública/i.test(btn.textContent || '')) btn.remove(); });
+  document.querySelectorAll('#report-model-tabs button').forEach(btn => { if (/^Fila$/i.test(btn.textContent.trim())) btn.remove(); });
+}
+function upgradeDemandaTab() {
+  document.querySelectorAll('.nav-item').forEach(btn => {
+    if (/Cenários|Cenarios/i.test(btn.textContent || '')) {
+      btn.innerHTML = btn.innerHTML.replace(/Cenários|Cenarios/g, 'Demanda');
+      btn.setAttribute('onclick', "goTo('dashboard');setTimeout(()=>setDashTab('demanda'),80)");
+    }
+  });
+  document.querySelectorAll('#screen-dashboard .dash-tab').forEach(btn => {
+    if (/Cenários|Cenarios/i.test(btn.textContent || '')) { btn.textContent = 'Demanda'; btn.dataset.tab = 'demanda'; btn.setAttribute('onclick', "setDashTab('demanda')"); }
+  });
+  const sep = document.getElementById('sec-cenarios');
+  if (sep) sep.textContent = 'Demanda — Prioridades da Coordenação';
+  const card = sep?.nextElementSibling?.querySelector('.card');
+  if (card && !card.querySelector('.demanda-board')) {
+    card.innerHTML = '<div class="card-head"><div class="card-title">Demanda da Coordenação</div><span class="mp mp-r">Prioridades</span></div><div class="demanda-board"><div class="demanda-col demanda-red"><div class="demanda-col-head">Vermelho <span class="mp mp-r">Urgente</span></div><div class="demanda-list"><div class="demanda-card"><strong>Responder demanda MDS</strong><span>Prazo curto, exige retorno da coordenação e registro no histórico.</span></div><div class="demanda-card"><strong>Revisões com risco</strong><span>Conferir famílias pendentes e organizar força-tarefa.</span></div></div></div><div class="demanda-col demanda-yellow"><div class="demanda-col-head">Amarelo <span class="mp mp-a">Atenção</span></div><div class="demanda-list"><div class="demanda-card"><strong>Repor materiais</strong><span>Verificar papel, formulários e equipamentos antes de afetar atendimento.</span></div><div class="demanda-card"><strong>Reorganizar equipe</strong><span>Validar ausências e redistribuir atendimento por unidade.</span></div></div></div><div class="demanda-col demanda-green"><div class="demanda-col-head">Verde <span class="mp mp-g">Normal</span></div><div class="demanda-list"><div class="demanda-card"><strong>Rotina acompanhada</strong><span>Demandas sem risco imediato para execução programada.</span></div><div class="demanda-card"><strong>Relatórios mensais</strong><span>Preparar consolidação quando o período fechar.</span></div></div></div></div>';
+  }
+}
+function setDashTab(name) {
+  hardenDashboardPanels();
+  const targetName = name === 'demanda' ? 'demanda' : (name || 'resumo');
+  const className = targetName === 'demanda' ? 'cenarios' : targetName;
+  const dashboard = document.getElementById('screen-dashboard');
+  const overview = targetName === 'resumo';
+  if (dashboard) dashboard.classList.toggle('dashboard-overview-mode', overview);
+  document.querySelectorAll('#screen-dashboard .dash-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === targetName));
+  document.querySelectorAll('#screen-dashboard .dash-panel').forEach(p => {
+    const shouldShow = overview || p.classList.contains('dash-panel-' + className);
+    p.classList.toggle('active', shouldShow);
+    p.style.display = shouldShow ? '' : 'none';
+  });
+  const tabs = document.querySelector('#screen-dashboard .dashboard-tabs');
+  if (tabs) tabs.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+function renderFuncionarios() {
+  const users = gfRead(GF_USERS_KEY, GF_SEED_USERS).map(u => ({...u, active:u.active !== false}));
+  gfSetText('users-count', users.length + ' usuários');
+  const list = document.getElementById('users-list');
+  if (!list) return;
+  list.innerHTML = users.map((u,i) => '<div class="saas-row admin-user-row"><div><div class="saas-row-title">' + (u.name || 'Usuário') + '</div><div class="saas-row-desc">' + (u.lastAccess ? 'Último acesso: ' + u.lastAccess : 'Sem acesso registrado') + '</div></div><div class="saas-row-desc">' + u.email + '</div><div><span class="mp mp-b">' + u.role + '</span></div><div><span class="mp ' + (u.active ? 'mp-g' : 'mp-r') + '">' + (u.active ? 'Ativo' : 'Bloqueado') + '</span></div><div class="admin-user-actions"><button class="btn btn-ghost btn-sm" onclick="editFuncionario(' + i + ')">Editar</button><button class="btn btn-ghost btn-sm" onclick="toggleFuncionario(' + i + ')">' + (u.active ? 'Bloquear' : 'Ativar') + '</button><button class="btn btn-ghost btn-sm" onclick="removeFuncionario(' + i + ')">Remover</button></div></div>').join('');
+}
+function editFuncionario(i) {
+  if (!isAdmin()) { toast('Somente admin/coordenação edita usuários', 'err'); return; }
+  const users = gfRead(GF_USERS_KEY, GF_SEED_USERS);
+  const u = users[i]; if (!u) return;
+  const name = prompt('Nome do usuário', u.name || ''); if (name === null) return;
+  const role = prompt('Perfil', u.role || 'Atendente'); if (role === null) return;
+  u.name = name.trim() || u.name; u.role = role.trim() || u.role;
+  gfWrite(GF_USERS_KEY, users); renderFuncionarios(); toast('Usuário atualizado');
+}
+function removeFuncionario(i) {
+  if (!isAdmin()) { toast('Somente admin/coordenação remove usuários', 'err'); return; }
+  const users = gfRead(GF_USERS_KEY, GF_SEED_USERS);
+  const u = users[i]; if (!u) return;
+  if (!confirm('Remover acesso de ' + (u.email || 'usuário') + '?')) return;
+  users.splice(i, 1); gfWrite(GF_USERS_KEY, users); renderFuncionarios(); toast('Usuário removido');
+}
+function toggleFuncionario(i) { const users = gfRead(GF_USERS_KEY, GF_SEED_USERS); if (!users[i]) return; users[i].active = users[i].active === false; gfWrite(GF_USERS_KEY, users); renderFuncionarios(); toast(users[i].active ? 'Usuário ativado' : 'Usuário bloqueado'); }
+function saveFuncionario() {
+  if (!isAdmin()) { toast('Somente coordenação/admin cadastra acessos', 'err'); return; }
+  const name = document.getElementById('user-name')?.value.trim();
+  const email = document.getElementById('user-email')?.value.trim().toLowerCase();
+  const password = document.getElementById('user-pass')?.value.trim();
+  const role = document.getElementById('user-role')?.value || 'Atendente';
+  if (!name || !email || !password) { toast('Preencha nome, e-mail e senha', 'err'); return; }
+  const users = gfRead(GF_USERS_KEY, GF_SEED_USERS);
+  if (users.some(u => u.email.toLowerCase() === email)) { toast('E-mail já cadastrado', 'err'); return; }
+  users.push({ name, email, password, role, active:true, lastAccess:'-' });
+  gfWrite(GF_USERS_KEY, users); renderFuncionarios(); toast('Acesso cadastrado'); ['user-name','user-email','user-pass'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+}
+function upgradeAdminScreenLabels() {
+  document.querySelectorAll('.sidebar-section').forEach(el => { if (/Gestão Operacional/i.test(el.textContent)) el.textContent = 'Administração'; });
+  const nav = document.getElementById('nav-funcionarios'); if (nav) nav.childNodes.forEach(n => { if (n.nodeType === 3 && /Funcionários/i.test(n.nodeValue)) n.nodeValue = ' Administração'; });
+  const title = document.querySelector('#screen-funcionarios .page-hd-title'); if (title) title.textContent = 'Administração de Usuários';
+  const sub = document.querySelector('#screen-funcionarios .page-hd-sub'); if (sub) sub.textContent = 'Cadastre, edite, bloqueie, reative ou remova usuários autorizados.';
+}
+function enhanceReportWorkspace() {
+  addReportModelControls();
+  removeFilaPublicaModule();
+  const preview = document.getElementById('rel-preview-box');
+  if (preview && !document.getElementById('report-layout-help')) {
+    preview.innerHTML = '<div id="report-layout-help" style="max-width:760px;margin:60px auto;text-align:center;color:var(--ink2)"><div style="font-size:22px;font-weight:800;color:var(--ink);margin-bottom:8px">Relatório Geral</div><div>Use o modelo Geral para gerar um documento completo em formato técnico, com texto justificado e seções padronizadas.</div></div>';
+  }
+}
+function initAdminDemandaAgendaFinal() {
+  anonymizeDemoPeople(); removeFilaPublicaModule(); upgradeDemandaTab(); upgradeAdminScreenLabels(); renderFuncionarios(); setDashTab('resumo'); updateDashboardFromHistory();
+}
+setTimeout(initAdminDemandaAgendaFinal, 2200);
+// CODEX GOVFLOW FINAL SAFETY PATCH
+function renderMicroSaasAll() { renderFuncionarios(); renderStock(); renderOrders(); renderPerformance(); removeFilaPublicaModule(); }
+setTimeout(() => { removeFilaPublicaModule(); upgradeDemandaTab(); upgradeAdminScreenLabels(); renderFuncionarios(); setDashTab('resumo'); }, 2800);
 </script>
 </body>
 </html>
