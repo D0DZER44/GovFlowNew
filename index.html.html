@@ -8507,5 +8507,509 @@ label,
 })();
 </script>
 <!-- /CODEX GOVFLOW STOCK NO CONFIRM FINAL -->
-</body>
+
+<!-- CODEX GOVFLOW STRUCTURAL REPORT LOGO FIX FINAL -->
+<style>
+/* GOVFLOW - CORRECAO ESTRUTURAL FINAL */
+.govflow-logo-mark {
+  width: 46px !important;
+  height: 46px !important;
+  min-width: 46px !important;
+  border-radius: 13px !important;
+  overflow: hidden !important;
+  background: transparent !important;
+  box-shadow: 0 16px 36px rgba(34, 197, 94, .22), 0 8px 22px rgba(37, 99, 235, .20) !important;
+}
+.govflow-logo-svg { width: 100% !important; height: 100% !important; display:block !important; }
+.topbar { position: fixed !important; }
+.topbar-center {
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  min-width: 410px !important;
+  max-width: 520px !important;
+  padding: 8px 16px !important;
+  text-align: center !important;
+  z-index: 1 !important;
+}
+.tb-clock, .tb-date { display:inline-flex !important; justify-content:center !important; text-align:center !important; white-space:nowrap !important; }
+.topbar-brand, .topbar-right { position: relative !important; z-index: 2 !important; }
+.card-head,
+.saas-card .card-head,
+.overview-card .card-head,
+.page-hd,
+.ia-operacional-head,
+.insights-auto-head,
+.govflow-public-head {
+  position: relative !important;
+  justify-content: center !important;
+  text-align: center !important;
+  min-width: 0 !important;
+}
+.card-title,
+.page-hd-title,
+.insights-auto-title,
+.ia-operacional-title,
+.govflow-public-title,
+.rel-config-title {
+  text-align: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  letter-spacing: 0 !important;
+  white-space: normal !important;
+  overflow-wrap: break-word !important;
+  word-break: normal !important;
+}
+.card-head > .mp,
+.card-head > button,
+.saas-card .card-head > .mp,
+.saas-card .card-head > button,
+.govflow-public-head > .mp,
+.insights-auto-head > .insights-auto-badge,
+.ia-operacional-head > .ia-operacional-badge {
+  position: static !important;
+  margin-left: 0 !important;
+  margin-right: auto !important;
+  order: -1 !important;
+  flex: 0 0 auto !important;
+  align-self: center !important;
+}
+.btn, button, .mp, .task-badge, .func-status, .live-value, .stock-actions, .admin-user-actions {
+  text-align: left !important;
+  justify-content: flex-start !important;
+}
+.kpi-sub, .overview-row, .performance-row, .saas-row { justify-content: flex-start !important; }
+#screen-relatorio .page-hd {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  justify-items: center !important;
+  text-align: center !important;
+  gap: 8px !important;
+  padding: 26px !important;
+  min-height: auto !important;
+}
+#screen-relatorio .page-hd > div,
+#screen-relatorio .page-hd-title,
+#screen-relatorio .page-hd-sub { text-align: center !important; max-width: 880px !important; }
+#screen-relatorio .page-hd::after { display: none !important; }
+#screen-relatorio .page-body { padding-top: 18px !important; }
+#screen-relatorio .rel-layout-clean {
+  display: grid !important;
+  grid-template-columns: minmax(340px, 430px) minmax(0, 1fr) !important;
+  gap: 20px !important;
+  align-items: start !important;
+}
+#screen-relatorio .rel-config.clean-report-config {
+  position: sticky !important;
+  top: 92px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border-radius: 14px !important;
+  min-width: 0 !important;
+}
+.clean-report-config .rel-config-title {
+  min-height: 64px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 18px !important;
+  background: linear-gradient(135deg, rgba(34,197,94,.12), rgba(37,99,235,.12)) !important;
+  border-bottom: 1px solid var(--premium-card-border, var(--line,#e5e7eb)) !important;
+  font-size: 19px !important;
+  font-weight: 950 !important;
+}
+.clean-report-form { display: grid !important; gap: 14px !important; padding: 18px !important; }
+.clean-report-form .g2 { display:grid !important; grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
+.clean-report-form .field { min-width: 0 !important; margin: 0 !important; }
+.clean-report-form label { text-align: left !important; display: block !important; }
+.clean-report-form input, .clean-report-form select { width: 100% !important; min-width: 0 !important; }
+.report-sections-grid.clean-report-sections {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+.report-section-tile.clean-report-tile {
+  display: grid !important;
+  grid-template-columns: 18px minmax(0,1fr) !important;
+  align-items: center !important;
+  gap: 10px !important;
+  min-width: 0 !important;
+  min-height: 50px !important;
+  padding: 11px 12px !important;
+  border-radius: 10px !important;
+  border: 1px solid var(--premium-card-border, var(--line,#e5e7eb)) !important;
+  background: color-mix(in srgb, var(--bg2,#f8fafc) 94%, #22c55e 6%) !important;
+  color: var(--ink,#111827) !important;
+  font-size: 14px !important;
+  font-weight: 850 !important;
+  line-height: 1.35 !important;
+  text-align: left !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
+}
+.report-section-tile.clean-report-tile input {
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  min-height: 18px !important;
+  margin: 0 !important;
+}
+.report-section-tile.clean-report-tile span {
+  display: block !important;
+  min-width: 0 !important;
+  white-space: normal !important;
+  overflow-wrap: break-word !important;
+  word-break: normal !important;
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
+}
+.report-primary-actions { display: grid !important; grid-template-columns: 1fr !important; gap: 10px !important; margin-top: 4px !important; }
+.report-preview-clean {
+  min-height: 72vh !important;
+  border-radius: 14px !important;
+  overflow: auto !important;
+  background: linear-gradient(180deg, var(--bg1,#fff), var(--bg2,#f8fafc)) !important;
+  border: 1px solid var(--premium-card-border, var(--line,#e5e7eb)) !important;
+}
+.report-action-bar-top.clean-report-actions {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 40 !important;
+  margin: 0 !important;
+  padding: 14px !important;
+  display: flex !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+  gap: 10px !important;
+  border-bottom: 1px solid var(--premium-card-border, var(--line,#e5e7eb)) !important;
+  background: color-mix(in srgb, var(--bg1,#fff) 94%, transparent) !important;
+  backdrop-filter: blur(14px) !important;
+}
+.report-action-bar-top.clean-report-actions .btn { justify-content: flex-start !important; text-align: left !important; }
+.report-empty-clean { min-height: 420px; display:grid; place-items:center; padding: 34px; text-align:center; color: var(--ink2,#475569); }
+.report-empty-clean strong { display:block; color: var(--ink,#111827); font-size: 24px; margin-bottom: 8px; }
+.report-doc .report-header { text-align: center !important; }
+.report-brand-line { display:flex !important; justify-content:center !important; align-items:center !important; gap: 10px !important; flex-wrap: wrap !important; margin-bottom: 12px !important; }
+.report-footer-govflow { margin-top: 26px !important; padding-top: 12px !important; border-top: 1px solid #d1d5db !important; display:flex !important; justify-content: space-between !important; gap: 12px !important; flex-wrap: wrap !important; font-size: 10pt !important; color: #374151 !important; }
+.performance-hero { grid-template-columns: 1fr !important; }
+.performance-grid { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)) !important; }
+.performance-row { display: grid !important; grid-template-columns: minmax(0,1fr) auto !important; align-items: start !important; }
+.performance-row div, .performance-row span { min-width: 0 !important; white-space: normal !important; overflow-wrap: break-word !important; }
+@media (max-width: 1060px) {
+  .topbar-center { display: none !important; }
+  #screen-relatorio .rel-layout-clean { grid-template-columns: 1fr !important; }
+  #screen-relatorio .rel-config.clean-report-config { position: static !important; }
+}
+@media (max-width: 620px) {
+  .clean-report-form .g2, .report-sections-grid.clean-report-sections { grid-template-columns: 1fr !important; }
+  .report-action-bar-top.clean-report-actions { flex-direction: column !important; align-items: stretch !important; }
+  .report-action-bar-top.clean-report-actions .btn { width: 100% !important; }
+}
+</style>
+<script>
+/* GOVFLOW - RECONSTRUCAO DA ABA RELATORIOS E LOGO FLOW */
+(function () {
+  function logoSvg(size) {
+    const s = size || 46;
+    return '<svg class="govflow-logo-svg" viewBox="0 0 96 96" width="' + s + '" height="' + s + '" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="GovFlow"><defs><linearGradient id="gfBetterFlow" x1="8" y1="12" x2="88" y2="84"><stop stop-color="#22c55e"/><stop offset=".42" stop-color="#0ea5a4"/><stop offset="1" stop-color="#2563eb"/></linearGradient><filter id="gfBetterShadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="10" stdDeviation="7" flood-color="#020617" flood-opacity=".26"/></filter></defs><rect x="8" y="8" width="80" height="80" rx="24" fill="url(#gfBetterFlow)" filter="url(#gfBetterShadow)"/><path d="M22 35c10-13 36-14 51 0" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".95"/><path d="M22 55c12 13 38 13 52-1" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".95"/><path d="M34 29v38" stroke="#fff" stroke-width="7" stroke-linecap="round"/><path d="M63 30H47v18h13" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><path d="M48 48v18" stroke="#fff" stroke-width="7" stroke-linecap="round"/><circle cx="74" cy="24" r="7" fill="#facc15"/><circle cx="22" cy="72" r="4" fill="#dcfce7" opacity=".95"/></svg>';
+  }
+
+  function cadBadge() {
+    return '<span class="govflow-cad-badge"><span class="govflow-cad-dot" style="background:#22c55e"></span><span class="govflow-cad-dot" style="background:#2563eb"></span><span class="govflow-cad-dot" style="background:#facc15"></span>CadÚnico</span>';
+  }
+
+  function applyLogo() {
+    document.querySelectorAll('.brand-mark, .report-logo-box').forEach(function (el) {
+      el.classList.add('govflow-logo-mark');
+      el.innerHTML = logoSvg(46);
+    });
+    const brandText = document.querySelector('.brand-text');
+    if (brandText && !brandText.querySelector('.govflow-cad-badge')) brandText.insertAdjacentHTML('beforeend', cadBadge());
+  }
+
+  function rebuildReportScreen() {
+    const screen = document.getElementById('screen-relatorio');
+    if (!screen || screen.dataset.cleanReportBuilt === '1') return;
+    screen.dataset.cleanReportBuilt = '1';
+    const today = new Date().toISOString().slice(0, 10);
+    screen.innerHTML = '<div class="page-hd"><div><div class="page-hd-title">Gerar Relatórios</div><div class="page-hd-sub">Monte documentos administrativos, relatórios de estoque, ordens e análises de gestão com visual limpo para impressão e PDF.</div></div></div><div class="page-body"><div class="rel-layout-clean"><aside class="rel-config clean-report-config"><div class="rel-config-title">Configuração do relatório</div><div class="clean-report-form"><div id="report-model-tabs"></div><div class="field"><label>Título</label><input type="text" id="rel-titulo" value="Relatório Geral GovFlow"></div><div class="g2"><div class="field"><label>Período de</label><input type="date" id="rel-de" value="' + today + '"></div><div class="field"><label>Até</label><input type="date" id="rel-ate" value="' + today + '"></div></div><div class="field"><label>Unidade</label><select id="rel-und"><option value="">Todas as unidades</option><option>Centro</option><option>Canto do Mar</option><option>Boiçucanga</option><option>Morro do Abrigo</option></select></div><div class="field"><label>Responsável / assinatura</label><input type="text" id="rel-resp" placeholder="Nome do Coordenador Municipal"></div><div class="field"><label>Seções do relatório</label><div class="report-sections-grid clean-report-sections"><label class="report-section-tile clean-report-tile"><input type="checkbox" id="rs-resumo" checked><span>Resumo administrativo</span></label><label class="report-section-tile clean-report-tile"><input type="checkbox" id="rs-unidades" checked><span>Atendimentos por unidade</span></label><label class="report-section-tile clean-report-tile"><input type="checkbox" id="rs-tipos" checked><span>Tipos de atendimento</span></label><label class="report-section-tile clean-report-tile"><input type="checkbox" id="rs-analise" checked><span>Análise de gestão</span></label><label class="report-section-tile clean-report-tile"><input type="checkbox" id="rs-graficos" checked><span>Gráficos e visualizações</span></label><label class="report-section-tile clean-report-tile"><input type="checkbox" id="rs-cenarios" checked><span>Demandas e cenários</span></label><label class="report-section-tile clean-report-tile"><input type="checkbox" id="rs-ocorrencias"><span>Ocorrências registradas</span></label><label class="report-section-tile clean-report-tile"><input type="checkbox" id="rs-equipe"><span>Presença da equipe</span></label></div></div><div class="report-primary-actions"><button class="btn btn-primary" onclick="buildReport()">Gerar relatório</button></div></div></aside><section class="rel-preview report-preview-clean" id="rel-preview-box"><div class="report-action-bar-top clean-report-actions"><button class="btn btn-primary" onclick="printReport()">Imprimir / PDF</button><button class="btn btn-ghost" onclick="copyReport()">Copiar texto</button></div><div class="report-empty-clean"><div><strong>Prévia do relatório</strong><span>Escolha o modelo, ajuste as seções e clique em Gerar relatório.</span></div></div></section></div></div>';
+    if (typeof addReportModelControls === 'function') addReportModelControls();
+    if (window.atualizarBotoesRelatorio) window.atualizarBotoesRelatorio();
+  }
+
+  function brandReport() {
+    const report = document.getElementById('report-inner');
+    if (!report) return;
+    const header = report.querySelector('.report-header');
+    if (header && !header.querySelector('.report-brand-line')) {
+      const line = document.createElement('div');
+      line.className = 'report-brand-line';
+      line.innerHTML = '<span class="report-logo-box govflow-logo-mark">' + logoSvg(38) + '</span><strong>GovFlow</strong>' + cadBadge();
+      header.insertBefore(line, header.firstChild);
+    }
+    if (!report.querySelector('.report-footer-govflow')) {
+      const footer = document.createElement('div');
+      footer.className = 'report-footer-govflow';
+      footer.innerHTML = '<span>GovFlow · Gestão CadÚnico</span><span>Documento gerado em ' + new Date().toLocaleString('pt-BR') + '</span>';
+      report.appendChild(footer);
+    }
+  }
+
+  const buildReportAnterior = window.buildReport;
+  if (typeof buildReportAnterior === 'function') {
+    window.buildReport = function buildReport() {
+      rebuildReportScreen();
+      const result = buildReportAnterior.apply(this, arguments);
+      setTimeout(function () {
+        const preview = document.getElementById('rel-preview-box');
+        let bar = document.getElementById('report-action-bar-top');
+        if (!bar && preview) {
+          bar = document.createElement('div');
+          bar.id = 'report-action-bar-top';
+          bar.className = 'report-action-bar-top clean-report-actions';
+          bar.innerHTML = '<button class="btn btn-primary" onclick="printReport()">Imprimir / PDF</button><button class="btn btn-ghost" onclick="copyReport()">Copiar texto</button>';
+          preview.insertAdjacentElement('afterbegin', bar);
+        }
+        if (bar) bar.classList.add('clean-report-actions');
+        applyLogo();
+        brandReport();
+      }, 100);
+      return result;
+    };
+  }
+
+  function centerDate() {
+    const center = document.querySelector('.topbar-center');
+    if (center) {
+      center.style.justifyContent = 'center';
+      center.style.textAlign = 'center';
+    }
+  }
+
+  function applyAll() {
+    applyLogo();
+    rebuildReportScreen();
+    centerDate();
+    brandReport();
+  }
+
+  window.addEventListener('load', function () {
+    applyAll();
+    setTimeout(applyAll, 500);
+    setTimeout(applyAll, 1500);
+  });
+})();
+</script>
+<!-- /CODEX GOVFLOW STRUCTURAL REPORT LOGO FIX FINAL -->
+
+<!-- CODEX GOVFLOW PUBLIC DATA SAOSEBA FINAL -->
+<style>
+/* GOVFLOW - DADOS PUBLICOS SAO SEBASTIAO / CADUNICO / DEFESA CIVIL */
+.govflow-public-panel.govflow-sao-sebastiao {
+  border-color: rgba(14,165,164,.38) !important;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--bg1,#fff) 92%, #22c55e 8%), var(--bg2,#f8fafc)) !important;
+}
+.govflow-public-grid.public-data-grid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+}
+.govflow-public-card.critical { border-left: 5px solid #e11d48 !important; }
+.govflow-public-card.warn { border-left: 5px solid #d97706 !important; }
+.govflow-public-card.ok { border-left: 5px solid #16a34a !important; }
+.govflow-public-card.info { border-left: 5px solid #2563eb !important; }
+.public-source-note { display:block; margin-top: 8px; color: var(--ink3,#64748b); font-size: 12px; line-height: 1.45; }
+.public-data-metric { display:block; color: var(--ink,#111827); font-size: 28px; font-weight: 950; line-height: 1; margin: 6px 0; }
+.sidebar-live-card .live-row.public-alert { background: rgba(225,29,72,.06) !important; }
+.sidebar-live-card .live-row.public-warn { background: rgba(217,119,6,.06) !important; }
+.sidebar-live-card .live-row.public-ok { background: rgba(22,163,74,.06) !important; }
+</style>
+<script>
+/* GOVFLOW - CONECTOR DE DADOS PUBLICOS E ALERTAS */
+(function () {
+  const CACHE_KEY = 'govflow.public.sao_sebastiao.cache.v1';
+  const CUSTOM_CAD_KEY = 'govflow.cadunico.sao_sebastiao.public.v1';
+  const MDS_INFORMES = 'https://www.gov.br/mds/pt-br/acoes-e-programas/cadastro-unico/informes';
+  const CECAD = 'https://cecad.cidadania.gov.br/painel03.php/layout/sobre.php';
+  const MUNICIPIO_MDS = 'https://aplicacoes.cidadania.gov.br/ri/pbfcad/';
+  const SOLICITA_CAD = 'https://www.gov.br/pt-br/servicos/solicitar-cessao-de-dados-identificados-do-cadastro-unico';
+  const OPEN_METEO = 'https://api.open-meteo.com/v1/forecast?latitude=-23.7606&longitude=-45.4097&current=temperature_2m,precipitation,rain,wind_speed_10m&hourly=precipitation,precipitation_probability,wind_speed_10m&daily=precipitation_sum,rain_sum,precipitation_hours&timezone=America%2FSao_Paulo&forecast_days=2';
+
+  function safeJson(value, fallback) { try { return JSON.parse(value || 'null') || fallback; } catch (e) { return fallback; } }
+  function nowLabel() { return new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' }); }
+
+  function getCustomCadunico() {
+    return safeJson(localStorage.getItem(CUSTOM_CAD_KEY), null);
+  }
+
+  function setPanelStatus(text) {
+    const status = document.getElementById('govflow-public-status');
+    if (status) status.innerText = text;
+  }
+
+  function ensurePublicPanel() {
+    let panel = document.getElementById('govflow-public-panel');
+    if (!panel) {
+      const host = document.getElementById('insights-auto-panel') || document.getElementById('ia-operacional-panel') || document.querySelector('#screen-dashboard .dashboard-tabs');
+      if (!host || !host.parentElement) return null;
+      panel = document.createElement('section');
+      panel.id = 'govflow-public-panel';
+      panel.className = 'govflow-public-panel govflow-sao-sebastiao dash-panel dash-panel-resumo active';
+      panel.innerHTML = '<div class="govflow-public-head"><div><div class="govflow-public-title">Dados Públicos de São Sebastião</div><div class="govflow-public-sub">Cadastro Único, informes MDS e monitoramento preventivo da Defesa Civil.</div></div><span class="mp mp-b" id="govflow-public-status">Atualizando</span></div><div class="govflow-public-grid public-data-grid" id="govflow-public-grid"></div>';
+      host.insertAdjacentElement('afterend', panel);
+    }
+    panel.classList.add('govflow-sao-sebastiao');
+    let grid = document.getElementById('govflow-public-grid');
+    if (grid) grid.classList.add('public-data-grid');
+    return panel;
+  }
+
+  async function fetchWeatherRisk() {
+    try {
+      const res = await fetch(OPEN_METEO, { cache: 'no-store' });
+      if (!res.ok) throw new Error('Tempo HTTP ' + res.status);
+      const data = await res.json();
+      const hourlyRain = (data.hourly && data.hourly.precipitation ? data.hourly.precipitation.slice(0, 24) : []);
+      const hourlyProb = (data.hourly && data.hourly.precipitation_probability ? data.hourly.precipitation_probability.slice(0, 24) : []);
+      const hourlyWind = (data.hourly && data.hourly.wind_speed_10m ? data.hourly.wind_speed_10m.slice(0, 24) : []);
+      const rain24 = hourlyRain.reduce(function (a,b) { return a + (Number(b) || 0); }, 0);
+      const maxProb = Math.max(0, ...hourlyProb.map(function (v) { return Number(v) || 0; }));
+      const maxWind = Math.max(0, ...hourlyWind.map(function (v) { return Number(v) || 0; }));
+      const currentRain = data.current ? Number(data.current.rain || data.current.precipitation || 0) : 0;
+      const temp = data.current ? Number(data.current.temperature_2m || 0) : 0;
+      let level = 'ok';
+      let status = 'Normal';
+      let action = 'Monitorar rotina.';
+      if (rain24 >= 80 || maxProb >= 85 || maxWind >= 60) { level = 'critical'; status = 'Crítico'; action = 'Acionar protocolo preventivo para encostas, alagamentos e queda de barreira.'; }
+      else if (rain24 >= 40 || maxProb >= 65 || maxWind >= 40) { level = 'warn'; status = 'Atenção'; action = 'Reforçar monitoramento de chuva forte, áreas de risco e deslocamento de equipes.'; }
+      return { ok:true, temp, currentRain, rain24: Math.round(rain24), maxProb, maxWind: Math.round(maxWind), level, status, action, updatedAt: nowLabel() };
+    } catch (e) {
+      return { ok:false, level:'warn', status:'Sem leitura', action:'Abrir fonte oficial de Defesa Civil/INMET para conferência manual.', updatedAt: nowLabel() };
+    }
+  }
+
+  async function fetchMdsInformes() {
+    try {
+      const res = await fetch(MDS_INFORMES, { cache: 'no-store' });
+      if (!res.ok) throw new Error('MDS HTTP ' + res.status);
+      const html = await res.text();
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const body = doc.body ? doc.body.innerText : '';
+      const matches = Array.from(body.matchAll(/Informe Cadastro Único\s+(\d+)[\s\S]{0,260}?(\d{2}\/\d{2}\/\d{4})/gi)).slice(0, 3);
+      if (matches.length) return matches.map(function (m, idx) { return { title:'Informe Cadastro Único ' + m[1], desc:'Publicado em ' + m[2] + '. Consulte o portal oficial do MDS.', novo: idx === 0 }; });
+    } catch (e) {}
+    return [{ title:'Informes Cadastro Único - MDS', desc:'Acompanhe os comunicados oficiais no portal do MDS. O navegador pode bloquear leitura automática por CORS.', novo:true }];
+  }
+
+  function cadunicoItems() {
+    const custom = getCustomCadunico();
+    if (custom) {
+      const bairros = Array.isArray(custom.bairros) ? custom.bairros : [];
+      return [
+        { cls:'ok', title:'Pessoas ativas no CadÚnico', metric: custom.pessoasAtivas || '0', desc:'Dado agregado municipal carregado de fonte autorizada/local.', url: CECAD },
+        { cls:'info', title:'Famílias ativas', metric: custom.familiasAtivas || '0', desc:'Base municipal atualizada no GovFlow.', url: CECAD },
+        { cls:'warn', title:'Bairros monitorados', metric: bairros.length || '0', desc: bairros.length ? bairros.slice(0, 4).map(function (b) { return b.nome + ': ' + b.total; }).join(' · ') : 'Sem bairros informados.', url: CECAD }
+      ];
+    }
+    return [
+      { cls:'info', title:'CadÚnico São Sebastião', metric:'Conectar', desc:'CECAD/Observatório têm dados agregados, mas a extração municipal por bairro não é exposta como API pública simples no navegador.', url: CECAD },
+      { cls:'warn', title:'Dados por bairro', metric:'Restrito', desc:'Para pessoas ativas por bairro, use CSV/API municipal autorizada ou base agregada liberada pelo gestor. Dados identificados dependem do SolicitaCad/LGPD.', url: SOLICITA_CAD },
+      { cls:'ok', title:'Relatório oficial MDS', metric:'Abrir', desc:'Consulta pública por município disponível no painel Bolsa Família e Cadastro Único no seu município.', url: MUNICIPIO_MDS }
+    ];
+  }
+
+  function actionItems(weather) {
+    const actions = [];
+    if (weather.level === 'critical') actions.push('Priorizar contato com unidades em áreas de encosta e revisar agenda externa.');
+    else if (weather.level === 'warn') actions.push('Monitorar chuva forte e evitar deslocamentos não essenciais de equipe.');
+    actions.push('Conferir informes novos do MDS antes de fechar o relatório diário.');
+    actions.push('Quando houver CSV/API municipal, importar pessoas ativas e distribuição por bairro no GovFlow.');
+    return actions;
+  }
+
+  function renderPublicData(weather, informes) {
+    ensurePublicPanel();
+    setPanelStatus('Atualizado ' + nowLabel());
+    const grid = document.getElementById('govflow-public-grid');
+    if (!grid) return;
+    const cad = cadunicoItems();
+    const cards = cad.concat([
+      { cls: weather.level || 'warn', title:'Defesa Civil / Clima', metric: weather.status, desc: weather.ok ? ('Chuva prevista em 24h: ' + weather.rain24 + ' mm · probabilidade máx.: ' + weather.maxProb + '% · vento máx.: ' + weather.maxWind + ' km/h. ' + weather.action) : weather.action, url:'https://portal.inmet.gov.br/' },
+      { cls:'info', title:'Informes MDS', metric: informes[0] && informes[0].novo ? 'Novo' : 'Verificar', desc: informes.map(function (i) { return i.title; }).join(' · '), url:MDS_INFORMES },
+      { cls: weather.level === 'critical' ? 'critical' : weather.level === 'warn' ? 'warn' : 'ok', title:'Ações a fazer', metric: actionItems(weather).length, desc: actionItems(weather).join(' '), url:MUNICIPIO_MDS }
+    ]);
+    grid.innerHTML = cards.map(function (c) {
+      return '<div class="govflow-public-card ' + (c.cls || 'info') + '">' + (c.metric === 'Novo' ? '<span class="public-new">Novo</span>' : '') + '<strong>' + c.title + '</strong><span class="public-data-metric">' + c.metric + '</span><span>' + c.desc + '</span><a href="' + c.url + '" target="_blank" rel="noopener">Abrir fonte oficial</a></div>';
+    }).join('');
+  }
+
+  function mergeTimelinePublic(weather, informes) {
+    const live = document.querySelector('.sidebar-live-card');
+    if (!live) return;
+    let timeline = live.querySelector('.live-timeline');
+    if (!timeline) return;
+    const extra = [];
+    extra.push({ icon:'☔', title:'Defesa Civil', desc: weather.ok ? ('Previsão 24h: ' + weather.rain24 + ' mm · vento ' + weather.maxWind + ' km/h') : 'Sem leitura automática. Conferir fonte oficial.', value: weather.status, cls: weather.level === 'critical' ? 'public-alert' : weather.level === 'warn' ? 'public-warn' : 'public-ok' });
+    if (weather.level === 'critical') extra.push({ icon:'⛰', title:'Risco de barreira', desc:'Chuva/vento em patamar crítico. Evitar deslocamentos para áreas de encosta.', value:'Crítico', cls:'public-alert' });
+    if (weather.level === 'warn') extra.push({ icon:'⚠', title:'Chuva forte', desc:'Manter equipe atenta a alagamentos e interrupções de atendimento.', value:'Atenção', cls:'public-warn' });
+    extra.push({ icon:'📢', title:'MDS', desc:(informes[0] ? informes[0].title : 'Informes Cadastro Único'), value:'Novo', cls:'public-ok' });
+    extra.push({ icon:'🗂', title:'CadÚnico municipal', desc:'Aguardando endpoint/CSV público autorizado para bairro e pessoas ativas.', value:'Fonte', cls:'public-warn' });
+    timeline.innerHTML += extra.map(function (e) {
+      const color = e.cls === 'public-alert' ? 'var(--red2)' : e.cls === 'public-warn' ? 'var(--amber2)' : 'var(--green2)';
+      const val = e.cls === 'public-alert' ? 'var(--red)' : e.cls === 'public-warn' ? 'var(--amber)' : 'var(--green)';
+      return '<div class="live-row ' + e.cls + '"><div class="live-icon" style="background:' + color + ';color:' + val + '">' + e.icon + '</div><div class="live-body"><div class="live-title">' + e.title + '</div><div class="live-desc">' + e.desc + '</div></div><div class="live-value" style="color:' + val + '">' + e.value + '</div></div>';
+    }).join('');
+  }
+
+  window.atualizarDadosPublicosSaoSebastiao = async function atualizarDadosPublicosSaoSebastiao() {
+    const cached = safeJson(localStorage.getItem(CACHE_KEY), null);
+    if (cached && Date.now() - cached.ts < 900000) {
+      renderPublicData(cached.weather, cached.informes);
+      mergeTimelinePublic(cached.weather, cached.informes);
+      return cached;
+    }
+    const weather = await fetchWeatherRisk();
+    const informes = await fetchMdsInformes();
+    const payload = { ts: Date.now(), weather, informes };
+    try { localStorage.setItem(CACHE_KEY, JSON.stringify(payload)); } catch (e) {}
+    renderPublicData(weather, informes);
+    mergeTimelinePublic(weather, informes);
+    return payload;
+  };
+
+  function initPublicData() {
+    ensurePublicPanel();
+    window.atualizarDadosPublicosSaoSebastiao();
+    setInterval(window.atualizarDadosPublicosSaoSebastiao, 15 * 60 * 1000);
+  }
+
+  window.addEventListener('load', function () {
+    initPublicData();
+    setTimeout(initPublicData, 1200);
+  });
+})();
+</script>
+<!-- /CODEX GOVFLOW PUBLIC DATA SAOSEBA FINAL --><!-- CODEX GOVFLOW PUBLIC DATA DEDUPE FINAL -->
+<script>
+/* GOVFLOW - evita duplicidade na timeline publica */
+(function () {
+  const previous = window.atualizarDadosPublicosSaoSebastiao;
+  if (typeof previous !== 'function') return;
+  window.atualizarDadosPublicosSaoSebastiao = async function atualizarDadosPublicosSaoSebastiaoSemDuplicar() {
+    document.querySelectorAll('.sidebar-live-card .live-row.public-alert, .sidebar-live-card .live-row.public-warn, .sidebar-live-card .live-row.public-ok').forEach(function (row) { row.remove(); });
+    return previous.apply(this, arguments);
+  };
+})();
+</script>
+<!-- /CODEX GOVFLOW PUBLIC DATA DEDUPE FINAL --></body>
 </html>
