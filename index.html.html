@@ -7014,5 +7014,340 @@ label,
 })();
 </script>
 <!-- /CODEX GOVFLOW UX REPORT PUBLIC DATA FINAL -->
+
+<!-- CODEX GOVFLOW POLISH PTBR STOCK PERFORMANCE FINAL -->
+<style>
+/* GOVFLOW - POLIMENTO PT-BR, ESTOQUE E PERFORMANCE */
+:root { --sidebar: 232px !important; }
+.sidebar { width: 232px !important; padding: 14px 10px !important; }
+.nav-item { min-height: 40px !important; font-size: 14px !important; padding: 0 10px !important; gap: 9px !important; }
+.sidebar-section { font-size: 11px !important; margin: 14px 8px 6px !important; }
+.sidebar-footer { margin: 14px 8px !important; }
+.sf-user { padding: 10px !important; }
+.sf-name { font-size: 13px !important; }
+.sf-role { font-size: 11.5px !important; }
+.sidebar-live-card {
+  margin: 14px 6px 0 !important;
+  border: 1px solid color-mix(in srgb, var(--green, #16a34a) 45%, transparent) !important;
+  border-radius: 10px !important;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--bg1, #0f172a) 88%, #16a34a 12%), var(--bg1, #0f172a)) !important;
+  box-shadow: 0 18px 40px rgba(2, 6, 23, .20), inset 0 1px 0 rgba(255,255,255,.05) !important;
+}
+.sidebar-live-card .card-head { padding: 12px !important; }
+.sidebar-live-card .card-title { font-size: 13px !important; line-height: 1.2 !important; }
+.sidebar-live-card .live-row { padding: 10px 12px !important; gap: 10px !important; border-color: color-mix(in srgb, var(--line, #334155) 75%, transparent) !important; }
+.sidebar-live-card .live-icon { width: 30px !important; height: 30px !important; font-size: 14px !important; border-radius: 8px !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; }
+.sidebar-live-card .live-title { font-size: 12.5px !important; font-weight: 850 !important; }
+.sidebar-live-card .live-desc { font-size: 11.5px !important; line-height: 1.35 !important; }
+.sidebar-live-card .live-value { font-size: 13px !important; font-weight: 950 !important; }
+#screen-dashboard .kpi-cell { min-height: 112px !important; padding: 14px !important; }
+#screen-dashboard .kpi-label { font-size: 12.5px !important; line-height: 1.25 !important; }
+#screen-dashboard .kpi-value { font-size: clamp(24px, 1.8vw, 31px) !important; line-height: 1 !important; }
+#screen-dashboard .kpi-sub, #screen-dashboard .mp { font-size: 11.8px !important; line-height: 1.25 !important; }
+#screen-dashboard .dashboard-charts-top + .two-col { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+#screen-dashboard .dashboard-charts-top + .two-col .chart-wrap { height: 230px !important; min-height: 230px !important; }
+#screen-dashboard .dashboard-charts-top + .two-col .card { min-height: 318px !important; }
+.unit-card,
+.dash-panel-unidades.card,
+#screen-dashboard .dash-panel-unidades .card {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-align: left !important;
+}
+.unit-card .unit-name { display: flex !important; flex-direction: column !important; gap: 4px !important; min-width: 0 !important; word-break: normal !important; overflow-wrap: anywhere !important; }
+.unit-brief { font-size: 12.5px !important; line-height: 1.4 !important; color: var(--ink2, #475569) !important; white-space: normal !important; }
+#screen-dashboard .dash-panel-unidades .mp,
+.unit-card .mp { white-space: normal !important; text-align: center !important; }
+#screen-dashboard .dash-panel-acoes,
+#screen-dashboard .dash-panel-afazeres { text-align: justify !important; }
+.task-body, .mut-body, .acao-body, .overview-body, .integration-desc, .card-body p, .ia-operacional-narrativa, .insight-auto-card p { text-align: justify !important; }
+.type-tabs, .reg-type-tabs, .tipo-registro, .type-tab-row { justify-content: center !important; text-align: center !important; }
+.type-tab, .reg-type, [data-type], .type-pill { align-items: center !important; justify-content: center !important; text-align: center !important; }
+.type-tab svg, .reg-type svg { margin: 0 auto !important; }
+.mp-g, .status-green, .gov-status-green, .public-new { background: rgba(22, 163, 74, .14) !important; color: #16a34a !important; border-color: rgba(22, 163, 74, .32) !important; }
+.mp-a, .status-yellow, .gov-status-yellow { background: rgba(217, 119, 6, .14) !important; color: #d97706 !important; border-color: rgba(217, 119, 6, .32) !important; }
+.mp-r, .status-red, .gov-status-red { background: rgba(225, 29, 72, .14) !important; color: #e11d48 !important; border-color: rgba(225, 29, 72, .32) !important; }
+.task-badge.gov-status-green, .func-status.gov-status-green, .live-value.gov-status-green { background: rgba(22, 163, 74, .14) !important; color: #16a34a !important; }
+.task-badge.gov-status-yellow, .func-status.gov-status-yellow, .live-value.gov-status-yellow { background: rgba(217, 119, 6, .14) !important; color: #d97706 !important; }
+.task-badge.gov-status-red, .func-status.gov-status-red, .live-value.gov-status-red { background: rgba(225, 29, 72, .14) !important; color: #e11d48 !important; }
+.report-action-bar-top { justify-content: center !important; text-align: center !important; }
+#screen-relatorio .report-sections-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  align-items: stretch !important;
+}
+.report-section-tile {
+  min-width: 0 !important;
+  min-height: 48px !important;
+  padding: 10px 12px !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  word-break: normal !important;
+  overflow-wrap: anywhere !important;
+  line-height: 1.35 !important;
+  text-align: left !important;
+}
+.report-section-tile input { flex: 0 0 auto !important; width: 16px !important; height: 16px !important; min-height: 16px !important; }
+.stock-modal-shell {
+  position: fixed;
+  inset: 0;
+  z-index: 99998;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 22px;
+  background: rgba(2, 6, 23, .70);
+  backdrop-filter: blur(14px);
+}
+.stock-modal-shell.open { display: flex; }
+.stock-modal-card {
+  width: min(520px, 100%);
+  border: 1px solid var(--premium-card-border, var(--line2, #d1d5db));
+  border-radius: 10px;
+  background: var(--bg1, #fff);
+  box-shadow: 0 28px 90px rgba(2, 6, 23, .36);
+  padding: 22px;
+}
+.stock-modal-title { font-size: 22px; font-weight: 950; color: var(--ink, #111827); margin-bottom: 4px; }
+.stock-modal-sub { font-size: 14px; color: var(--ink2, #475569); line-height: 1.45; margin-bottom: 16px; }
+.stock-modal-actions { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; margin-top: 16px; }
+.performance-hero {
+  display: grid;
+  grid-template-columns: minmax(260px, .9fr) minmax(0, 1.1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.performance-score-card,
+.performance-panel-card {
+  border: 1px solid var(--premium-card-border, var(--line2, #d1d5db));
+  border-radius: 10px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--bg1, #fff) 94%, #0ea5a4 6%), var(--bg2, #f8fafc));
+  box-shadow: 0 16px 42px rgba(2, 6, 23, .10);
+  padding: 18px;
+}
+.performance-score { font-size: clamp(44px, 5vw, 76px); font-weight: 950; line-height: .95; color: #0ea5a4; }
+.performance-label { margin-top: 8px; color: var(--ink2, #475569); font-size: 15px; line-height: 1.45; }
+.performance-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.performance-mini { border: 1px solid var(--premium-card-border, var(--line2, #d1d5db)); border-radius: 8px; padding: 13px; background: var(--bg1, #fff); }
+.performance-mini strong { display:block; font-size: 22px; color: var(--ink, #111827); line-height: 1.05; }
+.performance-mini span { display:block; margin-top: 6px; font-size: 13.5px; color: var(--ink2, #475569); line-height: 1.35; }
+.performance-list { display: grid; gap: 10px; margin-top: 16px; }
+.performance-row { display:flex; align-items:center; justify-content:space-between; gap:12px; border:1px solid var(--premium-card-border, var(--line2,#d1d5db)); border-radius:8px; padding:13px; background:var(--bg1,#fff); }
+.performance-row b { color: var(--ink, #111827); font-size: 15px; }
+.performance-row span { color: var(--ink2, #475569); font-size: 13.5px; line-height: 1.4; }
+@media (max-width: 980px) {
+  :root { --sidebar: 0px !important; }
+  #screen-dashboard .dashboard-charts-top + .two-col,
+  .performance-hero,
+  .performance-grid,
+  #screen-relatorio .report-sections-grid { grid-template-columns: 1fr !important; }
+  .report-action-bar-top { justify-content: stretch !important; }
+}
+</style>
+<script>
+/* GOVFLOW - REVISAO PT-BR, ESTOQUE INTELIGENTE E PERFORMANCE */
+(function () {
+  const STOCK_KEY = 'govflow.stock.v1';
+
+  function norm(text) {
+    return String(text || '')
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase().replace(/[^a-z0-9]+/g, ' ')
+      .replace(/\b(papel|folha|folhas|resma|resmas|pct|pacote|unidade|unidades|de|do|da)\b/g, ' ')
+      .replace(/\s+/g, ' ').trim();
+  }
+
+  function canonicalItemName(name) {
+    const n = norm(name);
+    if (/\ba4\b/.test(n)) return 'Resma A4';
+    if (/toner|cartucho/.test(n)) return 'Toner';
+    if (/formulario|ficha/.test(n)) return 'Formulários';
+    if (/caneta/.test(n)) return 'Canetas';
+    return String(name || '').trim().replace(/\s+/g, ' ');
+  }
+
+  function stockRead() {
+    try { const rows = JSON.parse(localStorage.getItem(STOCK_KEY) || '[]'); return Array.isArray(rows) ? rows : []; } catch (e) { return []; }
+  }
+  function stockWrite(rows) { try { localStorage.setItem(STOCK_KEY, JSON.stringify(rows)); } catch (e) {} }
+  function setText(id, value) { const el = document.getElementById(id); if (el) el.innerText = value; }
+
+  function replaceTextNode(root) {
+    const replacements = [
+      [/\bRevisoes\b/g, 'Revisões'], [/\brevisoes\b/g, 'revisões'], [/\bAusencias\b/g, 'Ausências'], [/\bausencias\b/g, 'ausências'],
+      [/\bOperacao\b/g, 'Operação'], [/\boperacao\b/g, 'operação'], [/\bAcoes\b/g, 'Ações'], [/\bacoes\b/g, 'ações'],
+      [/\bCenarios\b/g, 'Demandas'], [/\bcenarios\b/g, 'demandas'], [/\bCritica\b/g, 'Crítica'], [/\bcritica\b/g, 'crítica'],
+      [/\bAtualizacoes\b/g, 'Atualizações'], [/\batualizacoes\b/g, 'atualizações'], [/\bCoordenacao\b/g, 'Coordenação'], [/\bcoordenacao\b/g, 'coordenação'],
+      [/\bSugestao\b/g, 'Sugestão'], [/\bsugestao\b/g, 'sugestão'], [/\bpossivel\b/g, 'possível'], [/\bmedio\b/g, 'médio'], [/\bmédia\b/g, 'média'],
+      [/Afazeres/g, 'Plano do Dia'], [/Painel Ao Vivo/g, 'Central de Operação'], [/Painel ao vivo/g, 'Central de Operação'],
+      [/Unidades de Atendimetno/g, 'Unidades de Atendimento'], [/Unidades de Atendimento/g, 'Unidades de Atendimento'],
+      [/Ações Inteligentes/g, 'Plano de Ação'], [/Acoes Inteligentes/g, 'Plano de Ação'], [/Ações Móveis/g, 'Ações Móveis e Mutirões'],
+      [/sistema offline/gi, 'sistema offline'], [/sem sistema/gi, 'sem sistema'], [/gov\.br/g, 'Gov.br']
+    ];
+    const walker = document.createTreeWalker(root || document.body, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (node) {
+        if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+        const parent = node.parentElement;
+        if (!parent || ['SCRIPT','STYLE','TEXTAREA','OPTION'].includes(parent.tagName)) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(function (node) {
+      let text = node.nodeValue;
+      let fixed = text;
+      replacements.forEach(function (pair) { fixed = fixed.replace(pair[0], pair[1]); });
+      if (fixed !== text) node.nodeValue = fixed;
+    });
+  }
+
+  function colorizeStatuses() {
+    document.querySelectorAll('.mp, .task-badge, .func-status, .live-value, .insight-auto-card, .ia-insight').forEach(function (el) {
+      const t = (el.innerText || '').toLowerCase();
+      el.classList.remove('gov-status-green','gov-status-yellow','gov-status-red');
+      if (/crític|critica|urgente|vermelho|repor|bloqueado|alto risco|alerta/.test(t)) el.classList.add('gov-status-red');
+      else if (/atenção|atencao|alta|médio|medio|planejado|amarelo|monitorar|pendente/.test(t)) el.classList.add('gov-status-yellow');
+      else if (/ok|normal|feito|ativo|verde|concluído|concluido|sem alertas|novo/.test(t)) el.classList.add('gov-status-green');
+    });
+  }
+
+  function fixUnitsCards() {
+    document.querySelectorAll('.unit-card').forEach(function (card) {
+      card.style.minWidth = '0';
+      const brief = card.querySelector('.unit-brief');
+      if (brief) brief.innerText = brief.innerText.replace(/atend\./g, 'atendimentos').replace(/ativos/g, 'ativos').replace(/inativos/g, 'inativos');
+    });
+    document.querySelectorAll('.card-title').forEach(function (title) {
+      if (/Unidades/i.test(title.innerText)) title.innerText = title.innerText.replace(/Unidades.*/i, 'Unidades de Atendimento');
+    });
+  }
+
+  function ensureStockModal() {
+    let modal = document.getElementById('stock-modal-shell');
+    if (modal) return modal;
+    modal = document.createElement('div');
+    modal.id = 'stock-modal-shell';
+    modal.className = 'stock-modal-shell';
+    modal.innerHTML = '<div class="stock-modal-card"><div class="stock-modal-title">Adicionar item ao estoque</div><div class="stock-modal-sub">O sistema reconhece nomes parecidos, como “resma A4”, “papel A4” e “A4”, para evitar duplicidade.</div><div class="field"><label>Item</label><input id="stock-item-name" placeholder="Ex.: Resma A4"></div><div class="g2"><div class="field"><label>Quantidade</label><input id="stock-item-qty" type="number" min="0" value="1"></div><div class="field"><label>Mínimo</label><input id="stock-item-min" type="number" min="0" value="5"></div></div><div class="g2"><div class="field"><label>Unidade</label><input id="stock-item-unit" value="unid."></div><div class="field"><label>Local</label><input id="stock-item-place" placeholder="Ex.: Almoxarifado"></div></div><div class="stock-modal-actions"><button class="btn btn-ghost" onclick="closeStockModal()">Cancelar</button><button class="btn btn-primary" onclick="saveStockItemSmart()">Salvar item</button></div></div>';
+    modal.addEventListener('click', function (e) { if (e.target === modal) window.closeStockModal(); });
+    document.body.appendChild(modal);
+    return modal;
+  }
+
+  window.addStockItem = function addStockItem() {
+    const modal = ensureStockModal();
+    modal.classList.add('open');
+    setTimeout(function () { document.getElementById('stock-item-name')?.focus(); }, 60);
+  };
+
+  window.closeStockModal = function closeStockModal() {
+    ensureStockModal().classList.remove('open');
+  };
+
+  window.saveStockItemSmart = function saveStockItemSmart() {
+    const nameEl = document.getElementById('stock-item-name');
+    const qtyEl = document.getElementById('stock-item-qty');
+    const minEl = document.getElementById('stock-item-min');
+    const unitEl = document.getElementById('stock-item-unit');
+    const placeEl = document.getElementById('stock-item-place');
+    const rawName = nameEl ? nameEl.value.trim() : '';
+    if (!rawName) { if (typeof toast === 'function') toast('Informe o nome do item', 'err'); return; }
+    const itemName = canonicalItemName(rawName);
+    const qty = Math.max(0, parseInt(qtyEl?.value || '0', 10) || 0);
+    const min = Math.max(0, parseInt(minEl?.value || '0', 10) || 0);
+    const unit = unitEl?.value.trim() || 'unid.';
+    const place = placeEl?.value.trim() || 'A definir';
+    const rows = stockRead();
+    const key = norm(itemName);
+    const found = rows.find(function (item) { return norm(canonicalItemName(item.item)) === key || norm(item.item) === key; });
+    if (found) {
+      found.qty = Math.max(0, (parseInt(found.qty, 10) || 0) + qty);
+      found.min = Math.max(parseInt(found.min, 10) || 0, min);
+      found.unit = found.unit || unit;
+      found.place = found.place && found.place !== 'A definir' ? found.place : place;
+      found.item = canonicalItemName(found.item || itemName);
+      if (typeof toast === 'function') toast('Item semelhante encontrado: quantidade somada em ' + found.item);
+    } else {
+      rows.push({ item: itemName, qty: qty, min: min, unit: unit, place: place });
+      if (typeof toast === 'function') toast('Item adicionado ao estoque');
+    }
+    stockWrite(rows);
+    window.closeStockModal();
+    if (typeof window.renderStock === 'function') window.renderStock();
+  };
+
+  window.renderStock = function renderStock() {
+    const stock = stockRead();
+    const low = stock.filter(function (i) { return (parseInt(i.qty, 10) || 0) <= (parseInt(i.min, 10) || 0); }).length;
+    const metrics = document.getElementById('stock-metrics');
+    if (metrics) metrics.innerHTML = '<div class="saas-card"><div class="saas-card-body"><div class="saas-metric">' + stock.length + '</div><div class="saas-label">itens cadastrados</div></div></div><div class="saas-card"><div class="saas-card-body"><div class="saas-metric" style="color:' + (low ? 'var(--amber)' : 'var(--green)') + '">' + low + '</div><div class="saas-label">alertas de mínimo</div></div></div><div class="saas-card"><div class="saas-card-body"><div class="saas-metric">' + stock.reduce(function (a,b) { return a + (parseInt(b.qty, 10) || 0); }, 0) + '</div><div class="saas-label">saldo total</div></div></div>';
+    const list = document.getElementById('stock-list');
+    if (!list) return;
+    if (!stock.length) { list.innerHTML = '<div class="empty-state-clean">Nenhum item de estoque cadastrado. Clique em Adicionar item para começar.</div>'; return; }
+    list.innerHTML = stock.map(function (i, idx) {
+      const warn = (parseInt(i.qty, 10) || 0) <= (parseInt(i.min, 10) || 0);
+      return '<div class="saas-row"><div class="saas-row-main"><div class="saas-row-title">' + i.item + '</div><div class="saas-row-desc">' + (i.place || 'A definir') + ' · mínimo ' + i.min + ' ' + (i.unit || 'unid.') + '</div></div><span class="mp ' + (warn ? 'mp-a' : 'mp-g') + '">' + i.qty + ' ' + (i.unit || 'unid.') + '</span><button class="btn btn-ghost btn-sm" onclick="stockDelta(' + idx + ',1)">+1</button><button class="btn btn-ghost btn-sm" onclick="stockDelta(' + idx + ',-1)">-1</button></div>';
+    }).join('');
+    colorizeStatuses();
+  };
+
+  window.stockDelta = function stockDelta(i, d) {
+    const rows = stockRead();
+    if (!rows[i]) return;
+    rows[i].qty = Math.max(0, (parseInt(rows[i].qty, 10) || 0) + d);
+    stockWrite(rows);
+    window.renderStock();
+  };
+
+  window.renderPerformance = function renderPerformance() {
+    const regs = (typeof S !== 'undefined' && Array.isArray(S.registros)) ? S.registros : [];
+    const atendimentos = regs.filter(function (r) { return r.tipo === 'atend' || r.tipo === 'atendimento'; }).length;
+    const filas = regs.filter(function (r) { return r.tipo === 'fila'; });
+    const ausencias = regs.filter(function (r) { return r.tipo === 'ausencia'; }).length;
+    const ocorrencias = regs.filter(function (r) { return r.tipo === 'ocorrencia'; }).length;
+    const filaAtual = parseInt(document.getElementById('kpi-fila')?.innerText || '0', 10) || 0;
+    const totalAtend = parseInt(document.getElementById('kpi-atend')?.innerText || atendimentos || '0', 10) || 0;
+    const eficiencia = totalAtend + filaAtual > 0 ? Math.round((totalAtend / (totalAtend + filaAtual)) * 100) : 100;
+    const score = Math.max(0, Math.min(100, eficiencia - Math.min(25, ausencias * 4) - Math.min(25, ocorrencias * 3)));
+    const perf = document.getElementById('perf-grid');
+    if (!perf) return;
+    perf.innerHTML = '<div class="performance-hero"><div class="performance-score-card"><div class="performance-score">' + score + '</div><div class="performance-label"><b>Índice operacional</b><br>Combina atendimentos, fila, ausências e ocorrências para indicar a saúde do atendimento.</div></div><div class="performance-panel-card"><div class="card-title">Resumo de performance</div><div class="performance-grid"><div class="performance-mini"><strong>' + totalAtend + '</strong><span>atendimentos no período</span></div><div class="performance-mini"><strong>' + filaAtual + '</strong><span>fila média/atual</span></div><div class="performance-mini"><strong>' + eficiencia + '%</strong><span>eficiência estimada</span></div><div class="performance-mini"><strong>' + ausencias + '</strong><span>ausências registradas</span></div></div></div></div><div class="performance-panel-card"><div class="card-title">Leitura gerencial</div><div class="performance-list"><div class="performance-row"><div><b>Capacidade de atendimento</b><br><span>' + (score >= 75 ? 'Operação dentro do esperado.' : score >= 50 ? 'Operação requer acompanhamento.' : 'Operação exige intervenção da coordenação.') + '</span></div><span class="mp ' + (score >= 75 ? 'mp-g' : score >= 50 ? 'mp-a' : 'mp-r') + '">' + (score >= 75 ? 'Boa' : score >= 50 ? 'Atenção' : 'Crítica') + '</span></div><div class="performance-row"><div><b>Risco de fila</b><br><span>' + (filaAtual > 30 ? 'Fila acima do limite recomendado.' : 'Fila dentro de faixa administrável.') + '</span></div><span class="mp ' + (filaAtual > 30 ? 'mp-r' : filaAtual > 15 ? 'mp-a' : 'mp-g') + '">' + (filaAtual > 30 ? 'Alto' : filaAtual > 15 ? 'Médio' : 'Normal') + '</span></div><div class="performance-row"><div><b>Qualidade dos registros</b><br><span>' + regs.length + ' registros disponíveis para análise e relatórios.</span></div><span class="mp mp-b">Base</span></div></div></div>';
+    colorizeStatuses();
+  };
+
+  function renameLivePanel() {
+    document.querySelectorAll('.sidebar-live-card .card-title, .card-title').forEach(function (el) {
+      if (/Painel\s+Ao\s+Vivo|Painel\s+ao\s+vivo/i.test(el.innerText)) el.innerText = 'Central de Operação';
+    });
+  }
+
+  function formatReportSections() {
+    const grid = document.querySelector('#screen-relatorio .report-sections-grid');
+    if (grid) grid.querySelectorAll('label').forEach(function (label) { label.classList.add('report-section-tile'); });
+    const actionBar = document.getElementById('report-action-bar-top');
+    if (actionBar) actionBar.style.justifyContent = 'center';
+  }
+
+  function applyAll() {
+    replaceTextNode(document.body);
+    renameLivePanel();
+    fixUnitsCards();
+    colorizeStatuses();
+    formatReportSections();
+    ensureStockModal();
+    if (document.getElementById('perf-grid')) window.renderPerformance();
+  }
+
+  window.govflowPolirTextos = applyAll;
+  window.addEventListener('load', function () {
+    applyAll();
+    setTimeout(applyAll, 600);
+    setTimeout(applyAll, 1600);
+  });
+})();
+</script>
+<!-- /CODEX GOVFLOW POLISH PTBR STOCK PERFORMANCE FINAL -->
 </body>
 </html>
