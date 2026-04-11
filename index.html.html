@@ -7349,5 +7349,302 @@ label,
 })();
 </script>
 <!-- /CODEX GOVFLOW POLISH PTBR STOCK PERFORMANCE FINAL -->
+
+<!-- CODEX GOVFLOW FIX OVERFLOW STOCK SIDEBAR FINAL -->
+<style>
+/* GOVFLOW - CORRECAO DE SOBREPOSICAO, ESTOQUE E SIDEBAR */
+.premium-page-badge { display: none !important; }
+:root { --sidebar: 244px !important; }
+.sidebar {
+  width: 244px !important;
+  padding: 12px 10px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+.sidebar::-webkit-scrollbar { width: 7px; }
+.sidebar::-webkit-scrollbar-thumb { background: rgba(148,163,184,.28); border-radius: 999px; }
+.nav-item {
+  width: 100% !important;
+  min-height: 38px !important;
+  padding: 0 10px !important;
+  font-size: 13.5px !important;
+  line-height: 1.25 !important;
+  white-space: normal !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+.nav-item svg { width: 14px !important; height: 14px !important; flex: 0 0 14px !important; }
+.sidebar-section { font-size: 10.5px !important; margin: 12px 8px 5px !important; letter-spacing: .06em !important; }
+.sidebar-live-card {
+  margin: 12px 4px 0 !important;
+  border-radius: 10px !important;
+  max-width: calc(100% - 8px) !important;
+}
+.sidebar-live-card .card-head {
+  min-height: auto !important;
+  padding: 10px 11px !important;
+}
+.sidebar-live-card .card-title {
+  font-size: 12.5px !important;
+  line-height: 1.25 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  white-space: normal !important;
+}
+.sidebar-live-card .live-row {
+  display: grid !important;
+  grid-template-columns: 28px minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  padding: 9px 10px !important;
+  gap: 8px !important;
+}
+.sidebar-live-card .live-icon { width: 28px !important; height: 28px !important; font-size: 13px !important; }
+.sidebar-live-card .live-body { min-width: 0 !important; }
+.sidebar-live-card .live-title,
+.sidebar-live-card .live-desc {
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+  word-break: normal !important;
+}
+.sidebar-live-card .live-title { font-size: 12px !important; }
+.sidebar-live-card .live-desc { font-size: 10.8px !important; }
+.sidebar-live-card .live-value { font-size: 12px !important; white-space: nowrap !important; }
+.sf-user { display: grid !important; grid-template-columns: 34px minmax(0, 1fr) !important; gap: 8px !important; }
+.sf-info { min-width: 0 !important; }
+.sf-name, .sf-role { white-space: normal !important; overflow-wrap: anywhere !important; }
+#screen-relatorio .rel-config { overflow: visible !important; }
+#screen-relatorio .rel-config .field { min-width: 0 !important; }
+#screen-relatorio .report-sections-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(148px, 1fr)) !important;
+  gap: 10px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+#screen-relatorio .report-section-tile {
+  display: grid !important;
+  grid-template-columns: 18px minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: 10px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 48px !important;
+  padding: 10px 12px !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
+  text-align: left !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+}
+#screen-relatorio .report-section-tile input[type="checkbox"] {
+  width: 16px !important;
+  height: 16px !important;
+  min-width: 16px !important;
+  min-height: 16px !important;
+  margin: 0 !important;
+}
+.stock-actions {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: nowrap;
+}
+.stock-icon-btn {
+  width: 34px !important;
+  min-width: 34px !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  padding: 0 !important;
+  border-radius: 8px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 15px !important;
+  line-height: 1 !important;
+}
+.stock-icon-btn.edit { color: #2563eb !important; border-color: rgba(37,99,235,.35) !important; }
+.stock-icon-btn.delete { color: #e11d48 !important; border-color: rgba(225,29,72,.35) !important; }
+#stock-list .saas-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto auto !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+#stock-list .saas-row-main { min-width: 0 !important; }
+#stock-list .saas-row-title, #stock-list .saas-row-desc { overflow-wrap: anywhere !important; white-space: normal !important; }
+@media (max-width: 760px) {
+  #stock-list .saas-row { grid-template-columns: 1fr !important; align-items: stretch !important; }
+  .stock-actions { justify-content: flex-start; }
+}
+</style>
+<script>
+/* GOVFLOW - EDITAR/EXCLUIR ESTOQUE E REPAROS DE LAYOUT */
+(function () {
+  const STOCK_KEY = 'govflow.stock.v1';
+  let editingStockIndex = null;
+
+  function readStock() { try { const rows = JSON.parse(localStorage.getItem(STOCK_KEY) || '[]'); return Array.isArray(rows) ? rows : []; } catch (e) { return []; } }
+  function writeStock(rows) { try { localStorage.setItem(STOCK_KEY, JSON.stringify(rows)); } catch (e) {} }
+  function norm(text) { return String(text || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').replace(/\b(papel|folha|folhas|resma|resmas|pct|pacote|unidade|unidades|de|do|da)\b/g, ' ').replace(/\s+/g, ' ').trim(); }
+  function canonical(name) { const n = norm(name); if (/\ba4\b/.test(n)) return 'Resma A4'; if (/toner|cartucho/.test(n)) return 'Toner'; if (/formulario|ficha/.test(n)) return 'Formulários'; if (/caneta/.test(n)) return 'Canetas'; return String(name || '').trim().replace(/\s+/g, ' '); }
+
+  function removePainelSaas() {
+    document.querySelectorAll('.premium-page-badge').forEach(function (el) { el.remove(); });
+  }
+
+  function fixReportSectionTiles() {
+    const field = Array.from(document.querySelectorAll('#screen-relatorio .rel-config .field')).find(function (el) { return /Seções do relatório|Seções do relatorio/i.test(el.innerText || ''); });
+    if (!field) return;
+    let grid = field.querySelector('.report-sections-grid');
+    if (!grid) {
+      grid = document.createElement('div');
+      grid.className = 'report-sections-grid';
+      Array.from(field.querySelectorAll('label')).filter(function (label) { return label.querySelector('input[type="checkbox"]'); }).forEach(function (label) { grid.appendChild(label); });
+      field.appendChild(grid);
+    }
+    Array.from(grid.querySelectorAll('label')).forEach(function (label) {
+      label.classList.add('report-section-tile');
+      label.removeAttribute('style');
+      const input = label.querySelector('input');
+      const text = Array.from(label.childNodes).filter(function (node) { return node.nodeType === Node.TEXT_NODE; }).map(function (node) { return node.nodeValue; }).join(' ').trim();
+      if (input && text && !label.querySelector('.section-label-text')) {
+        Array.from(label.childNodes).forEach(function (node) { if (node.nodeType === Node.TEXT_NODE) node.nodeValue = ''; });
+        const span = document.createElement('span');
+        span.className = 'section-label-text';
+        span.innerText = text;
+        label.appendChild(span);
+      }
+    });
+  }
+
+  function ensureStockModal() {
+    let modal = document.getElementById('stock-modal-shell');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'stock-modal-shell';
+      modal.className = 'stock-modal-shell';
+      document.body.appendChild(modal);
+      modal.addEventListener('click', function (e) { if (e.target === modal) window.closeStockModal(); });
+    }
+    modal.innerHTML = '<div class="stock-modal-card"><div class="stock-modal-title">' + (editingStockIndex === null ? 'Adicionar item ao estoque' : 'Editar item do estoque') + '</div><div class="stock-modal-sub">O sistema reconhece nomes parecidos, como “resma A4”, “papel A4” e “A4”, para evitar duplicidade.</div><div class="field"><label>Item</label><input id="stock-item-name" placeholder="Ex.: Resma A4"></div><div class="g2"><div class="field"><label>Quantidade</label><input id="stock-item-qty" type="number" min="0" value="1"></div><div class="field"><label>Mínimo</label><input id="stock-item-min" type="number" min="0" value="5"></div></div><div class="g2"><div class="field"><label>Unidade</label><input id="stock-item-unit" value="unid."></div><div class="field"><label>Local</label><input id="stock-item-place" placeholder="Ex.: Almoxarifado"></div></div><div class="stock-modal-actions"><button class="btn btn-ghost" onclick="closeStockModal()">Cancelar</button><button class="btn btn-primary" onclick="saveStockItemSmart()">Salvar item</button></div></div>';
+    return modal;
+  }
+
+  window.addStockItem = function addStockItem() {
+    editingStockIndex = null;
+    const modal = ensureStockModal();
+    modal.classList.add('open');
+    setTimeout(function () { document.getElementById('stock-item-name')?.focus(); }, 60);
+  };
+
+  window.editStockItem = function editStockItem(index) {
+    const rows = readStock();
+    const item = rows[index];
+    if (!item) return;
+    editingStockIndex = index;
+    const modal = ensureStockModal();
+    modal.classList.add('open');
+    document.getElementById('stock-item-name').value = item.item || '';
+    document.getElementById('stock-item-qty').value = item.qty || 0;
+    document.getElementById('stock-item-min').value = item.min || 0;
+    document.getElementById('stock-item-unit').value = item.unit || 'unid.';
+    document.getElementById('stock-item-place').value = item.place || '';
+  };
+
+  window.deleteStockItem = function deleteStockItem(index) {
+    const rows = readStock();
+    const item = rows[index];
+    if (!item) return;
+    if (!confirm('Excluir "' + item.item + '" do estoque?')) return;
+    rows.splice(index, 1);
+    writeStock(rows);
+    window.renderStock();
+    if (typeof toast === 'function') toast('Item excluído do estoque');
+  };
+
+  window.closeStockModal = function closeStockModal() {
+    const modal = document.getElementById('stock-modal-shell');
+    if (modal) modal.classList.remove('open');
+    editingStockIndex = null;
+  };
+
+  window.saveStockItemSmart = function saveStockItemSmart() {
+    const name = document.getElementById('stock-item-name')?.value.trim() || '';
+    if (!name) { if (typeof toast === 'function') toast('Informe o nome do item', 'err'); return; }
+    const itemName = canonical(name);
+    const qty = Math.max(0, parseInt(document.getElementById('stock-item-qty')?.value || '0', 10) || 0);
+    const min = Math.max(0, parseInt(document.getElementById('stock-item-min')?.value || '0', 10) || 0);
+    const unit = document.getElementById('stock-item-unit')?.value.trim() || 'unid.';
+    const place = document.getElementById('stock-item-place')?.value.trim() || 'A definir';
+    const rows = readStock();
+    const key = norm(itemName);
+    const duplicateIndex = rows.findIndex(function (item, idx) { return idx !== editingStockIndex && (norm(canonical(item.item)) === key || norm(item.item) === key); });
+    if (editingStockIndex !== null && rows[editingStockIndex]) {
+      if (duplicateIndex >= 0) {
+        rows[duplicateIndex].qty = (parseInt(rows[duplicateIndex].qty, 10) || 0) + qty;
+        rows[duplicateIndex].min = Math.max(parseInt(rows[duplicateIndex].min, 10) || 0, min);
+        rows.splice(editingStockIndex, 1);
+      } else {
+        rows[editingStockIndex] = { item: itemName, qty: qty, min: min, unit: unit, place: place };
+      }
+      if (typeof toast === 'function') toast('Item atualizado');
+    } else if (duplicateIndex >= 0) {
+      rows[duplicateIndex].qty = (parseInt(rows[duplicateIndex].qty, 10) || 0) + qty;
+      rows[duplicateIndex].min = Math.max(parseInt(rows[duplicateIndex].min, 10) || 0, min);
+      rows[duplicateIndex].unit = rows[duplicateIndex].unit || unit;
+      rows[duplicateIndex].place = rows[duplicateIndex].place && rows[duplicateIndex].place !== 'A definir' ? rows[duplicateIndex].place : place;
+      if (typeof toast === 'function') toast('Item semelhante encontrado: quantidade somada em ' + rows[duplicateIndex].item);
+    } else {
+      rows.push({ item: itemName, qty: qty, min: min, unit: unit, place: place });
+      if (typeof toast === 'function') toast('Item adicionado');
+    }
+    writeStock(rows);
+    window.closeStockModal();
+    window.renderStock();
+  };
+
+  window.renderStock = function renderStock() {
+    const stock = readStock();
+    const low = stock.filter(function (i) { return (parseInt(i.qty, 10) || 0) <= (parseInt(i.min, 10) || 0); }).length;
+    const metrics = document.getElementById('stock-metrics');
+    if (metrics) metrics.innerHTML = '<div class="saas-card"><div class="saas-card-body"><div class="saas-metric">' + stock.length + '</div><div class="saas-label">itens cadastrados</div></div></div><div class="saas-card"><div class="saas-card-body"><div class="saas-metric" style="color:' + (low ? 'var(--amber)' : 'var(--green)') + '">' + low + '</div><div class="saas-label">alertas de mínimo</div></div></div><div class="saas-card"><div class="saas-card-body"><div class="saas-metric">' + stock.reduce(function (a,b) { return a + (parseInt(b.qty, 10) || 0); }, 0) + '</div><div class="saas-label">saldo total</div></div></div>';
+    const list = document.getElementById('stock-list');
+    if (!list) return;
+    if (!stock.length) { list.innerHTML = '<div class="empty-state-clean">Nenhum item de estoque cadastrado. Clique em Adicionar item para começar.</div>'; return; }
+    list.innerHTML = stock.map(function (i, idx) {
+      const warn = (parseInt(i.qty, 10) || 0) <= (parseInt(i.min, 10) || 0);
+      return '<div class="saas-row"><div class="saas-row-main"><div class="saas-row-title">' + i.item + '</div><div class="saas-row-desc">' + (i.place || 'A definir') + ' · mínimo ' + i.min + ' ' + (i.unit || 'unid.') + '</div></div><span class="mp ' + (warn ? 'mp-a' : 'mp-g') + '">' + i.qty + ' ' + (i.unit || 'unid.') + '</span><div class="stock-actions"><button class="btn btn-ghost stock-icon-btn edit" title="Editar" onclick="editStockItem(' + idx + ')">✎</button><button class="btn btn-ghost stock-icon-btn delete" title="Excluir" onclick="deleteStockItem(' + idx + ')">×</button></div></div>';
+    }).join('');
+    if (typeof window.govflowPolirTextos === 'function') window.govflowPolirTextos();
+  };
+
+  function improveSidebar() {
+    removePainelSaas();
+    const liveCard = document.querySelector('.sidebar-live-card');
+    const footer = document.querySelector('.sidebar-footer');
+    const sidebar = document.getElementById('sidebar');
+    if (liveCard && sidebar && footer && liveCard.nextElementSibling !== footer) sidebar.insertBefore(liveCard, footer);
+    document.querySelectorAll('.sidebar-live-card .card-title').forEach(function (el) { el.innerText = 'Central de Operação'; });
+  }
+
+  function applyFixes() {
+    removePainelSaas();
+    fixReportSectionTiles();
+    improveSidebar();
+    if (document.getElementById('stock-list')) window.renderStock();
+  }
+
+  window.addEventListener('load', function () {
+    applyFixes();
+    setTimeout(applyFixes, 700);
+    setTimeout(applyFixes, 1800);
+  });
+})();
+</script>
+<!-- /CODEX GOVFLOW FIX OVERFLOW STOCK SIDEBAR FINAL -->
 </body>
 </html>
