@@ -5408,283 +5408,7 @@ input, select, textarea, button { font-size: 15px !important; }
 </script>
 <!-- /CODEX GOVFLOW DASHBOARD CLEAN SINCE FINAL -->
 
-<!-- CODEX GOVFLOW GOOGLE AUTH PERMITIDOS FINAL -->
-<style>
-/* GOVFLOW - LOGIN GOOGLE COM USUARIOS PERMITIDOS */
-body.auth-locked .topbar,
-body.auth-locked .sidebar,
-body.auth-locked .main {
-  filter: blur(3px);
-  pointer-events: none;
-  user-select: none;
-}
-.auth-secure-shell {
-  position: fixed;
-  inset: 0;
-  z-index: 99999;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  background: rgba(3, 7, 18, .82);
-  backdrop-filter: blur(18px);
-}
-.auth-secure-shell.open { display: flex; }
-.auth-secure-card {
-  width: min(440px, 100%);
-  border: 1px solid rgba(148, 163, 184, .26);
-  border-radius: 12px;
-  background: var(--bg1, #ffffff);
-  color: var(--ink, #111827);
-  box-shadow: 0 28px 90px rgba(0, 0, 0, .35);
-  padding: 28px;
-}
-.auth-secure-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-.auth-secure-mark {
-  width: 42px;
-  height: 42px;
-  border-radius: 8px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #2563eb, #0891b2);
-  color: #fff;
-  font-weight: 900;
-}
-.auth-secure-title {
-  font-size: 22px;
-  font-weight: 900;
-  line-height: 1.2;
-}
-.auth-secure-sub {
-  margin-top: 4px;
-  color: var(--ink3, #6b7280);
-  font-size: 14px;
-  line-height: 1.45;
-}
-.auth-google-btn {
-  width: 100%;
-  min-height: 46px;
-  border: 1px solid var(--line2, #d1d5db);
-  border-radius: 8px;
-  background: var(--bg2, #f9fafb);
-  color: var(--ink, #111827);
-  font-size: 15px;
-  font-weight: 900;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
-.auth-google-btn:hover { border-color: #2563eb; }
-.auth-secure-msg {
-  min-height: 22px;
-  margin-top: 14px;
-  color: var(--red, #ef4444);
-  font-size: 14px;
-  line-height: 1.45;
-  font-weight: 800;
-}
-.auth-secure-note {
-  margin-top: 16px;
-  color: var(--ink3, #6b7280);
-  font-size: 12.5px;
-  line-height: 1.5;
-}
-</style>
-<script>
-/* GOVFLOW - AUTENTICACAO FECHADA COM GOOGLE E usuarios_permitidos */
-(function () {
-  const AUTH_PROFILE_KEY = 'govflow.auth.profile.v1';
 
-  function getSupabaseClient() {
-    try {
-      if (
-        window.supabase &&
-        typeof window.supabase.from !== 'function' &&
-        typeof window.supabase.createClient === 'function' &&
-        typeof SUPABASE_URL !== 'undefined' &&
-        typeof SUPABASE_KEY !== 'undefined'
-      ) {
-        window.supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-      }
-      if (window.supabase && typeof window.supabase.from === 'function') return window.supabase;
-    } catch (e) {
-      console.warn('Supabase Auth indisponivel:', e);
-    }
-    return null;
-  }
-
-  function ensureLoginScreen() {
-    let shell = document.getElementById('auth-secure-shell');
-    if (shell) return shell;
-
-    shell = document.createElement('div');
-    shell.id = 'auth-secure-shell';
-    shell.className = 'auth-secure-shell';
-    shell.innerHTML = '<div class="auth-secure-card"><div class="auth-secure-brand"><div class="auth-secure-mark">GF</div><div><div class="auth-secure-title">Entrar no GovFlow</div><div class="auth-secure-sub">Acesso restrito aos usuarios autorizados pela coordenacao.</div></div></div><button class="auth-google-btn" onclick="loginGoogle()"><span>G</span><span>Entrar com Google</span></button><div class="auth-secure-msg" id="auth-secure-msg"></div><div class="auth-secure-note">Seu e-mail precisa estar cadastrado na tabela usuarios_permitidos do Supabase e marcado como ativo.</div></div>';
-    document.body.appendChild(shell);
-    return shell;
-  }
-
-  function setAuthMessage(message, type) {
-    const el = document.getElementById('auth-secure-msg');
-    if (!el) return;
-    el.innerText = message || '';
-    el.style.color = type === 'ok' ? 'var(--green, #16a34a)' : 'var(--red, #ef4444)';
-  }
-
-  function showLogin(message) {
-    const shell = ensureLoginScreen();
-    shell.classList.add('open');
-    document.body.classList.add('auth-locked');
-    if (message) setAuthMessage(message, 'err');
-  }
-
-  function hideLogin() {
-    const shell = ensureLoginScreen();
-    shell.classList.remove('open');
-    document.body.classList.remove('auth-locked');
-    setAuthMessage('', 'ok');
-  }
-
-  function renderUsuarioAutorizado(perfil) {
-    try { localStorage.setItem(AUTH_PROFILE_KEY, JSON.stringify(perfil)); } catch (e) {}
-
-    const right = document.querySelector('.topbar-right');
-    if (!right) return;
-
-    let pill = document.getElementById('user-session-pill');
-    if (!pill) {
-      pill = document.createElement('span');
-      pill.id = 'user-session-pill';
-      pill.className = 'user-pill';
-      right.insertBefore(pill, right.querySelector('.avatar-btn'));
-    }
-    pill.innerText = (perfil.nome || perfil.email) + ' · ' + (perfil.perfil || 'Usuario');
-
-    let out = document.getElementById('logout-btn');
-    if (!out) {
-      out = document.createElement('button');
-      out.id = 'logout-btn';
-      out.className = 'logout-btn';
-      out.innerText = 'Sair';
-      right.insertBefore(out, right.querySelector('.avatar-btn'));
-    }
-    out.onclick = logout;
-
-    const avatar = right.querySelector('.avatar-btn');
-    if (avatar) {
-      const base = (perfil.nome || perfil.email || 'U').trim();
-      const initials = base.split(/\s+/).slice(0, 2).map(function (p) { return p.charAt(0).toUpperCase(); }).join('');
-      avatar.innerText = initials || 'U';
-    }
-  }
-
-  window.loginGoogle = async function loginGoogle() {
-    const sb = getSupabaseClient();
-    if (!sb || !sb.auth || typeof sb.auth.signInWithOAuth !== 'function') {
-      showLogin('Supabase Auth nao esta configurado corretamente.');
-      return;
-    }
-
-    setAuthMessage('Abrindo login do Google...', 'ok');
-
-    const { error } = await sb.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: window.location.href.split('#')[0]
-      }
-    });
-
-    if (error) {
-      showLogin('Nao foi possivel iniciar login com Google.');
-      console.error('Erro login Google:', error);
-    }
-  };
-
-  window.logout = async function logout() {
-    const sb = getSupabaseClient();
-    try {
-      if (sb && sb.auth) await sb.auth.signOut();
-      localStorage.removeItem(AUTH_PROFILE_KEY);
-    } catch (e) {
-      console.warn('Erro ao sair:', e);
-    }
-    showLogin('Sessao encerrada. Entre novamente com Google.');
-  };
-
-  window.verificarAcesso = async function verificarAcesso() {
-    const sb = getSupabaseClient();
-    ensureLoginScreen();
-
-    if (!sb || !sb.auth || typeof sb.auth.getSession !== 'function') {
-      showLogin('Supabase Auth nao esta configurado.');
-      return false;
-    }
-
-    const sessionResult = await sb.auth.getSession();
-    const session = sessionResult && sessionResult.data ? sessionResult.data.session : null;
-    const user = session && session.user ? session.user : null;
-
-    if (!user || !user.email) {
-      showLogin('Entre com Google para acessar o sistema.');
-      return false;
-    }
-
-    const email = String(user.email).trim().toLowerCase();
-
-    const { data, error } = await sb
-      .from('usuarios_permitidos')
-      .select('email,nome,perfil,ativo')
-      .eq('email', email)
-      .maybeSingle();
-
-    if (error) {
-      console.error('Erro ao verificar usuarios_permitidos:', error);
-      await sb.auth.signOut();
-      showLogin('Nao foi possivel validar seu acesso. Verifique a tabela usuarios_permitidos.');
-      return false;
-    }
-
-    if (!data || data.ativo === false) {
-      await sb.auth.signOut();
-      localStorage.removeItem(AUTH_PROFILE_KEY);
-      showLogin('Acesso nao autorizado');
-      return false;
-    }
-
-    const perfil = {
-      email: data.email || email,
-      nome: data.nome || user.user_metadata?.full_name || email,
-      perfil: data.perfil || 'Usuario',
-      ativo: data.ativo !== false
-    };
-
-    renderUsuarioAutorizado(perfil);
-    hideLogin();
-    return true;
-  };
-
-  window.addEventListener('load', function () {
-    verificarAcesso();
-
-    const sb = getSupabaseClient();
-    if (sb && sb.auth && typeof sb.auth.onAuthStateChange === 'function') {
-      sb.auth.onAuthStateChange(function () {
-        verificarAcesso();
-      });
-    }
-  });
-})();
-</script>
-<!-- /CODEX GOVFLOW GOOGLE AUTH PERMITIDOS FINAL -->
 
 <!-- CODEX GOVFLOW INSIGHTS AUTOMATICOS FINAL -->
 <style>
@@ -5926,5 +5650,41 @@ body.auth-locked .main {
 })();
 </script>
 <!-- /CODEX GOVFLOW INSIGHTS AUTOMATICOS FINAL -->
+
+<!-- CODEX GOVFLOW AUTH DISABLED PREVIEW -->
+<script>
+/* GOVFLOW - LOGIN DESATIVADO TEMPORARIAMENTE PARA VISUALIZACAO */
+(function () {
+  function liberarSistema() {
+    document.body.classList.remove('auth-locked');
+    document.querySelectorAll('#auth-secure-shell, #auth-shell').forEach(function (el) {
+      el.classList.remove('open');
+      el.style.display = 'none';
+    });
+  }
+
+  window.verificarAcesso = async function verificarAcesso() {
+    liberarSistema();
+    return true;
+  };
+
+  window.loginGoogle = async function loginGoogle() {
+    liberarSistema();
+    return true;
+  };
+
+  window.logout = async function logout() {
+    liberarSistema();
+    return true;
+  };
+
+  window.addEventListener('load', function () {
+    liberarSistema();
+    setTimeout(liberarSistema, 300);
+    setTimeout(liberarSistema, 1200);
+  });
+})();
+</script>
+<!-- /CODEX GOVFLOW AUTH DISABLED PREVIEW -->
 </body>
 </html>
