@@ -1175,6 +1175,23 @@ body { font-size: 16px; line-height: 1.62; }
 .abnt-report .report-section-title { text-align: left !important; font-weight: 700 !important; font-size: 12pt !important; margin-top: 18pt; }
 .abnt-report table { font-size: 10pt !important; }
 @media (max-width: 980px) { .demanda-board { grid-template-columns: 1fr; } .admin-user-row { grid-template-columns: 1fr; align-items:start; } .admin-user-actions { justify-content:flex-start; } .abnt-report { padding: 28px 18px !important; } }
+/* CODEX GOVFLOW SAAS DATA CORE */
+.insights-panel { border:1px solid var(--line2); border-radius:12px; background:var(--bg1); padding:18px; display:grid; gap:12px; }
+.insights-head { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.insights-title { font-size:16px; font-weight:900; color:var(--ink); }
+.insights-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+.insight-card { border:1px solid var(--line); border-radius:8px; background:var(--bg2); padding:14px; }
+.insight-card strong { display:block; color:var(--ink); font-size:14px; margin-bottom:5px; }
+.insight-card span { display:block; color:var(--ink2); font-size:13px; line-height:1.45; }
+.insight-card.danger { border-color:var(--red3); background:var(--red2); }
+.insight-card.warn { border-color:var(--amber3); background:var(--amber2); }
+.insight-card.ok { border-color:var(--green3); background:var(--green2); }
+.auth-google-btn { margin-top:10px; background:#fff !important; color:#111827 !important; border:1px solid #d1d5db !important; }
+.auth-gate-msg { margin-top:10px; color:var(--ink3); font-size:12.5px; line-height:1.45; }
+.hist-period-controls { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+.hist-period-controls input, .hist-period-controls select { min-height:38px; }
+.saas-sync-pill { font-family:var(--mono); font-size:11px; color:var(--ink3); }
+@media (max-width:900px){ .insights-grid { grid-template-columns:1fr; } }
 </style>
 </head>
 <body>
@@ -3934,6 +3951,352 @@ setTimeout(initAdminDemandaAgendaFinal, 2200);
 // CODEX GOVFLOW FINAL SAFETY PATCH
 function renderMicroSaasAll() { renderFuncionarios(); renderStock(); renderOrders(); renderPerformance(); removeFilaPublicaModule(); }
 setTimeout(() => { removeFilaPublicaModule(); upgradeDemandaTab(); upgradeAdminScreenLabels(); renderFuncionarios(); setDashTab('resumo'); }, 2800);
+// CODEX GOVFLOW SAAS DATA CORE SCRIPT
+const GF_TENANT_KEY = 'govflow.tenant.v1';
+const GF_PROFILE_KEY = 'govflow.profile.v1';
+const GF_ALLOWED_TABLE = 'usuarios_permitidos';
+function gfTenantId() { try { return localStorage.getItem(GF_TENANT_KEY) || 'govflow-demo'; } catch(e) { return 'govflow-demo'; } }
+function gfSetTenantId(id) { try { localStorage.setItem(GF_TENANT_KEY, id || 'govflow-demo'); } catch(e) {} }
+function gfCurrentProfile() { try { return JSON.parse(localStorage.getItem(GF_PROFILE_KEY) || 'null'); } catch(e) { return null; } }
+function gfSetProfile(profile) { try { localStorage.setItem(GF_PROFILE_KEY, JSON.stringify(profile || null)); } catch(e) {} }
+function gfRecordDate(rec) { return gfParseRecordDate ? gfParseRecordDate(rec) : new Date(rec.created_at || rec.hora || Date.now()); }
+function gfSameDay(a,b) { return gfLocalDateKey(a) === gfLocalDateKey(b); }
+function gfRowsForToday(rows) { const now = new Date(); return (rows || []).filter(r => gfSameDay(gfRecordDate(r), now)); }
+function gfRecordQty(rec) { return rec.tipo === 'atend' ? gfQtySafe(rec.detalhe) : 0; }
+function gfStatusClass(level) { return level === 'danger' ? 'danger' : level === 'warn' ? 'warn' : 'ok'; }
+function gfFormatPct(n) { return Math.round(n || 0) + '%'; }
+function gfMapDbRegistro(r) { return gfNormalizeRecord({ id:r.id, tipo:r.tipo || 'atend', unidade:r.unidade || '', detalhe:r.detalhe || '', operador:r.operador || '-', hora:r.hora || r.created_at, created_at:r.created_at || r.hora, user_id:r.user_id || null, tenant_id:r.tenant_id || null }); }
+async function verificarAcesso() {
+  if (!db || !db.auth) return currentUser();
+  const { data } = await db.auth.getSession();
+  const session = data && data.session;
+  if (!session || !session.user) return currentUser();
+  const user = session.user;
+  let profile = { email:user.email, name:user.user_metadata?.full_name || user.email, role:'Usuário', active:true, user_id:user.id, tenant_id:gfTenantId(), auth:'supabase' };
+  try {
+    const { data:allowed, error } = await db.from(GF_ALLOWED_TABLE).select('*').eq('email', user.email).maybeSingle();
+    if (!error && allowed) {
+      if (allowed.active === false) throw new Error('blocked');
+      profile = { ...profile, name:allowed.nome || allowed.name || profile.name, role:allowed.perfil || allowed.role || profile.role, tenant_id:allowed.tenant_id || profile.tenant_id, active:true };
+      gfSetTenantId(profile.tenant_id);
+    } else if (!error && !allowed) {
+      await db.auth.signOut(); showAuth(true); toast('Usuário sem permissão cadastrada', 'err'); return null;
+    }
+  } catch(e) {
+    if (String(e.message || '').includes('blocked')) { showAuth(true); toast('Usuário bloqueado pela administração', 'err'); return null; }
+    console.warn('Tabela de usuários permitidos indisponível; usando perfil local');
+  }
+  gfSetProfile(profile); gfWrite(GF_SESSION_KEY, { name:profile.name, email:profile.email, role:profile.role }); renderUserSession(); showAuth(false); return profile;
+}
+function ensureAuthShell() {
+  let shell = document.getElementById('auth-shell');
+  if (!shell) { shell = document.createElement('div'); shell.id = 'auth-shell'; shell.className = 'auth-shell'; document.body.appendChild(shell); }
+  shell.innerHTML = '<div class="auth-card"><div class="auth-logo"><div class="brand-mark">GF</div><div><div class="auth-title">Entrar no GovFlow</div><div class="auth-sub">Acesso restrito aos usuários autorizados.</div></div></div><button class="btn btn-primary btn-full auth-google-btn" onclick="loginGoogleGovflow()">Entrar com Google</button><div class="auth-gate-msg">O Google só libera acesso se o e-mail estiver cadastrado na tabela de usuários permitidos.</div><div class="field"><label>E-mail</label><input id="login-email" type="email" placeholder="admin@govflow.com.br"></div><div class="field"><label>Senha</label><input id="login-pass" type="password" placeholder="Digite sua senha"></div><button class="btn btn-primary btn-full" onclick="loginGovflow()">Entrar com e-mail e senha</button><div class="auth-help">Modo local: admin@govflow.com.br / Admin123</div></div>';
+}
+async function loginGoogleGovflow() {
+  if (!db || !db.auth) { toast('Supabase Auth não está disponível', 'err'); return; }
+  const { error } = await db.auth.signInWithOAuth({ provider:'google', options:{ redirectTo: window.location.href } });
+  if (error) toast('Erro ao abrir login Google: ' + error.message, 'err');
+}
+async function gfSelectRegistros() {
+  if (!db) return { rows:S.registros || [], online:false };
+  const profile = await verificarAcesso();
+  const tenant = profile?.tenant_id || gfTenantId();
+  try {
+    let q = db.from('registros').select('*').order('created_at', { ascending:false }).limit(2000);
+    if (profile?.user_id) q = q.eq('user_id', profile.user_id);
+    if (tenant) q = q.eq('tenant_id', tenant);
+    const { data, error } = await q;
+    if (!error) return { rows:(data || []).map(gfMapDbRegistro), online:true };
+    console.warn('Consulta multiusuário indisponível, tentando consulta simples', error);
+  } catch(e) { console.warn('Consulta filtrada falhou', e); }
+  try {
+    const { data, error } = await db.from('registros').select('*').order('created_at', { ascending:false }).limit(2000);
+    if (!error) return { rows:(data || []).map(gfMapDbRegistro), online:true };
+  } catch(e) { console.warn('Consulta simples falhou', e); }
+  return { rows:S.registros || [], online:false };
+}
+function calcularMetricas(rows) {
+  const today = gfRowsForToday(rows);
+  const atendimentos = today.reduce((sum,r) => sum + gfRecordQty(r), 0);
+  const filas = today.filter(r => r.tipo === 'fila').map(r => gfFilaSafe(r.detalhe)).filter(n => Number.isFinite(n));
+  const filaMedia = filas.length ? Math.round(filas.reduce((a,b)=>a+b,0) / filas.length) : 0;
+  const activeTeam = Math.max(1, (TEAM || []).filter(f => f.s === 'ativo' || f.s === 'campo').length);
+  const capacidade = activeTeam * 16;
+  const eficiencia = Math.min(100, capacidade ? (atendimentos / capacidade) * 100 : 0);
+  const byUnit = { centro:0, canto:0, boicucanga:0, morro:0 };
+  today.forEach(r => { if (r.tipo === 'atend') { const key = GF_UNIT_KEYS?.[r.unidade] || GF_UNIT_KEYS?.[String(r.unidade || '').trim()]; if (key && byUnit[key] !== undefined) byUnit[key] += gfQtySafe(r.detalhe); } });
+  const hourly = Array.from({length:11}, (_,i) => ({ label:String(i+7).padStart(2,'0') + 'h', total:0 }));
+  today.forEach(r => { const h = gfRecordDate(r).getHours(); const idx = h - 7; if (idx >= 0 && idx < hourly.length && r.tipo === 'atend') hourly[idx].total += gfQtySafe(r.detalhe); });
+  return { rows, today, atendimentos, filaMedia, eficiencia, capacidade, activeTeam, byUnit, hourly, ocorrencias:today.filter(r=>r.tipo==='ocorrencia').length, ausencias:today.filter(r=>r.tipo==='ausencia').length };
+}
+function atualizarGraficos(metricas) {
+  if (typeof Chart === 'undefined') return;
+  const cu = document.getElementById('chartUnidades') ? Chart.getChart(document.getElementById('chartUnidades')) : null;
+  if (cu) { cu.data.datasets[0].data = [metricas.byUnit.centro, metricas.byUnit.canto, metricas.byUnit.boicucanga, metricas.byUnit.morro]; cu.update(); }
+  const ce = document.getElementById('chartEvolucao') ? Chart.getChart(document.getElementById('chartEvolucao')) : null;
+  if (ce) { ce.data.labels = metricas.hourly.map(h => h.label); ce.data.datasets[0].data = metricas.hourly.map(h => h.total); ce.update(); }
+}
+function gerarInsights(metricas) {
+  const insights = [];
+  if (metricas.filaMedia > 30) insights.push({ level:'danger', title:'Fila acima do limite', text:'Aumentar equipe no turno de maior volume e redistribuir atendimentos entre unidades.' });
+  if (metricas.eficiencia < 45 && metricas.atendimentos > 0) insights.push({ level:'warn', title:'Eficiência baixa', text:'Revisar tempo de atendimento e gargalos de triagem/documentação.' });
+  const peak = metricas.hourly.reduce((a,b)=> b.total > a.total ? b : a, {label:'-', total:0});
+  if (peak.total > 0) insights.push({ level:'ok', title:'Pico operacional', text:'Maior volume em ' + peak.label + '. Planeje reforço ou agendamento nesse período.' });
+  if (!insights.length) insights.push({ level:'ok', title:'Operação estável', text:'Sem alerta crítico com os dados disponíveis no período atual.' });
+  return insights;
+}
+function renderInsights(metricas) {
+  const tabs = document.querySelector('#screen-dashboard .dashboard-tabs');
+  if (!tabs) return;
+  let panel = document.getElementById('auto-insights-panel');
+  if (!panel) { panel = document.createElement('div'); panel.id = 'auto-insights-panel'; panel.className = 'insights-panel dash-panel dash-panel-resumo active'; tabs.insertAdjacentElement('afterend', panel); }
+  const insights = gerarInsights(metricas);
+  panel.innerHTML = '<div class="insights-head"><div class="insights-title">Insights automáticos</div><span class="saas-sync-pill">dados reais · ' + new Date().toLocaleTimeString('pt-BR') + '</span></div><div class="insights-grid">' + insights.map(i => '<div class="insight-card ' + gfStatusClass(i.level) + '"><strong>' + i.title + '</strong><span>' + i.text + '</span></div>').join('') + '</div>';
+}
+async function carregarDashboard() {
+  const result = await gfSelectRegistros();
+  S.registros = result.rows.map(gfNormalizeRecord);
+  saveLocalRecords(); normalizeHistory();
+  const metricas = calcularMetricas(S.registros);
+  S.atendimentos = metricas.atendimentos;
+  S.hj = { novos:0, atualizacoes:0, revisoes:0, boicucanga:metricas.byUnit.boicucanga, canto:metricas.byUnit.canto, centro:metricas.byUnit.centro, morro:metricas.byUnit.morro };
+  metricas.today.forEach(r => { if (r.tipo === 'atend') { if (/Novo/i.test(r.detalhe)) S.hj.novos += gfQtySafe(r.detalhe); else if (/Atualiza/i.test(r.detalhe)) S.hj.atualizacoes += gfQtySafe(r.detalhe); else if (/Revis/i.test(r.detalhe)) S.hj.revisoes += gfQtySafe(r.detalhe); } });
+  gfSetText('kpi-atend', metricas.atendimentos); gfSetText('kpi-fila', metricas.filaMedia); gfSetText('overview-atend', metricas.atendimentos); gfSetText('overview-fila', metricas.filaMedia); gfSetText('overview-ausencias', metricas.ausencias); gfSetText('overview-registros', metricas.today.length); gfSetText('overview-alertas', metricas.ocorrencias + (typeof getStockAlerts === 'function' ? getStockAlerts().length : 0));
+  gfSetText('u-centro', metricas.byUnit.centro); gfSetText('u-canto', metricas.byUnit.canto); gfSetText('u-boicucanga', metricas.byUnit.boicucanga); gfSetText('u-morro', metricas.byUnit.morro);
+  const demand = document.querySelector('.kpi-cell:nth-child(3) .kpi-value'); if (demand) { demand.textContent = metricas.filaMedia > 30 ? 'ALTA' : metricas.eficiencia < 45 ? 'MÉDIA' : 'NORMAL'; demand.style.color = metricas.filaMedia > 30 ? 'var(--red)' : metricas.eficiencia < 45 ? 'var(--amber)' : 'var(--green)'; }
+  gfSetSubText('.kpi-cell:nth-child(3) .kpi-sub', 'Eficiência: ' + gfFormatPct(metricas.eficiencia));
+  gfSetText('live-fila', metricas.filaMedia > 30 ? 'Crítica' : metricas.filaMedia > 15 ? 'Alta' : 'Normal'); gfSetText('fila-desc', metricas.filaMedia + ' pessoas · média do dia');
+  atualizarGraficos(metricas); renderInsights(metricas); updateHistBadge(); renderRecent(); renderHist();
+  return metricas;
+}
+async function carregarHistorico() { const result = await gfSelectRegistros(); S.registros = result.rows.map(gfNormalizeRecord); saveLocalRecords(); normalizeHistory(); renderHist(); updateHistBadge(); return S.registros; }
+async function salvarRegistro(rec) {
+  const profile = await verificarAcesso();
+  const clean = gfNormalizeRecord({ ...rec, created_at: rec.created_at || new Date().toISOString(), user_id: profile?.user_id || null, tenant_id: profile?.tenant_id || gfTenantId() });
+  if (db) {
+    const payload = { tipo:clean.tipo, unidade:clean.unidade || null, detalhe:clean.detalhe || '', operador:clean.operador || '-', hora:clean.created_at, user_id:clean.user_id, tenant_id:clean.tenant_id };
+    try { const { error } = await db.from('registros').insert(payload); if (error) throw error; }
+    catch(e) { try { await db.from('registros').insert({ tipo:clean.tipo, unidade:clean.unidade || null, detalhe:clean.detalhe || '', operador:clean.operador || '-', hora:clean.created_at }); } catch(err) { console.warn('Falha ao salvar online; mantendo local', err); } }
+  }
+  if (!S.registros.some(r => recordKey(r) === recordKey(clean))) S.registros.unshift(clean);
+  saveLocalRecords(); await carregarDashboard(); toast('Registro salvo'); return clean;
+}
+function addReg(rec) { salvarRegistro(rec); }
+function addHistoryPeriodControls() {
+  const toolbar = document.querySelector('#screen-historico .hist-toolbar');
+  if (!toolbar || document.getElementById('hist-period-mode')) return;
+  toolbar.insertAdjacentHTML('afterend', '<div class="hist-period-controls"><select class="filt-sel" id="hist-period-mode" onchange="renderHist()"><option value="todos">Todo histórico</option><option value="dia">Dia</option><option value="mes">Mês</option><option value="ano">Ano</option></select><input class="filt-sel" id="hist-period-value" type="date" onchange="renderHist()"><button class="btn btn-ghost btn-sm" onclick="compararPeriodoHistorico()">Comparar período</button></div>');
+  const v = document.getElementById('hist-period-value'); if (v) v.value = gfLocalDateKey(new Date());
+}
+function histPeriodMatch(r) {
+  const mode = document.getElementById('hist-period-mode')?.value || 'todos'; if (mode === 'todos') return true;
+  const val = document.getElementById('hist-period-value')?.value || gfLocalDateKey(new Date()); const d = gfRecordDate(r); const key = gfLocalDateKey(d);
+  if (mode === 'dia') return key === val;
+  if (mode === 'mes') return key.slice(0,7) === val.slice(0,7);
+  if (mode === 'ano') return key.slice(0,4) === val.slice(0,4);
+  return true;
+}
+function renderHist() {
+  addHistoryPeriodControls();
+  const q = document.getElementById('hist-q')?.value.toLowerCase() || ''; const ftp = document.getElementById('hist-ftipo')?.value || ''; const fund = document.getElementById('hist-fund')?.value || '';
+  const rows = (S.registros || []).filter(r => (!q || [r.detalhe,r.unidade,r.operador,r.tipo].join(' ').toLowerCase().includes(q)) && (!ftp || r.tipo === ftp) && (!fund || r.unidade === fund) && histPeriodMatch(r));
+  gfSetText('hist-count', rows.length + ' registro' + (rows.length === 1 ? '' : 's') + ' encontrado' + (rows.length === 1 ? '' : 's'));
+  const tbody = document.getElementById('hist-tbody'); if (!tbody) return;
+  if (!rows.length) { tbody.innerHTML = '<tr><td colspan="7" class="table-empty">Nenhum registro corresponde aos filtros.</td></tr>'; return; }
+  tbody.innerHTML = rows.map(r => '<tr><td>#' + r.id + '</td><td><span class="mp" style="' + (TYPE_STYLE[r.tipo] || '') + '">' + (TYPE_LABELS[r.tipo] || r.tipo) + '</span></td><td>' + (r.unidade || '-') + '</td><td>' + (r.detalhe || '-') + '</td><td>' + (r.operador || '-') + '</td><td style="font-family:var(--mono);font-size:10.5px">' + (r.hora || '-') + '</td><td><button class="btn btn-ghost btn-sm" onclick="delReg(' + r.id + ')">Excluir</button></td></tr>').join('');
+}
+function compararPeriodoHistorico() { const rows = (S.registros || []).filter(histPeriodMatch); const atual = calcularMetricas(rows); toast('Período: ' + atual.atendimentos + ' atendimentos · fila média ' + atual.filaMedia); }
+async function initSaasDataCore() { ensureAuthShell(); await verificarAcesso(); addHistoryPeriodControls(); await carregarDashboard(); if (window.govflowDashboardTimer) clearInterval(window.govflowDashboardTimer); window.govflowDashboardTimer = setInterval(carregarDashboard, 60000); }
+setTimeout(initSaasDataCore, 3200);
+// CODEX GOVFLOW SAAS NAV LOADERS
+function goTo(section) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const screen = document.getElementById('screen-' + section);
+  const nav = document.getElementById('nav-' + section);
+  if (screen) screen.classList.add('active');
+  if (nav) nav.classList.add('active');
+  if (section === 'dashboard') { setTimeout(() => { setDashTab('resumo'); carregarDashboard(); }, 40); }
+  if (section === 'historico') carregarHistorico();
+  if (section === 'registros') { updateDashboardFromHistory(); renderRecent(); }
+  if (section === 'funcionarios') renderFuncionarios();
+  if (section === 'estoque') renderStock();
+  if (section === 'ordens') renderOrders();
+  if (section === 'performance') renderPerformance();
+  if (section === 'relatorio') enhanceReportWorkspace();
+  const overlay = document.getElementById('sidebar-overlay');
+  const sidebar = document.getElementById('sidebar');
+  if (overlay && sidebar && sidebar.classList.contains('open')) toggleSidebar();
+}
 </script>
+
+<!-- CODEX GOVFLOW SUPABASE SIMPLES FINAL -->
+<script>
+/* GOVFLOW - SUPABASE SIMPLES E FUNCIONAL */
+(function () {
+  try {
+    if (
+      window.supabase &&
+      typeof window.supabase.from !== "function" &&
+      typeof window.supabase.createClient === "function" &&
+      typeof SUPABASE_URL !== "undefined" &&
+      typeof SUPABASE_KEY !== "undefined"
+    ) {
+      window.supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    }
+  } catch (e) {
+    console.warn("Supabase nao inicializado:", e);
+  }
+
+  function somenteNumero(valor) {
+    const match = String(valor || "").replace(",", ".").match(/\d+(\.\d+)?/);
+    const numero = parseFloat(match ? match[0] : "0");
+    return isNaN(numero) ? 0 : numero;
+  }
+
+  function calcularFila(registro) {
+    if (!registro) return 0;
+
+    if (registro.fila !== undefined && registro.fila !== null) {
+      return somenteNumero(registro.fila);
+    }
+
+    if (registro.tipo === "fila") {
+      return somenteNumero(registro.detalhe);
+    }
+
+    return 0;
+  }
+
+  function calcularAtendimento(registro) {
+    if (!registro) return 0;
+
+    if (registro.tipo === "atend" || registro.tipo === "atendimento") {
+      const qtd = somenteNumero(registro.detalhe);
+      return qtd > 0 ? qtd : 1;
+    }
+
+    return 0;
+  }
+
+  window.carregarDashboard = async function carregarDashboard() {
+    try {
+      if (!window.supabase || typeof window.supabase.from !== "function") {
+        console.warn("Cliente Supabase nao encontrado.");
+        return;
+      }
+
+      const { data, error } = await window.supabase
+        .from("registros")
+        .select("*")
+        .order("created_at", { ascending: true });
+
+      if (error) {
+        console.error("Erro ao carregar registros:", error);
+        return;
+      }
+
+      const registros = Array.isArray(data) ? data : [];
+
+      let totalAtendimentos = 0;
+      let somaFila = 0;
+      let qtdFila = 0;
+
+      const unidades = {};
+      const volumePorHora = {};
+
+      registros.forEach(function (registro) {
+        const atendimento = calcularAtendimento(registro);
+        totalAtendimentos += atendimento;
+
+        const fila = calcularFila(registro);
+        if (fila > 0) {
+          somaFila += fila;
+          qtdFila += 1;
+        }
+
+        if (registro.unidade) {
+          unidades[registro.unidade] = (unidades[registro.unidade] || 0) + atendimento;
+        }
+
+        if (registro.created_at) {
+          const hora = new Date(registro.created_at).getHours();
+          const labelHora = String(hora).padStart(2, "0") + "h";
+          volumePorHora[labelHora] = (volumePorHora[labelHora] || 0) + atendimento;
+        }
+      });
+
+      const mediaFila = qtdFila > 0 ? Math.round(somaFila / qtdFila) : 0;
+
+      const kpiAtend = document.getElementById("kpi-atend");
+      if (kpiAtend) kpiAtend.innerText = totalAtendimentos;
+
+      const kpiFila = document.getElementById("kpi-fila");
+      if (kpiFila) kpiFila.innerText = mediaFila;
+
+      const chartUnidadesCanvas = document.getElementById("chartUnidades");
+      if (chartUnidadesCanvas && typeof Chart !== "undefined") {
+        const chartUnidades = Chart.getChart(chartUnidadesCanvas);
+        if (chartUnidades) {
+          const unidadeLabels = Object.keys(unidades);
+          chartUnidades.data.labels = unidadeLabels.length ? unidadeLabels : ["Sem dados"];
+          chartUnidades.data.datasets[0].data = unidadeLabels.length ? unidadeLabels.map(function (label) { return unidades[label]; }) : [0];
+          chartUnidades.update();
+        }
+      }
+
+      const chartEvolucaoCanvas = document.getElementById("chartEvolucao");
+      if (chartEvolucaoCanvas && typeof Chart !== "undefined") {
+        const chartEvolucao = Chart.getChart(chartEvolucaoCanvas);
+        if (chartEvolucao) {
+          const horaLabels = Object.keys(volumePorHora);
+          chartEvolucao.data.labels = horaLabels.length ? horaLabels : ["Sem dados"];
+          chartEvolucao.data.datasets[0].data = horaLabels.length ? horaLabels.map(function (label) { return volumePorHora[label]; }) : [0];
+          chartEvolucao.update();
+        }
+      }
+    } catch (e) {
+      console.error("Erro inesperado no dashboard:", e);
+    }
+  };
+
+  window.salvarRegistro = async function salvarRegistro(rec) {
+    try {
+      if (!window.supabase || typeof window.supabase.from !== "function") {
+        console.warn("Cliente Supabase nao encontrado.");
+        return;
+      }
+
+      const novoRegistro = {
+        tipo: rec && rec.tipo ? rec.tipo : "",
+        unidade: rec && rec.unidade ? rec.unidade : "",
+        detalhe: rec && rec.detalhe ? rec.detalhe : "",
+        created_at: new Date().toISOString()
+      };
+
+      const { error } = await window.supabase
+        .from("registros")
+        .insert([novoRegistro]);
+
+      if (error) {
+        console.error("Erro ao salvar registro:", error);
+        alert("Nao foi possivel salvar o registro.");
+        return;
+      }
+
+      await window.carregarDashboard();
+    } catch (e) {
+      console.error("Erro inesperado ao salvar registro:", e);
+    }
+  };
+
+  window.addEventListener("load", function () {
+    window.carregarDashboard();
+    setInterval(window.carregarDashboard, 60000);
+  });
+})();
+</script>
+<!-- /CODEX GOVFLOW SUPABASE SIMPLES FINAL -->
 </body>
 </html>
