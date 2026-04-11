@@ -7950,5 +7950,562 @@ label,
 })();
 </script>
 <!-- /CODEX GOVFLOW FINAL VISUAL FIX LOGO TIMELINE -->
+
+<!-- CODEX GOVFLOW LOGO REPORT REDESIGN FINAL -->
+<style>
+/* GOVFLOW - LOGO FLOW, TITULOS CENTRALIZADOS, TIMELINE E RELATORIOS REFEITOS */
+.govflow-logo-mark {
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  background: transparent !important;
+  box-shadow: 0 16px 36px rgba(14,165,164,.28) !important;
+  flex: 0 0 44px !important;
+}
+.govflow-logo-svg { width: 100% !important; height: 100% !important; display: block !important; }
+.topbar-center {
+  justify-self: center !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  text-align: center !important;
+  min-width: 360px !important;
+  max-width: 520px !important;
+}
+.tb-clock, .tb-date { text-align: center !important; white-space: nowrap !important; }
+.card-head,
+.saas-card .card-head,
+.overview-card .card-head,
+.ia-operacional-head,
+.insights-auto-head,
+.govflow-public-head,
+.page-hd,
+.rel-config-title {
+  justify-content: center !important;
+  align-items: center !important;
+  text-align: center !important;
+}
+.card-title,
+.page-hd-title,
+.rel-config-title,
+.insights-auto-title,
+.ia-operacional-title,
+.govflow-public-title,
+.saas-row-title,
+.performance-panel-card .card-title,
+.performance-score-card .card-title {
+  width: 100% !important;
+  text-align: center !important;
+  justify-content: center !important;
+  align-items: center !important;
+  letter-spacing: 0 !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+}
+.card-head .mp,
+.govflow-public-head .mp,
+.insights-auto-head .insights-auto-badge,
+.ia-operacional-head .ia-operacional-badge {
+  margin-left: 0 !important;
+}
+.sidebar-live-card {
+  border-radius: 14px !important;
+  border-color: rgba(14,165,164,.42) !important;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--bg1,#111827) 86%, #0ea5a4 14%), color-mix(in srgb, var(--bg1,#111827) 92%, #2563eb 8%)) !important;
+  max-height: 410px !important;
+}
+.sidebar-live-card .card-head {
+  padding: 13px 12px !important;
+  border-bottom: 1px solid rgba(148,163,184,.20) !important;
+}
+.sidebar-live-card .card-title {
+  font-size: 13.5px !important;
+  font-weight: 950 !important;
+  display: flex !important;
+  gap: 8px !important;
+  text-align: center !important;
+}
+.sidebar-live-card .live-timeline {
+  position: relative !important;
+  display: grid !important;
+  gap: 0 !important;
+  max-height: 340px !important;
+  overflow-y: auto !important;
+  padding: 4px 0 !important;
+}
+.sidebar-live-card .live-row {
+  display: grid !important;
+  grid-template-columns: 34px minmax(0,1fr) auto !important;
+  gap: 9px !important;
+  padding: 11px 12px !important;
+  align-items: start !important;
+  border-bottom: 1px solid rgba(148,163,184,.14) !important;
+  background: transparent !important;
+}
+.sidebar-live-card .live-row::before {
+  left: 28px !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  background: linear-gradient(180deg, rgba(14,165,164,.1), rgba(14,165,164,.45), rgba(37,99,235,.1)) !important;
+}
+.sidebar-live-card .live-icon {
+  width: 32px !important;
+  height: 32px !important;
+  border: 1px solid rgba(255,255,255,.08) !important;
+  box-shadow: 0 8px 18px rgba(2,6,23,.18) !important;
+}
+.sidebar-live-card .live-title { font-size: 12.8px !important; font-weight: 950 !important; color: var(--ink,#fff) !important; }
+.sidebar-live-card .live-desc { margin-top: 2px !important; font-size: 11.4px !important; line-height: 1.38 !important; color: var(--ink2,#cbd5e1) !important; }
+.sidebar-live-card .live-value { align-self: center !important; border-radius: 999px !important; padding: 4px 7px !important; background: rgba(255,255,255,.06) !important; font-size: 11.5px !important; }
+#screen-relatorio .page-hd {
+  display: grid !important;
+  grid-template-columns: 1fr auto !important;
+  gap: 18px !important;
+  align-items: center !important;
+  text-align: left !important;
+  padding: 24px !important;
+}
+#screen-relatorio .page-hd > div { text-align: left !important; }
+#screen-relatorio .page-hd-title { text-align: left !important; font-size: clamp(28px, 2.4vw, 38px) !important; }
+#screen-relatorio .page-hd-sub { text-align: left !important; max-width: 760px !important; }
+#screen-relatorio .page-hd::after {
+  content: "Documento pronto para gestão";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: rgba(14,165,164,.14);
+  border: 1px solid rgba(14,165,164,.35);
+  color: #0ea5a4;
+  font-size: 13px;
+  font-weight: 950;
+  white-space: nowrap;
+}
+#screen-relatorio .page-body { padding-top: 18px !important; }
+#screen-relatorio .rel-layout {
+  display: grid !important;
+  grid-template-columns: minmax(340px, 430px) minmax(0, 1fr) !important;
+  gap: 20px !important;
+  align-items: start !important;
+}
+#screen-relatorio .rel-config {
+  position: sticky !important;
+  top: 92px !important;
+  border-radius: 14px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--bg1,#fff) 94%, #0ea5a4 6%), var(--bg2,#f8fafc)) !important;
+}
+#screen-relatorio .rel-config-title {
+  min-height: 62px !important;
+  padding: 16px 18px !important;
+  border-bottom: 1px solid var(--premium-card-border,var(--line,#e5e7eb)) !important;
+  background: rgba(14,165,164,.08) !important;
+  font-size: 18px !important;
+  font-weight: 950 !important;
+}
+#screen-relatorio .rel-config > .field,
+#screen-relatorio .rel-config > .g2,
+#screen-relatorio .rel-config > button,
+#report-model-tabs {
+  margin-left: 18px !important;
+  margin-right: 18px !important;
+}
+#screen-relatorio .rel-config > .field:first-of-type { margin-top: 18px !important; }
+#screen-relatorio .rel-config > button { margin-bottom: 18px !important; width: calc(100% - 36px) !important; }
+#screen-relatorio .report-sections-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  width: 100% !important;
+}
+#screen-relatorio .report-section-tile {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 9px !important;
+  min-width: 0 !important;
+  min-height: 52px !important;
+  padding: 11px !important;
+  border-radius: 10px !important;
+  text-align: left !important;
+  line-height: 1.3 !important;
+  overflow: visible !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+}
+#screen-relatorio .report-section-tile .section-label-text {
+  min-width: 0 !important;
+  display: block !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
+}
+#screen-relatorio .rel-preview {
+  min-height: 72vh !important;
+  border-radius: 14px !important;
+  overflow: auto !important;
+  background: linear-gradient(180deg, var(--bg1,#fff), var(--bg2,#f8fafc)) !important;
+}
+#screen-relatorio #rel-preview-box { padding: 0 !important; }
+.report-action-bar-top {
+  position: sticky !important;
+  top: 0 !important;
+  margin: 0 !important;
+  padding: 14px !important;
+  justify-content: center !important;
+  border-bottom: 1px solid var(--premium-card-border,var(--line,#e5e7eb)) !important;
+  background: color-mix(in srgb, var(--bg1,#fff) 94%, transparent) !important;
+  z-index: 35 !important;
+}
+#report-inner { margin: 18px auto !important; }
+@media (max-width: 1050px) {
+  .topbar-center { min-width: 0 !important; max-width: 340px !important; }
+  #screen-relatorio .page-hd, #screen-relatorio .rel-layout { grid-template-columns: 1fr !important; }
+  #screen-relatorio .page-hd::after { justify-self: start; }
+  #screen-relatorio .rel-config { position: static !important; }
+}
+@media (max-width: 640px) {
+  .topbar-center { display: none !important; }
+  #screen-relatorio .report-sections-grid { grid-template-columns: 1fr !important; }
+}
+</style>
+<script>
+/* GOVFLOW - LOGO GF FLOW E RELATORIOS REFEITOS */
+(function () {
+  function logoSvg(size) {
+    const s = size || 44;
+    return '<svg class="govflow-logo-svg" viewBox="0 0 72 72" width="' + s + '" height="' + s + '" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="GovFlow"><defs><linearGradient id="gfFlowGrad" x1="8" y1="8" x2="64" y2="64"><stop stop-color="#16a34a"/><stop offset=".46" stop-color="#0ea5a4"/><stop offset="1" stop-color="#2563eb"/></linearGradient><filter id="gfShadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#020617" flood-opacity=".22"/></filter></defs><rect x="5" y="5" width="62" height="62" rx="17" fill="url(#gfFlowGrad)" filter="url(#gfShadow)"/><path d="M20 28c7-9 25-10 33 0" fill="none" stroke="white" stroke-width="5" stroke-linecap="round" opacity=".95"/><path d="M19 39c7 9 25 10 34 0" fill="none" stroke="white" stroke-width="5" stroke-linecap="round" opacity=".95"/><path d="M27 23v26" stroke="white" stroke-width="5" stroke-linecap="round"/><path d="M45 24H34v12h9" fill="none" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="55" cy="19" r="5" fill="#facc15"/></svg>';
+  }
+
+  function cadBadge() {
+    return '<span class="govflow-cad-badge"><span class="govflow-cad-dot" style="background:#16a34a"></span><span class="govflow-cad-dot" style="background:#2563eb"></span><span class="govflow-cad-dot" style="background:#facc15"></span>CadÚnico</span>';
+  }
+
+  function applyLogo() {
+    document.querySelectorAll('.brand-mark, .report-logo-box').forEach(function (el) {
+      el.classList.add('govflow-logo-mark');
+      el.innerHTML = logoSvg(44);
+    });
+    const brand = document.querySelector('.brand-text');
+    if (brand && !brand.querySelector('.govflow-cad-badge')) brand.insertAdjacentHTML('beforeend', cadBadge());
+  }
+
+  function centerDateTime() {
+    const center = document.querySelector('.topbar-center');
+    if (!center) return;
+    center.style.justifyContent = 'center';
+    center.style.textAlign = 'center';
+  }
+
+  function fixReportTiles() {
+    const field = Array.from(document.querySelectorAll('#screen-relatorio .rel-config .field')).find(function (el) { return /Seções do relatório|Seções do relatorio/i.test(el.innerText || ''); });
+    if (!field) return;
+    let grid = field.querySelector('.report-sections-grid');
+    if (!grid) {
+      grid = document.createElement('div');
+      grid.className = 'report-sections-grid';
+      field.appendChild(grid);
+    }
+    Array.from(field.querySelectorAll('label')).filter(function (label) { return label.querySelector('input[type="checkbox"]'); }).forEach(function (label) {
+      if (label.parentElement !== grid) grid.appendChild(label);
+      label.classList.add('report-section-tile');
+      label.removeAttribute('style');
+      const input = label.querySelector('input[type="checkbox"]');
+      let span = label.querySelector('.section-label-text');
+      let text = Array.from(label.childNodes).filter(function (node) { return node.nodeType === Node.TEXT_NODE; }).map(function (node) { return node.nodeValue; }).join(' ').replace(/\s+/g, ' ').trim();
+      if (!span) { span = document.createElement('span'); span.className = 'section-label-text'; label.appendChild(span); }
+      if (text) span.innerText = text;
+      span.innerText = span.innerText.replace(/Resumo executivo/i, 'Resumo administrativo').replace(/Atendimentos por unidade/i, 'Atendimentos por unidade').replace(/Cenários financeiros/i, 'Demandas e cenários');
+      Array.from(label.childNodes).forEach(function (node) { if (node.nodeType === Node.TEXT_NODE) node.nodeValue = ''; });
+      if (input && label.firstChild !== input) label.insertBefore(input, label.firstChild);
+    });
+  }
+
+  function improveTimeline() {
+    const live = document.querySelector('.sidebar-live-card');
+    if (!live) return;
+    const title = live.querySelector('.card-title');
+    if (title) title.innerHTML = '<span class="live-dot"></span>Central de Operação';
+    let body = live.querySelector('.card-body');
+    if (!body) { body = document.createElement('div'); body.className = 'card-body'; live.appendChild(body); }
+    let timeline = live.querySelector('.live-timeline');
+    if (!timeline) { timeline = document.createElement('div'); timeline.className = 'live-timeline'; body.innerHTML = ''; body.appendChild(timeline); }
+    const fila = parseInt(document.getElementById('kpi-fila')?.innerText || '0', 10) || 0;
+    const atend = parseInt(document.getElementById('kpi-atend')?.innerText || '0', 10) || 0;
+    const now = new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+    const statusFila = fila > 30 ? ['Crítico','var(--red2)','var(--red)'] : fila > 15 ? ['Atenção','var(--amber2)','var(--amber)'] : ['Normal','var(--green2)','var(--green)'];
+    const events = [
+      ['●','Resumo do turno','Leitura consolidada do painel', 'Novo', 'var(--green2)', 'var(--green)'],
+      ['◷','Fila de espera', fila + ' pessoas em acompanhamento', statusFila[0], statusFila[1], statusFila[2]],
+      ['↗','Atendimentos', atend + ' registros no período atual', 'Fluxo', 'var(--blue2)', 'var(--blue)'],
+      ['!','Alertas','Demandas, estoque e equipe monitorados', 'Atenção', 'var(--amber2)', 'var(--amber)'],
+      ['✓','Atualização','Sincronizado às ' + now, 'Agora', 'var(--green2)', 'var(--green)']
+    ];
+    timeline.innerHTML = events.map(function (e) {
+      return '<div class="live-row"><div class="live-icon" style="background:' + e[4] + ';color:' + e[5] + '">' + e[0] + '</div><div class="live-body"><div class="live-title">' + e[1] + '</div><div class="live-desc">' + e[2] + '</div></div><div class="live-value" style="color:' + e[5] + '">' + e[3] + '</div></div>';
+    }).join('');
+  }
+
+  function cleanActionTitles() {
+    document.querySelectorAll('.card-title').forEach(function (el) {
+      const txt = el.innerText.replace(/\s+/g, ' ').trim();
+      if (/Ações Móveis|Mutirões/i.test(txt)) el.innerText = 'Ações Móveis e Mutirões';
+      if (/Plano do Dia|Afazeres/i.test(txt)) el.innerText = 'Plano do Dia';
+      if (/Plano de Ação|Ações Inteligentes/i.test(txt)) el.innerText = 'Plano de Ação';
+    });
+  }
+
+  function brandReport() {
+    const report = document.getElementById('report-inner');
+    if (!report) return;
+    const header = report.querySelector('.report-header');
+    if (header && !header.querySelector('.report-brand-line')) {
+      const line = document.createElement('div');
+      line.className = 'report-brand-line';
+      line.innerHTML = '<span class="report-logo-box govflow-logo-mark">' + logoSvg(36) + '</span><strong>GovFlow</strong>' + cadBadge();
+      header.insertBefore(line, header.firstChild);
+    }
+    if (!report.querySelector('.report-footer-govflow')) {
+      const footer = document.createElement('div');
+      footer.className = 'report-footer-govflow';
+      footer.innerHTML = '<span>GovFlow · Gestão CadÚnico</span><span>Documento gerado em ' + new Date().toLocaleString('pt-BR') + '</span>';
+      report.appendChild(footer);
+    }
+  }
+
+  const buildReportAnterior = window.buildReport;
+  if (typeof buildReportAnterior === 'function') {
+    window.buildReport = function buildReport() {
+      fixReportTiles();
+      const result = buildReportAnterior.apply(this, arguments);
+      setTimeout(function () { applyLogo(); fixReportTiles(); brandReport(); }, 100);
+      return result;
+    };
+  }
+
+  function applyAll() {
+    applyLogo();
+    centerDateTime();
+    fixReportTiles();
+    improveTimeline();
+    cleanActionTitles();
+    brandReport();
+  }
+
+  window.addEventListener('load', function () {
+    applyAll();
+    setTimeout(applyAll, 600);
+    setTimeout(applyAll, 1600);
+    setInterval(improveTimeline, 30000);
+  });
+})();
+</script>
+<!-- /CODEX GOVFLOW LOGO REPORT REDESIGN FINAL -->
+
+<!-- CODEX GOVFLOW STOCK CLEAN UI FINAL -->
+<style>
+/* GOVFLOW - ESTOQUE LIMPO E BOTAO DESTACADO */
+#screen-estoque .card-head,
+#screen-estoque .saas-card .card-head {
+  justify-content: space-between !important;
+  text-align: left !important;
+  gap: 14px !important;
+}
+#screen-estoque .card-head .card-title { width: auto !important; text-align: left !important; justify-content: flex-start !important; }
+#screen-estoque button[onclick="addStockItem()"] {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  min-height: 44px !important;
+  padding: 0 16px !important;
+  border-radius: 10px !important;
+  border: 1px solid rgba(14,165,164,.55) !important;
+  background: linear-gradient(135deg, #0ea5a4, #2563eb) !important;
+  color: #ffffff !important;
+  font-size: 15px !important;
+  font-weight: 950 !important;
+  box-shadow: 0 16px 34px rgba(14,165,164,.24) !important;
+  cursor: pointer !important;
+}
+#screen-estoque button[onclick="addStockItem()"]::before { content: "+"; font-size: 19px; line-height: 1; font-weight: 950; }
+#screen-estoque .saas-row {
+  grid-template-columns: minmax(0, 1fr) auto auto !important;
+  align-items: center !important;
+}
+#screen-estoque .saas-row-desc .stock-min-text { display: none !important; }
+.stock-modal-card .stock-modal-sub { display: none !important; }
+.stock-modal-card .stock-min-field { display: none !important; }
+.stock-modal-card .g2.stock-two { grid-template-columns: 1fr 1fr !important; }
+</style>
+<script>
+/* GOVFLOW - ESTOQUE SEM CAMPO MINIMO NA UI, COM ANTI-DUPLICIDADE INTERNA */
+(function () {
+  const STOCK_KEY = 'govflow.stock.v1';
+  let editingIndex = null;
+
+  function readStock() { try { const rows = JSON.parse(localStorage.getItem(STOCK_KEY) || '[]'); return Array.isArray(rows) ? rows : []; } catch (e) { return []; } }
+  function writeStock(rows) { try { localStorage.setItem(STOCK_KEY, JSON.stringify(rows)); } catch (e) {} }
+  function normalize(text) {
+    return String(text || '')
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, ' ')
+      .replace(/\b(papel|folha|folhas|resma|resmas|pct|pacote|unidade|unidades|cx|caixa|de|do|da|para)\b/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+  function canonical(name) {
+    const n = normalize(name);
+    if (/\ba4\b/.test(n)) return 'Resma A4';
+    if (/toner|cartucho|tinta/.test(n)) return 'Toner';
+    if (/formulario|ficha/.test(n)) return 'Formulários';
+    if (/caneta/.test(n)) return 'Canetas';
+    return String(name || '').trim().replace(/\s+/g, ' ');
+  }
+
+  function ensureStockModal() {
+    let modal = document.getElementById('stock-modal-shell');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'stock-modal-shell';
+      modal.className = 'stock-modal-shell';
+      document.body.appendChild(modal);
+      modal.addEventListener('click', function (e) { if (e.target === modal) window.closeStockModal(); });
+    }
+    modal.innerHTML = '<div class="stock-modal-card"><div class="stock-modal-title">' + (editingIndex === null ? 'Adicionar item' : 'Editar item') + '</div><div class="field"><label>Item</label><input id="stock-item-name" placeholder="Nome do item"></div><div class="g2 stock-two"><div class="field"><label>Quantidade</label><input id="stock-item-qty" type="number" min="0" value="1"></div><div class="field"><label>Unidade</label><input id="stock-item-unit" value="unid."></div></div><div class="field stock-min-field"><label>Mínimo</label><input id="stock-item-min" type="number" min="0" value="0"></div><div class="field"><label>Local</label><input id="stock-item-place" placeholder="Ex.: Almoxarifado"></div><div class="stock-modal-actions"><button class="btn btn-ghost" onclick="closeStockModal()">Cancelar</button><button class="btn btn-primary" onclick="saveStockItemSmart()">Salvar item</button></div></div>';
+    return modal;
+  }
+
+  window.addStockItem = function addStockItem() {
+    editingIndex = null;
+    const modal = ensureStockModal();
+    modal.classList.add('open');
+    setTimeout(function () { document.getElementById('stock-item-name')?.focus(); }, 80);
+  };
+
+  window.editStockItem = function editStockItem(index) {
+    const rows = readStock();
+    const item = rows[index];
+    if (!item) return;
+    editingIndex = index;
+    const modal = ensureStockModal();
+    modal.classList.add('open');
+    document.getElementById('stock-item-name').value = item.item || '';
+    document.getElementById('stock-item-qty').value = item.qty || 0;
+    document.getElementById('stock-item-unit').value = item.unit || 'unid.';
+    document.getElementById('stock-item-min').value = item.min || 0;
+    document.getElementById('stock-item-place').value = item.place || '';
+  };
+
+  window.closeStockModal = function closeStockModal() {
+    const modal = document.getElementById('stock-modal-shell');
+    if (modal) modal.classList.remove('open');
+    editingIndex = null;
+  };
+
+  window.saveStockItemSmart = function saveStockItemSmart() {
+    const rawName = document.getElementById('stock-item-name')?.value.trim() || '';
+    if (!rawName) { if (typeof toast === 'function') toast('Informe o nome do item', 'err'); return; }
+    const itemName = canonical(rawName);
+    const qty = Math.max(0, parseInt(document.getElementById('stock-item-qty')?.value || '0', 10) || 0);
+    const unit = document.getElementById('stock-item-unit')?.value.trim() || 'unid.';
+    const place = document.getElementById('stock-item-place')?.value.trim() || 'A definir';
+    const rows = readStock();
+    const key = normalize(itemName);
+    const duplicateIndex = rows.findIndex(function (item, idx) { return idx !== editingIndex && (normalize(canonical(item.item)) === key || normalize(item.item) === key); });
+
+    if (editingIndex !== null && rows[editingIndex]) {
+      if (duplicateIndex >= 0) {
+        rows[duplicateIndex].qty = (parseInt(rows[duplicateIndex].qty, 10) || 0) + qty;
+        rows[duplicateIndex].unit = rows[duplicateIndex].unit || unit;
+        rows[duplicateIndex].place = rows[duplicateIndex].place && rows[duplicateIndex].place !== 'A definir' ? rows[duplicateIndex].place : place;
+        rows.splice(editingIndex, 1);
+      } else {
+        rows[editingIndex] = { item: itemName, qty: qty, min: 0, unit: unit, place: place };
+      }
+      if (typeof toast === 'function') toast('Item atualizado');
+    } else if (duplicateIndex >= 0) {
+      rows[duplicateIndex].qty = (parseInt(rows[duplicateIndex].qty, 10) || 0) + qty;
+      rows[duplicateIndex].unit = rows[duplicateIndex].unit || unit;
+      rows[duplicateIndex].place = rows[duplicateIndex].place && rows[duplicateIndex].place !== 'A definir' ? rows[duplicateIndex].place : place;
+      if (typeof toast === 'function') toast('Item já existente: quantidade somada');
+    } else {
+      rows.push({ item: itemName, qty: qty, min: 0, unit: unit, place: place });
+      if (typeof toast === 'function') toast('Item adicionado');
+    }
+
+    writeStock(rows);
+    window.closeStockModal();
+    window.renderStock();
+  };
+
+  window.deleteStockItem = function deleteStockItem(index) {
+    const rows = readStock();
+    if (!rows[index]) return;
+    if (!confirm('Excluir "' + rows[index].item + '" do estoque?')) return;
+    rows.splice(index, 1);
+    writeStock(rows);
+    window.renderStock();
+    if (typeof toast === 'function') toast('Item excluído');
+  };
+
+  window.renderStock = function renderStock() {
+    const stock = readStock();
+    const metrics = document.getElementById('stock-metrics');
+    if (metrics) metrics.innerHTML = '<div class="saas-card"><div class="saas-card-body"><div class="saas-metric">' + stock.length + '</div><div class="saas-label">itens cadastrados</div></div></div><div class="saas-card"><div class="saas-card-body"><div class="saas-metric">' + stock.reduce(function (a,b) { return a + (parseInt(b.qty,10) || 0); }, 0) + '</div><div class="saas-label">saldo total</div></div></div>';
+    const list = document.getElementById('stock-list');
+    if (!list) return;
+    if (!stock.length) { list.innerHTML = '<div class="empty-state-clean">Nenhum item de estoque cadastrado. Clique em Adicionar item para começar.</div>'; return; }
+    list.innerHTML = stock.map(function (i, idx) {
+      return '<div class="saas-row"><div class="saas-row-main"><div class="saas-row-title">' + i.item + '</div><div class="saas-row-desc">' + (i.place || 'A definir') + '</div></div><span class="mp mp-g">' + i.qty + ' ' + (i.unit || 'unid.') + '</span><div class="stock-actions"><button class="btn btn-ghost stock-icon-btn edit" title="Editar" onclick="editStockItem(' + idx + ')">✎</button><button class="btn btn-ghost stock-icon-btn delete" title="Excluir" onclick="deleteStockItem(' + idx + ')">×</button></div></div>';
+    }).join('');
+  };
+
+  window.addEventListener('load', function () {
+    document.querySelectorAll('#screen-estoque button').forEach(function (btn) {
+      if (/Adicionar item demo/i.test(btn.innerText) || /Adicionar item/i.test(btn.innerText)) btn.innerText = 'Adicionar item';
+    });
+    if (document.getElementById('stock-list')) window.renderStock();
+  });
+})();
+</script>
+<!-- /CODEX GOVFLOW STOCK CLEAN UI FINAL -->
+
+<!-- CODEX GOVFLOW STOCK NO CONFIRM FINAL -->
+<script>
+/* GOVFLOW - EXCLUIR ESTOQUE SEM POPUP DO NAVEGADOR */
+(function () {
+  const STOCK_KEY = 'govflow.stock.v1';
+  function readStock() { try { const rows = JSON.parse(localStorage.getItem(STOCK_KEY) || '[]'); return Array.isArray(rows) ? rows : []; } catch (e) { return []; } }
+  function writeStock(rows) { try { localStorage.setItem(STOCK_KEY, JSON.stringify(rows)); } catch (e) {} }
+
+  window.deleteStockItem = function deleteStockItem(index) {
+    const rows = readStock();
+    if (!rows[index]) return;
+    rows.splice(index, 1);
+    writeStock(rows);
+    if (typeof window.renderStock === 'function') window.renderStock();
+    if (typeof toast === 'function') toast('Item removido');
+  };
+
+  window.stockDelta = function stockDelta(index, delta) {
+    const rows = readStock();
+    if (!rows[index]) return;
+    rows[index].qty = Math.max(0, (parseInt(rows[index].qty, 10) || 0) + delta);
+    writeStock(rows);
+    if (typeof window.renderStock === 'function') window.renderStock();
+  };
+})();
+</script>
+<!-- /CODEX GOVFLOW STOCK NO CONFIRM FINAL -->
 </body>
 </html>
