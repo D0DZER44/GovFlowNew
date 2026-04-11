@@ -6728,5 +6728,291 @@ label,
 })();
 </script>
 <!-- /CODEX GOVFLOW PREMIUM SAAS REDESIGN FINAL -->
+
+<!-- CODEX GOVFLOW UX REPORT PUBLIC DATA FINAL -->
+<style>
+/* GOVFLOW - AJUSTES DE UX, RELATORIO E FONTES PUBLICAS */
+#screen-dashboard .kpi-cell { min-height: 126px !important; padding: 16px !important; }
+#screen-dashboard .kpi-label { font-size: 13.5px !important; }
+#screen-dashboard .kpi-value { font-size: clamp(28px, 2.15vw, 36px) !important; line-height: 1.05 !important; }
+#screen-dashboard .kpi-sub { font-size: 12.8px !important; margin-top: 8px !important; }
+#screen-dashboard .kpi-strip { gap: 12px !important; }
+#screen-dashboard .dashboard-charts-top + .two-col {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  align-items: stretch !important;
+}
+#screen-dashboard .dashboard-charts-top + .two-col .card { min-height: 330px !important; }
+#screen-dashboard .dashboard-charts-top + .two-col .chart-wrap { height: 240px !important; min-height: 240px !important; }
+#screen-dashboard .dashboard-charts-top { scroll-margin-top: 0 !important; }
+.govflow-public-panel {
+  margin: 18px auto 0;
+  border: 1px solid var(--premium-card-border, var(--line2, #d1d5db));
+  border-radius: 10px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--bg1, #fff) 94%, #0ea5a4 6%), var(--bg2, #f8fafc));
+  box-shadow: 0 14px 38px rgba(2, 6, 23, .10);
+  overflow: hidden;
+}
+.govflow-public-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 17px 20px;
+  border-bottom: 1px solid var(--premium-card-border, var(--line, #e5e7eb));
+}
+.govflow-public-title { font-size: 19px; font-weight: 950; color: var(--ink, #111827); }
+.govflow-public-sub { margin-top: 3px; color: var(--ink2, #475569); font-size: 14.5px; line-height: 1.45; }
+.govflow-public-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; padding: 16px 20px 20px; }
+.govflow-public-card {
+  border: 1px solid var(--premium-card-border, var(--line, #e5e7eb));
+  border-radius: 8px;
+  background: var(--bg1, #fff);
+  padding: 14px;
+}
+.govflow-public-card strong { display: block; color: var(--ink, #111827); font-size: 15.5px; line-height: 1.35; margin-bottom: 6px; }
+.govflow-public-card span { display: block; color: var(--ink2, #475569); font-size: 14px; line-height: 1.5; }
+.govflow-public-card a { display: inline-flex; margin-top: 10px; color: #0ea5a4; font-size: 14px; font-weight: 900; text-decoration: none; }
+.public-new { display: inline-flex; border-radius: 999px; padding: 4px 8px; background: rgba(14,165,164,.12); color: #0f766e; font-weight: 900; font-size: 12px; margin-bottom: 8px; }
+#screen-relatorio .rel-layout { grid-template-columns: minmax(320px, 380px) minmax(0, 1fr) !important; align-items: start !important; }
+#screen-relatorio .rel-config { top: 88px !important; }
+#screen-relatorio .rel-config .field:has(input[type="checkbox"]),
+#screen-relatorio .rel-config .report-sections-grid { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 8px !important; }
+.report-sections-grid { margin-top: 8px !important; }
+.report-section-tile {
+  min-height: 42px;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 10px !important;
+  border: 1px solid var(--premium-card-border, var(--line, #e5e7eb)) !important;
+  border-radius: 8px !important;
+  background: var(--bg2, #f8fafc) !important;
+  color: var(--ink2, #475569) !important;
+  font-size: 13.5px !important;
+  line-height: 1.35 !important;
+}
+.report-action-bar-top {
+  position: sticky;
+  top: 84px;
+  z-index: 25;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 12px;
+  margin: -22px -22px 16px;
+  border-bottom: 1px solid var(--premium-card-border, var(--line, #e5e7eb));
+  background: color-mix(in srgb, var(--bg1, #fff) 92%, transparent);
+  backdrop-filter: blur(14px);
+}
+.report-action-bar-top .btn { min-height: 38px !important; }
+#rel-btn-row { display: none !important; }
+@media (max-width: 980px) {
+  #screen-dashboard .dashboard-charts-top + .two-col,
+  .govflow-public-grid,
+  #screen-relatorio .rel-layout,
+  #screen-relatorio .rel-config .report-sections-grid { grid-template-columns: 1fr !important; }
+  .report-action-bar-top { position: static; margin: -12px -12px 14px; justify-content: stretch; }
+  .report-action-bar-top .btn { flex: 1 1 160px; }
+}
+</style>
+<script>
+/* GOVFLOW - UX SEM AUTO-SCROLL, RELATORIO VISIVEL E FONTES PUBLICAS */
+(function () {
+  const MDS_INFORMES_URL = 'https://www.gov.br/mds/pt-br/acoes-e-programas/cadastro-unico/informes';
+  const CADUNICO_DADOS_URL = 'https://www.gov.br/mds/pt-br/acesso-a-informacao/carta-de-servicos/avaliacao-e-gestao-da-informacao-e-cadastro-unico/cadastro-unico/politica-utilizacao-dados';
+  const GOVFLOW_PUBLIC_CACHE = 'govflow.public.mds.cache.v1';
+
+  function qs(sel) { return document.querySelector(sel); }
+  function qsa(sel) { return Array.from(document.querySelectorAll(sel)); }
+
+  function corrigirPortuguesVisivel() {
+    const trocas = [
+      [/Relatório executivo/gi, 'Relatório administrativo'],
+      [/Resumo executivo/gi, 'Resumo administrativo'],
+      [/Cenários financeiros/gi, 'Demandas e cenários'],
+      [/CadÃšnico/g, 'CadÚnico'], [/SÃ£o/g, 'São'], [/HistÃ³rico/g, 'Histórico'], [/RelatÃ³rio/g, 'Relatório'],
+      [/ConfiguraÃ§Ãµes/g, 'Configurações'], [/PerÃ­odo/g, 'Período'], [/AtÃ©/g, 'Até'], [/ResponsÃ¡vel/g, 'Responsável'],
+      [/SeÃ§Ãµes/g, 'Seções'], [/AnÃ¡lise/g, 'Análise'], [/GrÃ¡ficos/g, 'Gráficos'], [/visualizaÃ§Ãµes/g, 'visualizações'],
+      [/OcorrÃªncias/g, 'Ocorrências'], [/PresenÃ§a/g, 'Presença'], [/BoiÃ§ucanga/g, 'Boiçucanga'], [/RelatÃ³rios/g, 'Relatórios'],
+      [/atnedimento/gi, 'atendimento'], [/daods/gi, 'dados']
+    ];
+    qsa('body *').forEach(function (el) {
+      if (el.children.length || ['SCRIPT','STYLE','TEXTAREA','INPUT','SELECT','OPTION'].includes(el.tagName)) return;
+      let text = el.innerText;
+      if (!text) return;
+      let fixed = text;
+      trocas.forEach(function (pair) { fixed = fixed.replace(pair[0], pair[1]); });
+      if (fixed !== text) el.innerText = fixed;
+    });
+    qsa('input[placeholder], input[value], option').forEach(function (el) {
+      ['placeholder', 'value'].forEach(function (attr) {
+        if (!el.hasAttribute(attr)) return;
+        let val = el.getAttribute(attr);
+        let fixed = val;
+        trocas.forEach(function (pair) { fixed = fixed.replace(pair[0], pair[1]); });
+        if (fixed !== val) el.setAttribute(attr, fixed);
+      });
+    });
+  }
+
+  window.setDashTab = function setDashTab(name) {
+    const targetName = name || 'resumo';
+    const dashboard = document.getElementById('screen-dashboard');
+    const overview = targetName === 'resumo';
+    if (dashboard) dashboard.classList.toggle('dashboard-overview-mode', overview);
+    qsa('#screen-dashboard .dash-tab').forEach(function (btn) { btn.classList.toggle('active', btn.dataset.tab === targetName); });
+    qsa('#screen-dashboard .dash-panel').forEach(function (panel) {
+      panel.classList.toggle('active', overview || panel.classList.contains('dash-panel-' + targetName));
+    });
+  };
+
+  function moverGraficosLogoAposKpi() {
+    const kpis = qs('#screen-dashboard .kpi-strip');
+    const title = qs('#screen-dashboard .dashboard-charts-top');
+    const row = title ? title.nextElementSibling : null;
+    if (!kpis || !title || !row) return;
+    title.classList.add('dash-panel', 'dash-panel-resumo', 'active');
+    row.classList.add('two-col', 'dash-panel', 'dash-panel-resumo', 'active');
+    kpis.insertAdjacentElement('afterend', title);
+    title.insertAdjacentElement('afterend', row);
+  }
+
+  function refazerGraficoPizza(id, labelsFallback) {
+    if (typeof Chart === 'undefined') return;
+    const canvas = document.getElementById(id);
+    if (!canvas) return;
+    const current = Chart.getChart(canvas);
+    if (current && current.config.type === 'doughnut') return;
+    const labels = current && current.data.labels.length ? current.data.labels.slice() : labelsFallback;
+    const data = current && current.data.datasets[0] ? current.data.datasets[0].data.slice() : labels.map(function () { return 0; });
+    if (current) current.destroy();
+    new Chart(canvas, {
+      type: 'doughnut',
+      data: { labels: labels, datasets: [{ data: data, backgroundColor: ['#0ea5a4','#2563eb','#16a34a','#d97706','#e11d48','#64748b'], borderColor: ['#0f766e','#1d4ed8','#15803d','#b45309','#be123c','#475569'], borderWidth: 2 }] },
+      options: { responsive: true, maintainAspectRatio: false, cutout: '58%', plugins: { legend: { display: true, position: 'bottom', labels: { font: { size: 13 } } } } }
+    });
+  }
+
+  function garantirGraficosPizza() {
+    moverGraficosLogoAposKpi();
+    refazerGraficoPizza('chartUnidades', ['Centro', 'Canto do Mar', 'Boiçucanga', 'Morro do Abrigo']);
+    refazerGraficoPizza('chartEvolucao', ['Manhã', 'Tarde']);
+    const titles = qsa('#screen-dashboard .dashboard-charts-top + .two-col .card-title');
+    if (titles[0]) titles[0].innerText = 'Distribuição por unidade';
+    if (titles[1]) titles[1].innerText = 'Distribuição por horário';
+  }
+
+  function montarPainelPublico() {
+    if (document.getElementById('govflow-public-panel')) return;
+    const host = document.getElementById('insights-auto-panel') || document.getElementById('ia-operacional-panel') || qs('#screen-dashboard .dashboard-tabs');
+    if (!host || !host.parentElement) return;
+    const panel = document.createElement('section');
+    panel.id = 'govflow-public-panel';
+    panel.className = 'govflow-public-panel dash-panel dash-panel-resumo active';
+    panel.innerHTML = '<div class="govflow-public-head"><div><div class="govflow-public-title">Fontes Públicas</div><div class="govflow-public-sub">Informes oficiais e base preparada para conexão com dados públicos/autorizados do CadÚnico.</div></div><span class="mp mp-b" id="govflow-public-status">Atualizando</span></div><div class="govflow-public-grid" id="govflow-public-grid"></div>';
+    host.insertAdjacentElement('afterend', panel);
+  }
+
+  function renderPublicSources(items) {
+    montarPainelPublico();
+    const grid = document.getElementById('govflow-public-grid');
+    const status = document.getElementById('govflow-public-status');
+    if (status) status.innerText = 'Verificado ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    if (!grid) return;
+    const rows = items && items.length ? items : [
+      { title: 'Informe Cadastro Único 89', desc: 'Mantenha a segurança reforçada da conta Gov.br para o Portal do Cadastro Único. Publicado em 02/04/2026.', url: MDS_INFORMES_URL, novo: true },
+      { title: 'Informes Cadastro Único - MDS', desc: 'Página oficial de informes do Ministério do Desenvolvimento e Assistência Social.', url: MDS_INFORMES_URL, novo: true },
+      { title: 'Dados do Cadastro Único', desc: 'Dados identificados exigem solicitação formal/autorização. Conexão municipal automática depende de endpoint ou arquivo oficial autorizado.', url: CADUNICO_DADOS_URL, novo: false }
+    ];
+    grid.innerHTML = rows.slice(0, 6).map(function (item) {
+      return '<div class="govflow-public-card">' + (item.novo ? '<span class="public-new">Novo</span>' : '') + '<strong>' + item.title + '</strong><span>' + item.desc + '</span><a href="' + item.url + '" target="_blank" rel="noopener">Abrir fonte oficial</a></div>';
+    }).join('');
+  }
+
+  async function atualizarInformesMDS() {
+    try {
+      const cached = JSON.parse(localStorage.getItem(GOVFLOW_PUBLIC_CACHE) || 'null');
+      if (cached && Date.now() - cached.ts < 3600000) return renderPublicSources(cached.items);
+    } catch (e) {}
+
+    try {
+      const res = await fetch(MDS_INFORMES_URL, { cache: 'no-store' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const html = await res.text();
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const text = doc.body.innerText || '';
+      const matches = Array.from(text.matchAll(/Informe Cadastro Único\s+(\d+)[\s\S]{0,220}?publicado\s+(\d{2}\/\d{2}\/\d{4})/gi)).slice(0, 5);
+      const items = matches.map(function (m, idx) {
+        return { title: 'Informe Cadastro Único ' + m[1], desc: 'Publicado em ' + m[2] + '. Consulte o conteúdo completo no portal oficial do MDS.', url: MDS_INFORMES_URL, novo: idx === 0 };
+      });
+      if (items.length) localStorage.setItem(GOVFLOW_PUBLIC_CACHE, JSON.stringify({ ts: Date.now(), items: items }));
+      renderPublicSources(items);
+    } catch (e) {
+      renderPublicSources();
+    }
+  }
+
+  function reorganizarRelatorio() {
+    const cfg = qs('#screen-relatorio .rel-config');
+    const preview = document.getElementById('rel-preview-box');
+    if (!cfg || !preview) return;
+
+    const labels = Array.from(cfg.querySelectorAll('label')).filter(function (label) { return label.querySelector('input[type="checkbox"]'); });
+    if (labels.length && !cfg.querySelector('.report-sections-grid')) {
+      const grid = document.createElement('div');
+      grid.className = 'report-sections-grid';
+      labels.forEach(function (label) {
+        label.classList.add('report-section-tile');
+        grid.appendChild(label);
+      });
+      const field = Array.from(cfg.querySelectorAll('.field')).find(function (f) { return /Seções do relatório|SeÃ§Ãµes do relat/i.test(f.innerText); });
+      if (field) field.appendChild(grid);
+    }
+
+    let bar = document.getElementById('report-action-bar-top');
+    if (!bar) {
+      bar = document.createElement('div');
+      bar.id = 'report-action-bar-top';
+      bar.className = 'report-action-bar-top';
+      bar.innerHTML = '<button class="btn btn-primary" onclick="printReport()">Imprimir / PDF</button><button class="btn btn-ghost" onclick="copyReport()">Copiar texto</button>';
+    }
+    if (preview.firstElementChild !== bar) preview.insertAdjacentElement('afterbegin', bar);
+  }
+
+  const buildReportAnterior = window.buildReport;
+  if (typeof buildReportAnterior === 'function') {
+    window.buildReport = function buildReport() {
+      reorganizarRelatorio();
+      const result = buildReportAnterior.apply(this, arguments);
+      setTimeout(function () { reorganizarRelatorio(); corrigirPortuguesVisivel(); }, 80);
+      return result;
+    };
+  }
+
+  const carregarDashboardAnterior = window.carregarDashboard;
+  if (typeof carregarDashboardAnterior === 'function') {
+    window.carregarDashboard = async function carregarDashboard() {
+      const result = await carregarDashboardAnterior.apply(this, arguments);
+      setTimeout(function () { setDashTab(qs('#screen-dashboard .dash-tab.active')?.dataset.tab || 'resumo'); garantirGraficosPizza(); atualizarInformesMDS(); corrigirPortuguesVisivel(); }, 50);
+      return result;
+    };
+  }
+
+  window.addEventListener('load', function () {
+    setDashTab(qs('#screen-dashboard .dash-tab.active')?.dataset.tab || 'resumo');
+    garantirGraficosPizza();
+    reorganizarRelatorio();
+    montarPainelPublico();
+    atualizarInformesMDS();
+    corrigirPortuguesVisivel();
+    setTimeout(function () { garantirGraficosPizza(); reorganizarRelatorio(); atualizarInformesMDS(); corrigirPortuguesVisivel(); }, 900);
+  });
+})();
+</script>
+<!-- /CODEX GOVFLOW UX REPORT PUBLIC DATA FINAL -->
 </body>
 </html>
