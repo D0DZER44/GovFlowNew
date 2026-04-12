@@ -14904,5 +14904,171 @@ html[data-theme="light"] .gf-sev-blue,body.light .gf-sev-blue,html[data-theme="l
   window.addEventListener('resize',function(){ requestAnimationFrame(repairCharts); });
 })();
 </script>
-<!-- /CODEX GOVFLOW NAV_CHARTS_REPAIR_V3 --></body>
+<!-- /CODEX GOVFLOW NAV_CHARTS_REPAIR_V3 --><!-- CODEX GOVFLOW DIRECT_ROUTER_HARD_FIX -->
+<style>
+/* Roteador direto: impede que camadas antigas deixem as abas invisiveis */
+.screen.gf-open-screen { display:block !important; visibility:visible !important; opacity:1 !important; pointer-events:auto !important; }
+.screen.gf-closed-screen { display:none !important; visibility:hidden !important; opacity:0 !important; pointer-events:none !important; }
+#screen-dashboard .dash-panel.gf-open-panel { display:block !important; visibility:visible !important; opacity:1 !important; height:auto !important; pointer-events:auto !important; }
+#screen-dashboard .dash-panel.gf-closed-panel { display:none !important; visibility:hidden !important; opacity:0 !important; height:0 !important; overflow:hidden !important; pointer-events:none !important; }
+#screen-dashboard .dashboard-tabs { display:flex !important; visibility:visible !important; opacity:1 !important; height:auto !important; }
+#screen-dashboard .kpi-strip { display:grid !important; visibility:visible !important; opacity:1 !important; }
+#cad-dashboard-graficos-fixos.gf-open-panel { display:block !important; }
+</style>
+<script>
+(function(){
+  function qsa(s,r){return Array.from((r||document).querySelectorAll(s));}
+  function norm(s){return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();}
+  function showScreen(name){
+    qsa('.screen').forEach(function(el){
+      const on = el.id === 'screen-' + name;
+      el.classList.toggle('active', on);
+      el.classList.toggle('gf-open-screen', on);
+      el.classList.toggle('gf-closed-screen', !on);
+      el.style.setProperty('display', on ? 'block' : 'none', 'important');
+      el.style.setProperty('visibility', on ? 'visible' : 'hidden', 'important');
+      el.style.setProperty('opacity', on ? '1' : '0', 'important');
+    });
+  }
+  function showDashboardTab(tab){
+    const target = tab || 'resumo';
+    showScreen('dashboard');
+    qsa('#screen-dashboard .dash-tab').forEach(function(btn){ btn.classList.toggle('active', btn.dataset.tab === target); });
+    qsa('#screen-dashboard .dash-panel').forEach(function(p){
+      const on = p.classList.contains('dash-panel-' + target) ||
+        (target === 'resumo' && (p.id === 'cad-dashboard-graficos-fixos' || p.id === 'cad-resumo-importante' || p.id === 'dash-overview')) ||
+        (target === 'live' && p.id === 'cad-central-live-panel') ||
+        (target === 'fontes' && p.id === 'fontes-publicas-panel');
+      p.classList.toggle('active', on);
+      p.classList.toggle('gf-open-panel', on);
+      p.classList.toggle('gf-closed-panel', !on);
+      p.style.setProperty('display', on ? 'block' : 'none', 'important');
+      p.style.setProperty('visibility', on ? 'visible' : 'hidden', 'important');
+      p.style.setProperty('opacity', on ? '1' : '0', 'important');
+      if (p.id === 'cad-dashboard-graficos-fixos') p.classList.toggle('force-show-resumo', target === 'resumo');
+    });
+    if(target === 'fontes' && typeof window.gfShowFontesPublicas === 'function') setTimeout(function(){ window.gfShowFontesPublicas(); }, 0);
+    if(target === 'resumo') repairChartsHard();
+    window.scrollTo(window.scrollX, window.scrollY);
+  }
+  function routeFrom(el){
+    const t=norm((el.textContent||'')+' '+(el.id||'')+' '+(el.getAttribute('onclick')||''));
+    if(/fontes/.test(t))return{screen:'dashboard',tab:'fontes'};
+    if(/ao vivo|live/.test(t))return{screen:'dashboard',tab:'live'};
+    if(/unidades/.test(t))return{screen:'dashboard',tab:'unidades'};
+    if(/equipe/.test(t))return{screen:'dashboard',tab:'equipe'};
+    if(/demanda|cenario/.test(t))return{screen:'dashboard',tab:'cenarios'};
+    if(/acao|acoes/.test(t))return{screen:'dashboard',tab:'resumo',focus:'gf-summary-actions-card'};
+    if(/tarefa|ordens|afazeres/.test(t))return{screen:'dashboard',tab:'resumo',focus:'gf-summary-task-card'};
+    if(/dashboard|resumo/.test(t))return{screen:'dashboard',tab:'resumo'};
+    if(/registros/.test(t))return{screen:'registros'};
+    if(/historico/.test(t))return{screen:'historico'};
+    if(/relatorio|relatorios/.test(t))return{screen:'relatorio'};
+    if(/estoque/.test(t))return{screen:'estoque'};
+    if(/performance/.test(t))return{screen:'performance'};
+    if(/administracao|funcionario/.test(t))return{screen:'funcionarios'};
+    return null;
+  }
+  function repairChartsHard(){
+    try{ if(typeof window.renderFixedDashboardCharts==='function') window.renderFixedDashboardCharts(); }catch(e){ console.warn(e); }
+    const panel=document.getElementById('cad-dashboard-graficos-fixos');
+    if(panel){
+      panel.classList.add('active','force-show-resumo','gf-open-panel');
+      panel.classList.remove('gf-closed-panel');
+      panel.style.setProperty('display','block','important');
+      panel.style.setProperty('visibility','visible','important');
+      panel.style.setProperty('opacity','1','important');
+    }
+    if(window.Chart){ ['chartResumoUnidades','chartResumoHorario','chartResumoOperacoes','chartResumoMotivos','chartResumoQualificacao','chartUnidades','chartEvolucao'].forEach(function(id){
+      const c=document.getElementById(id); const ch=c?Chart.getChart(c):null; if(ch){ try{ ch.resize(); ch.update('none'); }catch(e){} }
+    }); }
+  }
+  function openRoute(route){
+    if(!route)return false;
+    qsa('.nav-item').forEach(function(n){n.classList.remove('active')});
+    if(route.screen==='dashboard') showDashboardTab(route.tab||'resumo'); else showScreen(route.screen);
+    if(route.screen==='estoque'&&typeof window.renderStock==='function')setTimeout(window.renderStock,0);
+    if(route.screen==='performance'&&typeof window.renderPerformance==='function')setTimeout(window.renderPerformance,0);
+    if(route.screen==='funcionarios'&&typeof window.renderFuncionarios==='function')setTimeout(window.renderFuncionarios,0);
+    if(route.focus){ setTimeout(function(){ const f=document.getElementById(route.focus); if(f)f.scrollIntoView({behavior:'auto',block:'nearest'}); },30); }
+    return true;
+  }
+  function install(){
+    if(document.__gfDirectRouterHardFix)return; document.__gfDirectRouterHardFix=true;
+    document.addEventListener('click',function(ev){
+      const el=ev.target.closest&&ev.target.closest('.sidebar .nav-item,#cad-dashboard-nav-sidebar .nav-item,#screen-dashboard .dash-tab');
+      if(!el)return;
+      const route=el.classList.contains('dash-tab') ? {screen:'dashboard',tab:el.dataset.tab||'resumo'} : routeFrom(el);
+      if(!route)return;
+      ev.preventDefault(); ev.stopPropagation(); ev.stopImmediatePropagation();
+      el.classList.add('active'); openRoute(route);
+    },true);
+  }
+  window.goTo=function(name){ openRoute({screen:name||'dashboard',tab:name==='dashboard'?'resumo':undefined}); };
+  window.setDashTab=function(name){ openRoute({screen:'dashboard',tab:name||'resumo'}); };
+  window.gfDirectOpen=openRoute;
+  window.addEventListener('load',function(){ install(); openRoute({screen:'dashboard',tab:'resumo'}); setTimeout(repairChartsHard,500); });
+})();
+</script>
+<!-- /CODEX GOVFLOW DIRECT_ROUTER_HARD_FIX --><!-- CODEX GOVFLOW RISK_PERFORMANCE_LINK_FINAL -->
+<style>
+/* Risco visual, graficos clicaveis e tarefas como tela propria */
+#cad-resumo-importante { display: none !important; visibility: hidden !important; height: 0 !important; overflow: hidden !important; margin: 0 !important; padding: 0 !important; }
+.gf-risk-red { color:#fecdd3 !important; background:rgba(244,63,94,.22) !important; border-color:rgba(251,113,133,.62) !important; box-shadow:0 0 0 3px rgba(244,63,94,.10) !important; }
+.gf-risk-yellow { color:#fde68a !important; background:rgba(245,158,11,.22) !important; border-color:rgba(251,191,36,.62) !important; box-shadow:0 0 0 3px rgba(245,158,11,.10) !important; }
+.gf-risk-green { color:#bbf7d0 !important; background:rgba(34,197,94,.22) !important; border-color:rgba(74,222,128,.62) !important; box-shadow:0 0 0 3px rgba(34,197,94,.10) !important; }
+.gf-risk-blue { color:#bae6fd !important; background:rgba(14,165,233,.22) !important; border-color:rgba(56,189,248,.62) !important; box-shadow:0 0 0 3px rgba(14,165,233,.10) !important; }
+#cad-dashboard-graficos-fixos .fixed-chart-card { cursor: pointer !important; transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease !important; }
+#cad-dashboard-graficos-fixos .fixed-chart-card:hover { transform: translateY(-2px) !important; border-color: rgba(103,232,249,.52) !important; box-shadow:0 18px 42px rgba(14,165,233,.10) !important; }
+#cad-dashboard-graficos-fixos .fixed-chart-card::after { content:"Abrir Performance"; display:inline-flex; width:fit-content; margin:8px auto 0; padding:5px 10px; border-radius:999px; color:#bae6fd; background:rgba(14,165,233,.14); border:1px solid rgba(56,189,248,.34); font-size:11px; font-weight:950; }
+#screen-performance .performance-chart-suite { margin-top:16px !important; display:grid !important; gap:14px !important; }
+#screen-performance .performance-chart-grid { display:grid !important; grid-template-columns:repeat(2,minmax(0,1fr)) !important; gap:14px !important; }
+#screen-performance .performance-chart-grid.secondary { grid-template-columns:repeat(3,minmax(0,1fr)) !important; }
+#screen-performance .perf-chart-card { border:1px solid rgba(103,232,249,.22) !important; border-radius:16px !important; background:rgba(15,23,42,.72) !important; padding:14px !important; min-height:260px !important; }
+#screen-performance .performance-chart-grid.secondary .perf-chart-card { min-height:210px !important; }
+#screen-performance .perf-chart-card h3 { text-align:center !important; margin:0 0 10px !important; font-size:15px !important; font-weight:950 !important; color:var(--ink) !important; }
+#screen-performance .perf-chart-card .chart-wrap { height:210px !important; }
+#screen-performance .performance-chart-grid.secondary .chart-wrap { height:150px !important; }
+#nav-ordens::before,#nav-ordens::after { content:none !important; display:none !important; }
+#nav-ordens { font-size:13.5px !important; }
+html[data-theme="light"] #screen-performance .perf-chart-card, body.light #screen-performance .perf-chart-card { background:#fff !important; border-color:rgba(15,23,42,.12) !important; }
+@media(max-width:980px){ #screen-performance .performance-chart-grid,#screen-performance .performance-chart-grid.secondary{grid-template-columns:1fr!important} }
+</style>
+<script>
+(function(){
+  function qsa(s,r){return Array.from((r||document).querySelectorAll(s));}
+  function norm(s){return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();}
+  function riskClass(text){ const t=norm(text); if(/critico|critica|urgente|alto|alta|atrasado|bloqueado|risco|erro|pendente|maxima|parada/.test(t))return'gf-risk-red'; if(/atencao|aguardando|medio|media|planejado|semana|monitorar|revisar|alerta|repor|hoje|andamento/.test(t))return'gf-risk-yellow'; if(/livre|normal|bom|boa|ok|feito|concluido|confirmado|ativo|atualizado|sem pendencias|regular|disponivel/.test(t))return'gf-risk-green'; if(/info|base|modelo|dados|plano|novo|administrador|coordenacao|revisao|fontes|mds|oficial/.test(t))return'gf-risk-blue'; return''; }
+  function applyRiskColors(){ qsa('.mp,.task-badge,.func-status,.live-value,.central-live-badge,.public-new,.status-pill,.gov-status-pill').forEach(function(el){ el.classList.remove('gf-risk-red','gf-risk-yellow','gf-risk-green','gf-risk-blue','gf-sev-red','gf-sev-yellow','gf-sev-green','gf-sev-blue'); const c=riskClass(el.textContent||el.getAttribute('aria-label')||''); if(c) el.classList.add(c); }); }
+  function showScreen(name){ qsa('.screen').forEach(function(el){ const on=el.id==='screen-'+name; el.classList.toggle('active',on); el.classList.toggle('gf-open-screen',on); el.classList.toggle('gf-closed-screen',!on); el.style.setProperty('display',on?'block':'none','important'); el.style.setProperty('visibility',on?'visible':'hidden','important'); el.style.setProperty('opacity',on?'1':'0','important'); }); }
+  function openPerformance(){ showScreen('performance'); qsa('.nav-item').forEach(function(n){n.classList.remove('active')}); const n=document.getElementById('nav-performance'); if(n)n.classList.add('active'); renderPerformanceCharts(); }
+  function hideThirdDashboardImage(){ const box=document.getElementById('cad-resumo-importante'); if(box){ box.style.setProperty('display','none','important'); box.classList.remove('active','gf-open-panel'); box.classList.add('gf-closed-panel'); } }
+  function fixTaskLabels(){ qsa('#nav-ordens').forEach(function(el){ el.textContent='Tarefas'; }); const title=document.querySelector('#screen-ordens .page-hd-title'); if(title) title.textContent='Tarefas'; const sub=document.querySelector('#screen-ordens .page-hd-sub'); if(sub) sub.textContent='Registre reuniões, solicitações, manutenção e acompanhe o status.'; }
+  function bindDashboardCharts(){ qsa('#cad-dashboard-graficos-fixos .fixed-chart-card, #cad-dashboard-graficos-fixos canvas').forEach(function(el){ if(el.__gfPerfClick)return; el.__gfPerfClick=true; el.addEventListener('click',function(ev){ ev.preventDefault(); ev.stopPropagation(); openPerformance(); },true); }); }
+  function metricData(){
+    const regs=(window.S&&Array.isArray(S.registros))?S.registros:[];
+    const kpiAtend=parseInt(String(document.getElementById('kpi-atend')?.textContent||'0').replace(/\D+/g,''),10)||0;
+    const kpiFila=parseInt(String(document.getElementById('kpi-fila')?.textContent||'0').replace(/\D+/g,''),10)||0;
+    const tipos={Atendimentos:kpiAtend||regs.filter(r=>/atend/i.test(r.tipo||'')).length, Fila:kpiFila, Ausencias:regs.filter(r=>/aus/i.test(r.tipo||'')).length, Ocorrencias:regs.filter(r=>/ocorr/i.test(r.tipo||'')).length};
+    const unidades={Centro:0,'Canto do Mar':0,'Boiçucanga':0,'Morro do Abrigo':0}; regs.forEach(function(r){ const u=String(r.unidade||'').trim(); if(unidades[u]!=null) unidades[u]++; }); if(!Object.values(unidades).some(Boolean)) unidades.Centro=Math.max(kpiAtend,1);
+    const horario={'Manhã':0,Tarde:0,Noite:0}; regs.forEach(function(r){ const d=new Date(r.created_at||r.hora||r.data||''); const h=!isNaN(d.getTime())?d.getHours():12; if(h<12)horario['Manhã']++; else if(h<18)horario.Tarde++; else horario.Noite++; }); if(!Object.values(horario).some(Boolean)) horario['Manhã']=1;
+    return {unidades:unidades, horario:horario, tipos:tipos, motivos:{Unipessoais:1,'Atualização 2 anos':Math.max(tipos.Atendimentos,1),Endereco:1,Renda:1}, risco:{Regular:Math.max(tipos.Atendimentos,1),Atenção:kpiFila>15?1:0,Risco:kpiFila>30?1:0}};
+  }
+  function upsert(id,data,small){ if(!window.Chart)return; const c=document.getElementById(id); if(!c)return; const labels=Object.keys(data); const values=labels.map(k=>Math.max(0,Number(data[k])||0)); const colors=['#ef4444','#f59e0b','#22c55e','#0ea5e9','#8b5cf6','#14b8a6']; let ch=Chart.getChart(c); const cfg={responsive:true,maintainAspectRatio:false,animation:false,cutout:small?'62%':'56%',plugins:{legend:{position:'bottom',labels:{color:getComputedStyle(document.documentElement).getPropertyValue('--ink')||'#e5e7eb',boxWidth:10,font:{size:small?10:12,weight:'700'}}}}}; if(!ch||ch.config.type!=='doughnut'){ if(ch)ch.destroy(); new Chart(c,{type:'doughnut',data:{labels:labels,datasets:[{data:values,backgroundColor:colors,borderColor:'rgba(15,23,42,.95)',borderWidth:2}]},options:cfg}); } else { ch.data.labels=labels; ch.data.datasets[0].data=values; ch.data.datasets[0].backgroundColor=colors; ch.options=cfg; ch.update('none'); } }
+  function ensurePerformancePanel(){ const body=document.querySelector('#screen-performance .page-body'); if(!body)return null; let suite=document.getElementById('performance-chart-suite'); if(!suite){ suite=document.createElement('section'); suite.id='performance-chart-suite'; suite.className='performance-chart-suite'; body.insertBefore(suite, body.firstChild); } suite.innerHTML='<div class="performance-chart-grid"><article class="perf-chart-card"><h3>Distribuição por unidade</h3><div class="chart-wrap"><canvas id="perfChartUnidades"></canvas></div></article><article class="perf-chart-card"><h3>Distribuição por horário</h3><div class="chart-wrap"><canvas id="perfChartHorario"></canvas></div></article></div><div class="performance-chart-grid secondary"><article class="perf-chart-card"><h3>Tipos de movimentação</h3><div class="chart-wrap"><canvas id="perfChartTipos"></canvas></div></article><article class="perf-chart-card"><h3>Motivos de atualização</h3><div class="chart-wrap"><canvas id="perfChartMotivos"></canvas></div></article><article class="perf-chart-card"><h3>Qualificação cadastral</h3><div class="chart-wrap"><canvas id="perfChartRisco"></canvas></div></article></div>'; return suite; }
+  function renderPerformanceCharts(){ try{ if(typeof window.renderPerformance==='function') window.renderPerformance(); }catch(e){} ensurePerformancePanel(); const d=metricData(); upsert('perfChartUnidades',d.unidades,false); upsert('perfChartHorario',d.horario,false); upsert('perfChartTipos',d.tipos,true); upsert('perfChartMotivos',d.motivos,true); upsert('perfChartRisco',d.risco,true); applyRiskColors(); }
+  function patchRouting(){
+    const oldDirect=window.gfDirectOpen;
+    window.gfDirectOpen=function(route){ if(route&&route.screen==='dashboard'&&(route.tab==='afazeres'||route.focus==='gf-summary-task-card')){ showScreen('ordens'); fixTaskLabels(); return true; } if(route&&route.screen==='performance'){ openPerformance(); return true; } return oldDirect?oldDirect(route):false; };
+    const oldGo=window.goTo;
+    window.goTo=function(name){ if(name==='ordens'){ showScreen('ordens'); fixTaskLabels(); return; } if(name==='performance'){ openPerformance(); return; } if(typeof oldGo==='function') return oldGo.apply(this,arguments); };
+    document.addEventListener('click',function(ev){ const el=ev.target.closest&&ev.target.closest('#nav-ordens,.nav-item,#screen-dashboard .dash-tab'); if(!el)return; const t=norm((el.textContent||'')+' '+(el.id||'')+' '+(el.getAttribute('onclick')||'')); if(/tarefa|ordens|afazeres/.test(t)){ ev.preventDefault(); ev.stopPropagation(); ev.stopImmediatePropagation(); showScreen('ordens'); fixTaskLabels(); } },true);
+  }
+  function run(){ hideThirdDashboardImage(); fixTaskLabels(); bindDashboardCharts(); applyRiskColors(); }
+  window.renderPerformanceChartsGovFlow=renderPerformanceCharts;
+  window.addEventListener('load',function(){ patchRouting(); run(); setTimeout(run,500); setTimeout(run,1500); });
+  window.addEventListener('resize',function(){ requestAnimationFrame(function(){ bindDashboardCharts(); if(document.getElementById('screen-performance')?.classList.contains('active')) renderPerformanceCharts(); }); });
+})();
+</script>
+<!-- /CODEX GOVFLOW RISK_PERFORMANCE_LINK_FINAL --></body>
 </html>
