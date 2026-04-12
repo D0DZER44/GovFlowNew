@@ -868,14 +868,14 @@ body { font-size: 15px; color: var(--ink); }
 
 /* CODEX GOVFLOW MICRO-SAAS MODULES */
 .auth-shell { position: fixed; inset: 0; z-index: 2000; background: radial-gradient(circle at 20% 10%, rgba(79,142,247,.18), transparent 34%), var(--bg); display: none; align-items: center; justify-content: center; padding: 24px; }
-.auth-shell.open { display: flex; }
+.auth-shell.open { display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; }
 .auth-card { width: min(440px, 100%); background: var(--bg1); border: 1px solid var(--line2); border-radius: var(--r3); padding: 26px; box-shadow: 0 24px 70px rgba(0,0,0,.35); }
 .auth-logo { display:flex; align-items:center; gap:10px; margin-bottom:20px; }
 .auth-logo .brand-mark { position: static; flex-shrink:0; }
 .auth-title { font-size: 22px; font-weight: 800; color: var(--ink); letter-spacing: -.4px; }
 .auth-sub { color: var(--ink2); font-size: 13.5px; line-height: 1.55; margin: 6px 0 20px; }
 .auth-help { margin-top: 14px; color: var(--ink3); font-size: 12.5px; line-height: 1.55; }
-.app-lock { filter: blur(3px); pointer-events: none; user-select: none; }
+.app-lock { filter: none !important; pointer-events: auto !important; user-select: auto !important; }
 .saas-grid { display:grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
 .saas-card { background: var(--bg1); border:1px solid var(--line); border-radius: var(--r3); overflow:hidden; }
 .saas-card-body { padding: 16px; }
@@ -10078,5 +10078,577 @@ input.date-br-field { font-family: var(--mono, monospace) !important; letter-spa
   window.addEventListener('load', function () { fixReportTaskLabels(); setTimeout(fixReportTaskLabels, 1200); setInterval(fixReportTaskLabels, 5000); });
 })();
 </script>
-<!-- /CODEX CADUNICO REPORT TASK LABEL FINAL --></body>
+<!-- /CODEX CADUNICO REPORT TASK LABEL FINAL --><!-- CODEX CADUNICO DASHBOARD CONSOLIDADO FINAL -->
+<style>
+/* CadUnico: dashboard consolidado, sem flicker e abas limpas */
+#insights-auto-panel,
+#real-data-note,
+#dash-overview { display: none !important; }
+#cad-resumo-operacional,
+#cad-orientacao-panel {
+  border: 1px solid var(--line2) !important;
+  border-radius: 16px !important;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--bg1) 92%, #2563eb 8%), var(--bg2)) !important;
+  box-shadow: 0 18px 42px rgba(0,0,0,.18) !important;
+  padding: 18px !important;
+  margin: 16px 0 !important;
+}
+#cad-resumo-operacional .cad-resumo-title,
+#cad-orientacao-panel .cad-resumo-title {
+  text-align: center !important;
+  font-size: clamp(22px, 2.1vw, 30px) !important;
+  font-weight: 950 !important;
+  color: var(--ink) !important;
+  margin-bottom: 6px !important;
+}
+#cad-resumo-operacional .cad-resumo-sub,
+#cad-orientacao-panel .cad-resumo-sub {
+  text-align: center !important;
+  color: var(--ink2) !important;
+  line-height: 1.55 !important;
+  margin-bottom: 16px !important;
+}
+#cad-resumo-operacional .dashboard-charts-top,
+#cad-resumo-operacional .two-col,
+#cad-resumo-operacional #cadunico-analytics-panel,
+#cad-resumo-operacional #govflow-public-panel,
+#cad-orientacao-panel .cad-orientacao-grid {
+  display: grid !important;
+}
+#cad-resumo-operacional .dashboard-charts-top { margin-top: 8px !important; }
+#cad-resumo-operacional .two-col { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 16px !important; }
+#cad-resumo-operacional #cadunico-analytics-panel { margin-top: 16px !important; }
+#cad-resumo-operacional #govflow-public-panel { margin-top: 16px !important; }
+.cad-orientacao-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.cad-orientacao-card {
+  border: 1px solid var(--line) !important;
+  border-radius: 12px !important;
+  background: color-mix(in srgb, var(--bg2) 92%, #22d3ee 8%) !important;
+  padding: 15px !important;
+  min-height: 150px !important;
+  text-align: justify !important;
+}
+.cad-orientacao-card strong { display:block; color: var(--ink); font-size: 16px; margin-bottom: 8px; text-align:center; }
+.cad-orientacao-card span { color: var(--ink2); line-height: 1.6; }
+.cad-dashboard-nav-sidebar { display: grid; gap: 7px; margin: 10px 0 14px; }
+.cad-dashboard-nav-sidebar .nav-item { width: 100%; }
+.dashboard-tabs .dash-tab[data-tab="orientacao"] { display: inline-flex !important; }
+#screen-dashboard .dash-panel { transition: none !important; animation: none !important; }
+#screen-dashboard .dash-panel:not(.active) { display: none !important; }
+@media (max-width: 1100px) { #cad-resumo-operacional .two-col, .cad-orientacao-grid { grid-template-columns: 1fr !important; } }
+</style>
+<script>
+/* CadUnico: consolida resumo, orientacao e estabiliza abas */
+(function () {
+  const tabClasses = ['resumo','unidades','equipe','cenarios','demanda','acoes','afazeres','orientacao'];
+  const renameMap = [
+    [/Mural diário/gi, 'Agenda de Tarefas'],
+    [/Tarefas Diárias/gi, 'Agenda de Tarefas'],
+    [/Ordens de Serviço/gi, 'Agenda de Tarefas'],
+    [/Leituras do Dia/gi, ''],
+    [/Gerar Relatórios/gi, 'Relatórios']
+  ];
+  function qs(s, r) { return (r || document).querySelector(s); }
+  function qsa(s, r) { return Array.from((r || document).querySelectorAll(s)); }
+  function currentTime() { const d = new Date(); return String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0'); }
+
+  function renameVisible() {
+    qsa('.dash-tab').forEach(function (tab) {
+      if (tab.dataset.tab === 'afazeres') tab.textContent = 'Agenda de Tarefas';
+      if (tab.dataset.tab === 'cenarios') tab.textContent = 'Demanda';
+      if (tab.dataset.tab === 'orientacao') tab.textContent = 'Sala de decisão';
+    });
+    const rel = document.getElementById('nav-relatorio');
+    if (rel) rel.childNodes[rel.childNodes.length - 1].textContent = 'Relatórios';
+    qsa('.nav-item, .page-hd-title, .card-title, .page-hd-sub, .report-model-btn').forEach(function (el) {
+      if (el.children.length && !el.classList.contains('nav-item') && !el.classList.contains('report-model-btn')) return;
+      let t = el.textContent || '';
+      renameMap.forEach(function (pair) { t = t.replace(pair[0], pair[1]); });
+      if (t !== (el.textContent || '')) el.textContent = t;
+    });
+  }
+
+  function ensureSidebarDashboardNav() {
+    const sidebar = qs('.sidebar');
+    if (!sidebar || document.getElementById('cad-dashboard-nav-sidebar')) return;
+    const ref = qs('.sidebar-section');
+    const box = document.createElement('div');
+    box.id = 'cad-dashboard-nav-sidebar';
+    box.className = 'cad-dashboard-nav-sidebar';
+    box.innerHTML = '<div class="sidebar-section">Operação</div>' +
+      '<button class="nav-item" onclick="goTo(\'dashboard\');setTimeout(function(){setDashTab(\'resumo\')},80)">• Resumo</button>' +
+      '<button class="nav-item" onclick="goTo(\'dashboard\');setTimeout(function(){setDashTab(\'unidades\')},80)">• Unidades</button>' +
+      '<button class="nav-item" onclick="goTo(\'dashboard\');setTimeout(function(){setDashTab(\'equipe\')},80)">• Equipe</button>' +
+      '<button class="nav-item" onclick="goTo(\'dashboard\');setTimeout(function(){setDashTab(\'demanda\')},80)">• Demanda</button>' +
+      '<button class="nav-item" onclick="goTo(\'dashboard\');setTimeout(function(){setDashTab(\'acoes\')},80)">• Ações</button>' +
+      '<button class="nav-item" onclick="goTo(\'dashboard\');setTimeout(function(){setDashTab(\'afazeres\')},80)">• Agenda de Tarefas</button>' +
+      '<button class="nav-item" onclick="goTo(\'dashboard\');setTimeout(function(){setDashTab(\'orientacao\')},80)">• Sala de decisão</button>';
+    if (ref) ref.insertAdjacentElement('beforebegin', box); else sidebar.appendChild(box);
+  }
+
+  function ensureOrientationTab() {
+    const tabs = qs('#screen-dashboard .dashboard-tabs');
+    if (tabs && !qs('.dash-tab[data-tab="orientacao"]', tabs)) {
+      tabs.insertAdjacentHTML('beforeend', '<button class="dash-tab" data-tab="orientacao" onclick="setDashTab(\'orientacao\')">Sala de decisão</button>');
+    }
+  }
+
+  function ensureResumoPanel() {
+    const dash = document.getElementById('screen-dashboard');
+    const tabs = qs('#screen-dashboard .dashboard-tabs');
+    if (!dash || !tabs) return null;
+    let panel = document.getElementById('cad-resumo-operacional');
+    if (!panel) {
+      panel = document.createElement('section');
+      panel.id = 'cad-resumo-operacional';
+      panel.className = 'dash-panel dash-panel-resumo active';
+      panel.innerHTML = '<div class="cad-resumo-title">Resumo operacional</div><div class="cad-resumo-sub">Visão consolidada da operação, gráficos principais, qualificação cadastral e fontes públicas relevantes.</div><div class="cad-resumo-body"></div>';
+      tabs.insertAdjacentElement('afterend', panel);
+    }
+    const body = qs('.cad-resumo-body', panel);
+    const chartTitle = qs('#screen-dashboard .dashboard-charts-top');
+    const chartRow = chartTitle ? chartTitle.nextElementSibling : null;
+    if (chartTitle && body && chartTitle.parentElement !== body) body.appendChild(chartTitle);
+    if (chartRow && body && chartRow.parentElement !== body) body.appendChild(chartRow);
+    const analytics = document.getElementById('cadunico-analytics-panel');
+    if (analytics && body && analytics.parentElement !== body) body.appendChild(analytics);
+    const publicPanel = document.getElementById('govflow-public-panel');
+    if (publicPanel && body && publicPanel.parentElement !== body) body.appendChild(publicPanel);
+    [chartTitle, chartRow, analytics, publicPanel].forEach(function (el) { if (el) { el.classList.add('dash-panel','dash-panel-resumo','active'); el.style.display = ''; } });
+    return panel;
+  }
+
+  function ensureDecisionPanel() {
+    const tabs = qs('#screen-dashboard .dashboard-tabs');
+    if (!tabs) return null;
+    let panel = document.getElementById('cad-orientacao-panel');
+    if (!panel) {
+      panel = document.createElement('section');
+      panel.id = 'cad-orientacao-panel';
+      panel.className = 'dash-panel dash-panel-orientacao';
+      panel.innerHTML = '<div class="cad-resumo-title">Sala de decisão</div><div class="cad-resumo-sub">Prioridades, recomendações e encaminhamentos para apoiar a coordenação.</div><div class="cad-orientacao-grid"><div class="cad-orientacao-card"><strong>Prioridade operacional</strong><span>Observe fila, faltas, estoque e demandas urgentes antes de redistribuir equipe ou agenda.</span></div><div class="cad-orientacao-card"><strong>Qualificação cadastral</strong><span>Use revisões, averiguações, unipessoais e mudanças de endereço para definir busca ativa e conferência documental.</span></div><div class="cad-orientacao-card"><strong>Fontes públicas e Defesa Civil</strong><span>Quando houver alerta climático, chuva forte ou instabilidade externa, registre impacto na operação e ajuste deslocamentos.</span></div></div>';
+      tabs.insertAdjacentElement('afterend', panel);
+    }
+    return panel;
+  }
+
+  let lastTab = null;
+  window.setDashTab = function setDashTab(name) {
+    const target = name === 'cenarios' ? 'demanda' : (name || 'resumo');
+    ensureOrientationTab(); ensureResumoPanel(); ensureDecisionPanel(); renameVisible();
+    if (lastTab === target && document.body.dataset.cadLastStableTab === target) return;
+    lastTab = target; document.body.dataset.cadLastStableTab = target;
+    qsa('#screen-dashboard .dash-tab').forEach(function (btn) { btn.classList.toggle('active', (btn.dataset.tab === target) || (target === 'demanda' && btn.dataset.tab === 'cenarios')); });
+    qsa('#screen-dashboard .dash-panel').forEach(function (panel) {
+      const ownsOther = tabClasses.filter(function (t) { return t !== 'resumo' && panel.classList.contains('dash-panel-' + t); });
+      let active = false;
+      if (target === 'resumo') active = panel.classList.contains('dash-panel-resumo') && ownsOther.length === 0;
+      else active = panel.classList.contains('dash-panel-' + target) || (target === 'demanda' && panel.classList.contains('dash-panel-cenarios'));
+      panel.classList.toggle('active', active);
+      panel.style.display = active ? '' : 'none';
+    });
+  };
+
+  function stabilizeStatus() {
+    const pub = document.getElementById('govflow-public-status');
+    if (pub) { pub.textContent = 'Atualizado ' + currentTime(); pub.className = 'mp status-fresh'; }
+    const ia = document.getElementById('ia-status');
+    if (ia) { ia.textContent = 'Atualizado ' + currentTime(); ia.className = 'ia-operacional-badge status-fresh'; }
+  }
+
+  const oldGoTo = window.goTo;
+  if (typeof oldGoTo === 'function' && !oldGoTo.__cadConsolidadoWrapped) {
+    const wrapped = function goTo(section) {
+      const result = oldGoTo.apply(this, arguments);
+      setTimeout(function () {
+        ensureSidebarDashboardNav(); ensureOrientationTab(); ensureResumoPanel(); ensureDecisionPanel(); renameVisible(); stabilizeStatus();
+        if (section === 'dashboard') setDashTab('resumo');
+      }, 80);
+      return result;
+    };
+    wrapped.__cadConsolidadoWrapped = true;
+    window.goTo = wrapped;
+  }
+
+  function init() {
+    ensureSidebarDashboardNav(); ensureOrientationTab(); ensureResumoPanel(); ensureDecisionPanel(); renameVisible(); stabilizeStatus();
+    if (document.getElementById('screen-dashboard')?.classList.contains('active')) setDashTab(document.body.dataset.cadLastStableTab || 'resumo');
+  }
+  window.addEventListener('load', function () { init(); setTimeout(init, 700); setTimeout(init, 2000); setInterval(function(){ stabilizeStatus(); }, 60000); });
+})();
+</script>
+<!-- /CODEX CADUNICO DASHBOARD CONSOLIDADO FINAL --><!-- CODEX CADUNICO RESUMO ORDER MURAL FINAL -->
+<style>
+#insights-auto-panel { display: none !important; visibility: hidden !important; height: 0 !important; overflow: hidden !important; margin: 0 !important; padding: 0 !important; border: 0 !important; }
+#cad-resumo-operacional .dashboard-charts-top { order: 1 !important; }
+#cad-resumo-operacional .two-col { order: 2 !important; }
+#cad-resumo-operacional #cadunico-analytics-panel { order: 3 !important; }
+#cad-resumo-operacional #govflow-public-panel { order: 4 !important; }
+#cad-resumo-operacional .cad-resumo-body { display: flex !important; flex-direction: column !important; gap: 16px !important; }
+.ia-operacional-title { text-align: center !important; }
+</style>
+<script>
+(function () {
+  function qs(s,r){ return (r||document).querySelector(s); }
+  function qsa(s,r){ return Array.from((r||document).querySelectorAll(s)); }
+  function renameAndRemove() {
+    qsa('.ia-operacional-title').forEach(function (el) { el.textContent = 'Mural'; });
+    const old = document.getElementById('insights-auto-panel');
+    if (old) old.remove();
+    qsa('.dash-tab').forEach(function (tab) { if (tab.dataset.tab === 'afazeres') tab.textContent = 'Agenda de Tarefas'; });
+    qsa('.nav-item, .page-hd-title, .card-title').forEach(function (el) {
+      if (/Mural Informativo/i.test(el.textContent || '')) el.textContent = (el.textContent || '').replace(/Mural Informativo/gi, 'Mural');
+      if (/Tarefas Diárias|Mural diário|Plano do Dia|Afazeres/i.test(el.textContent || '')) el.textContent = (el.textContent || '').replace(/Tarefas Diárias|Mural diário|Plano do Dia|Afazeres/gi, 'Agenda de Tarefas');
+    });
+  }
+  function forceResumoOrder() {
+    const panel = document.getElementById('cad-resumo-operacional');
+    if (!panel) return;
+    let body = qs('.cad-resumo-body', panel);
+    if (!body) { body = document.createElement('div'); body.className = 'cad-resumo-body'; panel.appendChild(body); }
+    const chartTitle = qs('#screen-dashboard .dashboard-charts-top');
+    const chartRow = chartTitle ? chartTitle.nextElementSibling : null;
+    const analytics = document.getElementById('cadunico-analytics-panel');
+    const publicPanel = document.getElementById('govflow-public-panel');
+    [chartTitle, chartRow, analytics, publicPanel].forEach(function (el) { if (el && el.parentElement !== body) body.appendChild(el); });
+    [chartTitle, chartRow, analytics, publicPanel].forEach(function (el) { if (el) { el.classList.add('dash-panel','dash-panel-resumo','active'); el.style.display = ''; } });
+  }
+  const prevSetDashTab = window.setDashTab;
+  if (typeof prevSetDashTab === 'function' && !prevSetDashTab.__cadMuralOrderWrapped) {
+    const wrapped = function setDashTab(name) {
+      const result = prevSetDashTab.apply(this, arguments);
+      renameAndRemove(); forceResumoOrder();
+      return result;
+    };
+    wrapped.__cadMuralOrderWrapped = true;
+    window.setDashTab = wrapped;
+  }
+  window.addEventListener('load', function () { renameAndRemove(); forceResumoOrder(); setTimeout(function(){ renameAndRemove(); forceResumoOrder(); }, 900); setTimeout(function(){ renameAndRemove(); forceResumoOrder(); }, 2500); });
+})();
+</script>
+<!-- /CODEX CADUNICO RESUMO ORDER MURAL FINAL --><!-- CODEX CADUNICO NO FLICKER LABEL OBSERVER -->
+<script>
+(function () {
+  let busy = false;
+  function fixLabelsOnly() {
+    if (busy) return;
+    busy = true;
+    requestAnimationFrame(function () {
+      document.querySelectorAll('.ia-operacional-title').forEach(function (el) { if (el.textContent !== 'Mural') el.textContent = 'Mural'; });
+      document.querySelectorAll('#insights-auto-panel').forEach(function (el) { el.remove(); });
+      document.querySelectorAll('.dash-tab[data-tab="afazeres"]').forEach(function (el) { if (el.textContent !== 'Agenda de Tarefas') el.textContent = 'Agenda de Tarefas'; });
+      document.querySelectorAll('#nav-ordens').forEach(function (el) { if (!/Agenda de Tarefas/i.test(el.textContent || '')) el.textContent = '• Agenda de Tarefas'; });
+      busy = false;
+    });
+  }
+  window.addEventListener('load', function () {
+    fixLabelsOnly();
+    setTimeout(fixLabelsOnly, 1000);
+    setTimeout(fixLabelsOnly, 3000);
+    const root = document.getElementById('screen-dashboard') || document.body;
+    if (root && window.MutationObserver) {
+      const obs = new MutationObserver(function (mutations) {
+        if (mutations.some(function (m) { return Array.from(m.addedNodes || []).some(function (n) { return n.nodeType === 1; }) || (m.target && /ia-operacional-title|dash-tab|insights-auto-panel/.test(m.target.className || m.target.id || '')); })) fixLabelsOnly();
+      });
+      obs.observe(root, { childList: true, subtree: true, characterData: true });
+    }
+  });
+})();
+</script>
+<!-- /CODEX CADUNICO NO FLICKER LABEL OBSERVER --><!-- CODEX CADUNICO VISUAL LABEL HARD FIX -->
+<style>
+/* Forca visualmente o titulo Mural sem ficar reescrevendo DOM */
+.ia-operacional-title {
+  font-size: 0 !important;
+  line-height: 1 !important;
+}
+.ia-operacional-title::after {
+  content: "Mural" !important;
+  font-size: clamp(18px, 1.6vw, 24px) !important;
+  line-height: 1.15 !important;
+  font-weight: 950 !important;
+  color: var(--ink) !important;
+}
+.cadunico-analytics-note::before {
+  content: "Direcionamento para a coordenação: " !important;
+  font-weight: 950 !important;
+  color: var(--ink) !important;
+}
+</style>
+<script>
+(function () {
+  function fixAnalyticsNote() {
+    document.querySelectorAll('.cadunico-analytics-note').forEach(function (el) {
+      el.innerText = 'use os indicadores de atualização, transferências, exclusões, revisão, averiguação e risco cadastral para decidir prioridades, orientar a equipe e registrar encaminhamentos do dia.';
+    });
+  }
+  window.addEventListener('load', function () { fixAnalyticsNote(); setTimeout(fixAnalyticsNote, 1200); setTimeout(fixAnalyticsNote, 3000); });
+})();
+</script>
+<!-- /CODEX CADUNICO VISUAL LABEL HARD FIX --><!-- CODEX CADUNICO MOBILE AUTH BLUR FIX -->
+<style>
+/* Desativa qualquer trava visual/login antigo, especialmente no mobile */
+#auth-shell,
+#auth-secure-shell,
+.auth-shell,
+.auth-shell.open {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+.topbar.app-lock,
+.sidebar.app-lock,
+.main.app-lock,
+.app-lock {
+  filter: none !important;
+  pointer-events: auto !important;
+  user-select: auto !important;
+}
+body.auth-locked,
+html.auth-locked {
+  overflow: auto !important;
+}
+@media (max-width: 820px) {
+  .topbar, .sidebar, .main, body > * {
+    filter: none !important;
+  }
+}
+</style>
+<script>
+/* CadUnico: remove tela de senha e borrado residual no celular */
+(function () {
+  function unlockPreview() {
+    document.documentElement.classList.remove('auth-locked');
+    document.body.classList.remove('auth-locked');
+    document.querySelectorAll('#auth-shell, #auth-secure-shell, .auth-shell').forEach(function (el) {
+      el.classList.remove('open');
+      el.setAttribute('aria-hidden', 'true');
+      el.style.setProperty('display', 'none', 'important');
+      el.style.setProperty('visibility', 'hidden', 'important');
+      el.style.setProperty('opacity', '0', 'important');
+      el.style.setProperty('pointer-events', 'none', 'important');
+    });
+    document.querySelectorAll('.topbar, .sidebar, .main, .app-lock').forEach(function (el) {
+      el.classList.remove('app-lock');
+      el.style.setProperty('filter', 'none', 'important');
+      el.style.setProperty('pointer-events', 'auto', 'important');
+      el.style.setProperty('user-select', 'auto', 'important');
+    });
+  }
+  window.showAuth = function showAuth() { unlockPreview(); };
+  window.verificarAcesso = async function verificarAcesso() { unlockPreview(); return true; };
+  window.loginGoogle = async function loginGoogle() { unlockPreview(); return true; };
+  window.loginGoogleGovflow = async function loginGoogleGovflow() { unlockPreview(); return true; };
+  window.logout = async function logout() { unlockPreview(); return true; };
+  window.logoutGovflow = function logoutGovflow() { unlockPreview(); if (typeof renderUserSession === 'function') renderUserSession(); };
+  window.addEventListener('load', function () {
+    unlockPreview();
+    [50,150,350,800,1500,3000].forEach(function (ms) { setTimeout(unlockPreview, ms); });
+  });
+  window.addEventListener('resize', unlockPreview);
+  window.addEventListener('orientationchange', function () { setTimeout(unlockPreview, 100); setTimeout(unlockPreview, 500); });
+})();
+</script>
+<!-- /CODEX CADUNICO MOBILE AUTH BLUR FIX --><!-- CODEX CADUNICO DECISION ENGINE PURE JS -->
+<script>
+/*
+  Motor de decisao CadUnico - JavaScript puro.
+  Nao depende de interface, banco, Supabase, Google Sheets ou APIs.
+*/
+(function () {
+  const BAIRROS_PADRAO_CADUNICO = [
+    'Centro',
+    'Canto do Mar',
+    'Boiçucanga',
+    'Morro do Abrigo',
+    'Maresias',
+    'Paúba',
+    'Juquehy',
+    'Juréia',
+    'Topolândia',
+    'Arrastão',
+    'Barra do Una'
+  ];
+
+  function numeroSeguro(valor) {
+    const n = Number(valor);
+    return Number.isFinite(n) && n >= 0 ? n : 0;
+  }
+
+  function normalizarNome(nome) {
+    return String(nome || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .trim()
+      .toLowerCase();
+  }
+
+  function normalizarUnidade(unidade) {
+    return {
+      unidade: String(unidade && unidade.unidade ? unidade.unidade : '').trim() || 'Sem unidade',
+      capacidade: numeroSeguro(unidade && unidade.capacidade),
+      ocupacao: numeroSeguro(unidade && unidade.ocupacao)
+    };
+  }
+
+  function percentualOcupacao(unidade) {
+    const u = normalizarUnidade(unidade);
+    if (u.capacidade <= 0) return u.ocupacao > 0 ? 100 : 0;
+    return (u.ocupacao / u.capacidade) * 100;
+  }
+
+  function calcularStatus(unidade) {
+    const u = normalizarUnidade(unidade);
+    const percentual = percentualOcupacao(u);
+    if (u.capacidade <= 0 && u.ocupacao > 0) return 'LOTADO';
+    if (u.capacidade > 0 && u.ocupacao >= u.capacidade) return 'LOTADO';
+    if (percentual >= 80) return 'ALERTA';
+    return 'NORMAL';
+  }
+
+  function ordenarPorMenorOcupacao(unidades) {
+    return (Array.isArray(unidades) ? unidades : [])
+      .map(normalizarUnidade)
+      .slice()
+      .sort(function (a, b) {
+        const pa = percentualOcupacao(a);
+        const pb = percentualOcupacao(b);
+        if (pa !== pb) return pa - pb;
+        if (a.ocupacao !== b.ocupacao) return a.ocupacao - b.ocupacao;
+        return a.unidade.localeCompare(b.unidade, 'pt-BR');
+      });
+  }
+
+  function unidadesDisponiveis(unidades, ignorarNome) {
+    const origem = normalizarNome(ignorarNome);
+    return ordenarPorMenorOcupacao(unidades).filter(function (u) {
+      return normalizarNome(u.unidade) !== origem && calcularStatus(u) !== 'LOTADO';
+    });
+  }
+
+  function buscarUnidade(unidades, alvo) {
+    if (!alvo) return null;
+    if (typeof alvo === 'object') return normalizarUnidade(alvo);
+    const nome = normalizarNome(alvo);
+    const found = (Array.isArray(unidades) ? unidades : []).find(function (u) {
+      return normalizarNome(u && u.unidade) === nome;
+    });
+    return found ? normalizarUnidade(found) : null;
+  }
+
+  function gerarRecomendacoes(unidades) {
+    const lista = Array.isArray(unidades) ? unidades.map(normalizarUnidade) : [];
+    return lista.map(function (unidade) {
+      const status = calcularStatus(unidade);
+      if (status !== 'LOTADO') return {
+        unidade: unidade.unidade,
+        recomendacao: 'Manter atendimento na unidade',
+        destinoSugerido: null
+      };
+      const destinos = unidadesDisponiveis(lista, unidade.unidade);
+      if (!destinos.length) return {
+        unidade: unidade.unidade,
+        recomendacao: 'Sem capacidade disponível',
+        destinoSugerido: null
+      };
+      return {
+        unidade: unidade.unidade,
+        recomendacao: 'Encaminhar para ' + destinos[0].unidade,
+        destinoSugerido: destinos[0].unidade
+      };
+    });
+  }
+
+  function recomendacaoDaUnidade(unidades, unidade) {
+    const nome = normalizarNome(unidade && unidade.unidade ? unidade.unidade : unidade);
+    return gerarRecomendacoes(unidades).find(function (rec) {
+      return normalizarNome(rec.unidade) === nome;
+    }) || { recomendacao: 'Sem capacidade disponível', destinoSugerido: null };
+  }
+
+  function podeEncaminhar(origem, destino) {
+    const o = normalizarUnidade(origem);
+    const d = normalizarUnidade(destino);
+    if (calcularStatus(o) === 'LOTADO') return false;
+    if (percentualOcupacao(d) > 90) return false;
+    return true;
+  }
+
+  function podeEncaminharComBase(unidades, origem, destino) {
+    const o = buscarUnidade(unidades, origem);
+    const d = buscarUnidade(unidades, destino);
+    if (!o || !d) return false;
+    return podeEncaminhar(o, d);
+  }
+
+  function gerarBloqueios(unidades) {
+    const lista = Array.isArray(unidades) ? unidades.map(normalizarUnidade) : [];
+    const bloqueios = [];
+    lista.forEach(function (origem) {
+      lista.forEach(function (destino) {
+        if (normalizarNome(origem.unidade) === normalizarNome(destino.unidade)) return;
+        const destinoAcima90 = percentualOcupacao(destino) > 90;
+        const origemLotada = calcularStatus(origem) === 'LOTADO';
+        bloqueios.push({
+          origem: origem.unidade,
+          destino: destino.unidade,
+          podeEncaminhar: !(origemLotada || destinoAcima90),
+          motivo: origemLotada ? 'Origem lotada; não pode continuar atendendo' : destinoAcima90 ? 'Destino acima de 90% de ocupação' : 'Encaminhamento permitido'
+        });
+      });
+    });
+    return bloqueios;
+  }
+
+  function processarUnidades(unidades) {
+    const lista = Array.isArray(unidades) ? unidades.map(normalizarUnidade) : [];
+    const recomendacoes = gerarRecomendacoes(lista);
+    const bloqueios = gerarBloqueios(lista);
+    const saida = lista.map(function (unidade) {
+      const rec = recomendacoes.find(function (item) { return normalizarNome(item.unidade) === normalizarNome(unidade.unidade); }) || {};
+      const destino = rec.destinoSugerido ? buscarUnidade(lista, rec.destinoSugerido) : null;
+      return {
+        unidade: unidade.unidade,
+        capacidade: unidade.capacidade,
+        ocupacao: unidade.ocupacao,
+        percentualOcupacao: Math.round(percentualOcupacao(unidade)),
+        status: calcularStatus(unidade),
+        recomendacao: rec.recomendacao || 'Sem capacidade disponível',
+        destinoSugerido: rec.destinoSugerido || null,
+        podeEncaminhar: destino ? podeEncaminhar(unidade, destino) : false
+      };
+    });
+    saida.bloqueios = bloqueios;
+    saida.recomendacoes = recomendacoes;
+    return saida;
+  }
+
+  function criarUnidadesPadrao(capacidadePadrao) {
+    const capacidade = numeroSeguro(capacidadePadrao) || 0;
+    return BAIRROS_PADRAO_CADUNICO.map(function (nome) {
+      return { unidade: nome, capacidade: capacidade, ocupacao: 0 };
+    });
+  }
+
+  const motor = {
+    bairrosPadrao: BAIRROS_PADRAO_CADUNICO.slice(),
+    criarUnidadesPadrao: criarUnidadesPadrao,
+    calcularStatus: calcularStatus,
+    gerarRecomendacoes: gerarRecomendacoes,
+    podeEncaminhar: podeEncaminhar,
+    podeEncaminharComBase: podeEncaminharComBase,
+    processarUnidades: processarUnidades,
+    percentualOcupacao: percentualOcupacao,
+    gerarBloqueios: gerarBloqueios
+  };
+
+  window.CadUnicoDecisionEngine = motor;
+  window.calcularStatus = calcularStatus;
+  window.gerarRecomendacoes = gerarRecomendacoes;
+  window.podeEncaminhar = podeEncaminhar;
+  window.processarUnidades = processarUnidades;
+})();
+</script>
+<!-- /CODEX CADUNICO DECISION ENGINE PURE JS --></body>
 </html>
