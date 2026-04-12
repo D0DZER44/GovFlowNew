@@ -12342,5 +12342,175 @@ html[data-theme="light"] .card, html[data-theme="light"] .saas-card, html[data-t
   }
 })();
 </script>
-<!-- /CODEX GOVFLOW PREMIUM SAAS FINAL 2026-04-12 --></body>
+<!-- /CODEX GOVFLOW PREMIUM SAAS FINAL 2026-04-12 --><!-- CODEX GOVFLOW TAREFAS TAB FIX FINAL -->
+<style>
+/* Aba Tarefas: nome curto, layout estavel e sem observer pesado */
+#screen-ordens { overflow-x: hidden !important; }
+#screen-ordens.active { display: block !important; }
+#screen-ordens .page-hd {
+  max-width: 1180px !important;
+  margin: 0 auto 18px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  padding: clamp(18px, 2.4vw, 28px) !important;
+}
+#screen-ordens .page-hd-title {
+  text-align: left !important;
+  font-size: clamp(28px, 3vw, 42px) !important;
+  line-height: 1 !important;
+  letter-spacing: -.045em !important;
+}
+#screen-ordens .page-hd-sub {
+  max-width: 760px !important;
+  font-size: 15.5px !important;
+  line-height: 1.45 !important;
+  color: var(--gf-muted, var(--ink2, #cbd5e1)) !important;
+}
+#screen-ordens .page-body { max-width: 1180px !important; margin: 0 auto !important; width: 100% !important; }
+#screen-ordens .daily-task-layout {
+  display: grid !important;
+  grid-template-columns: minmax(320px, 440px) minmax(0, 1fr) !important;
+  gap: 18px !important;
+  align-items: start !important;
+  width: 100% !important;
+}
+#screen-ordens .daily-task-form, #screen-ordens .daily-task-list-card, #screen-ordens .saas-card { min-width: 0 !important; overflow: hidden !important; }
+#screen-ordens .daily-task-form .saas-card-body, #screen-ordens .daily-task-list-card .saas-card-body { display: grid !important; gap: 14px !important; }
+#screen-ordens .g2 { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 12px !important; }
+#screen-ordens .field, #screen-ordens input, #screen-ordens select, #screen-ordens textarea { min-width: 0 !important; width: 100% !important; max-width: 100% !important; }
+#screen-ordens label { font-size: 12px !important; font-weight: 900 !important; letter-spacing: .04em !important; text-transform: uppercase !important; }
+#screen-ordens .daily-task-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto minmax(150px, auto) !important;
+  gap: 12px !important;
+  align-items: center !important;
+  padding: 14px !important;
+  border: 1px solid rgba(148,163,184,.18) !important;
+  border-radius: 12px !important;
+  background: rgba(15,23,42,.34) !important;
+  margin-bottom: 10px !important;
+  overflow: hidden !important;
+}
+#screen-ordens .daily-task-title { font-size: 16px !important; line-height: 1.25 !important; font-weight: 950 !important; overflow-wrap: anywhere !important; }
+#screen-ordens .daily-task-meta { font-size: 13px !important; line-height: 1.45 !important; color: var(--gf-muted, var(--ink2, #cbd5e1)) !important; overflow-wrap: anywhere !important; }
+#screen-ordens .daily-task-actions { display: flex !important; gap: 8px !important; align-items: center !important; justify-content: flex-start !important; flex-wrap: wrap !important; }
+#screen-ordens .daily-task-actions select { min-width: 138px !important; }
+#screen-ordens .daily-task-empty { text-align: center !important; padding: 24px !important; border: 1px dashed rgba(148,163,184,.24) !important; border-radius: 12px !important; color: var(--gf-muted, var(--ink2, #cbd5e1)) !important; }
+#screen-dashboard .dash-tab[data-tab="afazeres"] { min-width: 92px !important; }
+@media (max-width: 900px) {
+  #screen-ordens .page-hd { align-items: flex-start !important; flex-direction: column !important; }
+  #screen-ordens .daily-task-layout, #screen-ordens .g2, #screen-ordens .daily-task-row { grid-template-columns: 1fr !important; }
+  #screen-ordens .daily-task-actions { justify-content: stretch !important; }
+  #screen-ordens .daily-task-actions select, #screen-ordens .daily-task-actions button { width: 100% !important; }
+}
+</style>
+<script>
+(function () {
+  function cleanLabel(text) {
+    return String(text || '')
+      .replace(/Agenda de Tarefas/gi, 'Tarefas')
+      .replace(/Tarefas Diárias/gi, 'Tarefas')
+      .replace(/Mural diário/gi, 'Tarefas')
+      .replace(/Plano do Dia/gi, 'Tarefas')
+      .replace(/Afazeres/gi, 'Tarefas')
+      .replace(/Ordens de Serviço/gi, 'Tarefas')
+      .replace(/Ordens abertas/gi, 'Tarefas')
+      .replace(/Nova ordem/gi, 'Nova tarefa')
+      .replace(/Tarefas\s+Tarefas/gi, 'Tarefas');
+  }
+  function setTextIf(el, value) { if (el && el.textContent !== value) el.textContent = value; }
+  function fixTarefasLabels() {
+    document.querySelectorAll('#screen-dashboard .dash-tab[data-tab="afazeres"]').forEach(function (el) { setTextIf(el, 'Tarefas'); });
+    document.querySelectorAll('#nav-ordens').forEach(function (el) { setTextIf(el, '• Tarefas'); });
+    setTextIf(document.querySelector('#screen-ordens .page-hd-title'), 'Tarefas');
+    setTextIf(document.querySelector('#screen-ordens .page-hd-sub'), 'Registre reuniões, solicitações, manutenção e acompanhe o status de atendimento.');
+    document.querySelectorAll('#screen-ordens .card-title, #screen-ordens button, #screen-ordens .mp, #screen-ordens .daily-task-empty, #screen-dashboard .daily-task-dashboard .btn').forEach(function (el) {
+      const next = cleanLabel(el.textContent);
+      if (next !== el.textContent) el.textContent = next;
+      if (/Abrir/i.test(el.textContent || '') && el.classList.contains('btn')) el.textContent = 'Abrir tarefas';
+    });
+    const cards = Array.from(document.querySelectorAll('#screen-ordens .card-title'));
+    cards.forEach(function (el) {
+      if (/Adicionar|Nova tarefa/i.test(el.textContent || '')) setTextIf(el, 'Adicionar tarefa');
+      if (/Histórico|Tarefas$/i.test(el.textContent || '') && el.textContent !== 'Adicionar tarefa') setTextIf(el, 'Histórico de tarefas');
+    });
+  }
+  function stabilizeTarefasLayout() {
+    document.querySelectorAll('#screen-ordens .daily-task-row').forEach(function (row) {
+      row.style.setProperty('grid-template-columns', window.innerWidth <= 900 ? '1fr' : 'minmax(0,1fr) auto minmax(150px,auto)', 'important');
+      row.style.setProperty('overflow', 'hidden', 'important');
+    });
+  }
+  function applyTarefasFix() { fixTarefasLabels(); stabilizeTarefasLayout(); }
+  const oldEnsureTasks = window.ensureTasksScreen;
+  if (typeof oldEnsureTasks === 'function' && !oldEnsureTasks.__tarefasFinalSafe) {
+    const wrappedEnsure = function () { const result = oldEnsureTasks.apply(this, arguments); applyTarefasFix(); return result; };
+    wrappedEnsure.__tarefasFinalSafe = true; window.ensureTasksScreen = wrappedEnsure;
+  }
+  const oldRenderTasks = window.renderDailyTasks;
+  if (typeof oldRenderTasks === 'function' && !oldRenderTasks.__tarefasFinalSafe) {
+    const wrappedRender = function () { const result = oldRenderTasks.apply(this, arguments); applyTarefasFix(); return result; };
+    wrappedRender.__tarefasFinalSafe = true; window.renderDailyTasks = wrappedRender;
+  }
+  const oldGoTo = window.goTo;
+  if (typeof oldGoTo === 'function' && !oldGoTo.__tarefasFinalSafe) {
+    const wrappedGoTo = function (section) { const result = oldGoTo.apply(this, arguments); setTimeout(applyTarefasFix, section === 'ordens' ? 40 : 160); return result; };
+    wrappedGoTo.__tarefasFinalSafe = true; window.goTo = wrappedGoTo;
+  }
+  const oldSetDashTab = window.setDashTab;
+  if (typeof oldSetDashTab === 'function' && !oldSetDashTab.__tarefasFinalSafe) {
+    const wrappedTab = function () { const result = oldSetDashTab.apply(this, arguments); setTimeout(applyTarefasFix, 60); return result; };
+    wrappedTab.__tarefasFinalSafe = true; window.setDashTab = wrappedTab;
+  }
+  window.addEventListener('load', function () { applyTarefasFix(); setTimeout(applyTarefasFix, 500); setTimeout(applyTarefasFix, 1800); });
+  window.addEventListener('resize', function () { requestAnimationFrame(applyTarefasFix); });
+})();
+</script>
+<!-- /CODEX GOVFLOW TAREFAS TAB FIX FINAL --><!-- CODEX GOVFLOW TAREFAS LABEL LOCK -->
+<style>
+/* Trava visual: a aba sempre aparece como Tarefas, mesmo se scripts antigos tentarem renomear */
+#screen-dashboard .dash-tab[data-tab="afazeres"],
+#nav-ordens {
+  font-size: 0 !important;
+}
+#screen-dashboard .dash-tab[data-tab="afazeres"]::after,
+#nav-ordens::after {
+  content: "Tarefas" !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+  font-weight: 900 !important;
+}
+#nav-ordens::after { content: "• Tarefas" !important; }
+#cad-dashboard-nav-sidebar .nav-item[onclick*="afazeres"] {
+  font-size: 0 !important;
+}
+#cad-dashboard-nav-sidebar .nav-item[onclick*="afazeres"]::after {
+  content: "• Tarefas" !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+  font-weight: 900 !important;
+}
+</style>
+<script>
+(function () {
+  function lockTarefasLabel() {
+    document.querySelectorAll('#screen-dashboard .dash-tab[data-tab="afazeres"]').forEach(function (el) { el.textContent = 'Tarefas'; });
+    document.querySelectorAll('#nav-ordens').forEach(function (el) { el.textContent = '• Tarefas'; });
+    document.querySelectorAll('#cad-dashboard-nav-sidebar .nav-item[onclick*="afazeres"]').forEach(function (el) { el.textContent = '• Tarefas'; });
+    const title = document.querySelector('#screen-ordens .page-hd-title'); if (title) title.textContent = 'Tarefas';
+  }
+  window.addEventListener('load', function () {
+    lockTarefasLabel();
+    let n = 0;
+    const id = setInterval(function () {
+      lockTarefasLabel();
+      n += 1;
+      if (n >= 12) clearInterval(id);
+    }, 350);
+  });
+})();
+</script>
+<!-- /CODEX GOVFLOW TAREFAS LABEL LOCK --></body>
 </html>
