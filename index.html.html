@@ -9011,5 +9011,273 @@ label,
   };
 })();
 </script>
-<!-- /CODEX GOVFLOW PUBLIC DATA DEDUPE FINAL --></body>
+<!-- /CODEX GOVFLOW PUBLIC DATA DEDUPE FINAL --><!-- CODEX CADUNICO FINAL FLOW THEME -->
+<style>
+/* CadUnico final: marca flow, dark mode setorial e relatorios limpos */
+:root,
+html[data-theme="dark"] {
+  --bg: #050806 !important;
+  --bg1: #07110d !important;
+  --bg2: #0b1712 !important;
+  --bg3: #10231b !important;
+  --bg4: #143225 !important;
+  --ink: #f4fff8 !important;
+  --ink2: #b8cfc1 !important;
+  --ink3: #7f9a8c !important;
+  --blue: #2563eb !important;
+  --teal: #0ea5a4 !important;
+  --green: #22c55e !important;
+  --amber: #facc15 !important;
+  --red: #ef4444 !important;
+  --line: rgba(187,247,208,.12) !important;
+  --line2: rgba(187,247,208,.22) !important;
+}
+body {
+  background:
+    radial-gradient(circle at 12% -8%, rgba(34,197,94,.20), transparent 34%),
+    radial-gradient(circle at 86% 10%, rgba(37,99,235,.16), transparent 30%),
+    linear-gradient(180deg, #040806 0%, #08110d 48%, #050806 100%) !important;
+}
+.sidebar, .topbar, .card, .saas-card, .overview-card, .dash-panel, .rel-config, .rel-preview {
+  border-color: rgba(187,247,208,.14) !important;
+}
+.btn-primary, .dash-tab.active, .report-model-btn.active {
+  background: linear-gradient(135deg, #16a34a, #0ea5a4 52%, #2563eb) !important;
+  color: #f8fff9 !important;
+  border-color: rgba(187,247,208,.34) !important;
+  box-shadow: 0 16px 34px rgba(14,165,164,.20) !important;
+}
+.brand-mark.govflow-logo-mark, .report-logo-box.govflow-logo-mark {
+  width: 42px !important;
+  height: 42px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+.brand-name, .auth-title { letter-spacing: .02em !important; }
+.govflow-cad-badge { display: none !important; }
+.card-head,
+.saas-card .card-head,
+.overview-card .card-head,
+.ia-operacional-head,
+.insights-auto-head,
+.govflow-public-head {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: 12px !important;
+  text-align: center !important;
+}
+.card-head > .mp,
+.card-head > button,
+.saas-card .card-head > .mp,
+.saas-card .card-head > button,
+.govflow-public-head > .mp,
+.insights-auto-head > .insights-auto-badge,
+.ia-operacional-head > .ia-operacional-badge {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  order: 0 !important;
+  justify-self: start !important;
+  align-self: center !important;
+  margin: 0 !important;
+  position: static !important;
+}
+.card-head > :not(.mp):not(button),
+.saas-card .card-head > :not(.mp):not(button),
+.overview-card .card-head > :not(.mp):not(button),
+.govflow-public-head > div,
+.insights-auto-head > div,
+.ia-operacional-head > div {
+  grid-column: 2 !important;
+  min-width: 0 !important;
+  text-align: center !important;
+  justify-self: stretch !important;
+}
+.card-title,
+.page-hd-title,
+.govflow-public-title,
+.insights-auto-title,
+.ia-operacional-title,
+.rel-config-title {
+  text-align: center !important;
+  width: 100% !important;
+}
+.mp, .task-badge, .func-status, .live-value, .status-pill, .public-new {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  text-align: left !important;
+  white-space: nowrap !important;
+}
+#screen-dashboard.dashboard-overview-mode .dash-panel:not(.dash-panel-resumo) { display: none !important; }
+#screen-dashboard .dash-panel { scroll-margin-top: 0 !important; }
+#screen-relatorio .report-sections-field { display: none !important; }
+#screen-relatorio .rel-layout-clean { grid-template-columns: minmax(320px, 410px) minmax(0,1fr) !important; }
+#screen-relatorio .clean-report-config { overflow: visible !important; }
+#screen-relatorio .clean-report-form { gap: 16px !important; }
+#screen-relatorio .report-primary-actions .btn,
+#screen-relatorio .report-action-bar-top .btn { justify-content: flex-start !important; text-align: left !important; }
+.report-doc .report-header { text-align: center !important; border-bottom: 1px solid #d1d5db !important; padding-bottom: 12px !important; margin-bottom: 18px !important; }
+.report-doc .report-logo-line { display: none !important; }
+.report-brand-line.cadunico-only-report {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin: 0 0 8px !important;
+  color: #111827 !important;
+  font-size: 12pt !important;
+  font-weight: 800 !important;
+}
+.report-footer-govflow.cadunico-only-footer {
+  margin-top: 22px !important;
+  padding-top: 10px !important;
+  border-top: 1px solid #d1d5db !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  flex-wrap: wrap !important;
+  color: #374151 !important;
+  font-size: 9.5pt !important;
+}
+@media (max-width: 760px) {
+  .card-head, .saas-card .card-head, .overview-card .card-head, .ia-operacional-head, .insights-auto-head, .govflow-public-head {
+    grid-template-columns: 1fr !important;
+  }
+  .card-head > .mp, .card-head > button, .saas-card .card-head > .mp, .saas-card .card-head > button, .govflow-public-head > .mp,
+  .card-head > :not(.mp):not(button), .saas-card .card-head > :not(.mp):not(button), .overview-card .card-head > :not(.mp):not(button), .govflow-public-head > div {
+    grid-column: 1 !important;
+    justify-self: center !important;
+  }
+  #screen-relatorio .rel-layout-clean { grid-template-columns: 1fr !important; }
+}
+@media print {
+  .report-logo-line { display: none !important; }
+  .report-brand-line.cadunico-only-report { display: flex !important; }
+}
+</style>
+<script>
+/* CadUnico final: logo flow, relatorio sem duplicidade e abas estaveis */
+(function () {
+  function flowLogo(size) {
+    const s = size || 44;
+    return '<svg class="cadunico-flow-logo" viewBox="0 0 112 112" width="' + s + '" height="' + s + '" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="CadÚnico"><defs><linearGradient id="cadFlowGradient" x1="12" y1="10" x2="96" y2="96"><stop stop-color="#22c55e"/><stop offset=".45" stop-color="#0ea5a4"/><stop offset="1" stop-color="#2563eb"/></linearGradient><filter id="cadFlowShadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#020617" flood-opacity=".32"/></filter></defs><rect x="10" y="10" width="92" height="92" rx="28" fill="url(#cadFlowGradient)" filter="url(#cadFlowShadow)"/><path d="M25 38c18-18 42-18 62 0" fill="none" stroke="#f8fff9" stroke-width="8" stroke-linecap="round"/><path d="M25 56c18 18 44 18 62 0" fill="none" stroke="#f8fff9" stroke-width="8" stroke-linecap="round" opacity=".96"/><path d="M31 72c13 9 32 9 50-1" fill="none" stroke="#dcfce7" stroke-width="7" stroke-linecap="round" opacity=".86"/><path d="M38 34v42" stroke="#f8fff9" stroke-width="8" stroke-linecap="round"/><path d="M74 35H55v20h15" fill="none" stroke="#f8fff9" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M56 55v21" stroke="#f8fff9" stroke-width="8" stroke-linecap="round"/><circle cx="87" cy="25" r="7" fill="#facc15"/><circle cx="25" cy="86" r="5" fill="#facc15" opacity=".9"/></svg>';
+  }
+
+  function hiddenReportSections() {
+    return '<div class="report-sections-field" aria-hidden="true">' +
+      '<input type="checkbox" id="rs-resumo" checked>' +
+      '<input type="checkbox" id="rs-unidades" checked>' +
+      '<input type="checkbox" id="rs-tipos" checked>' +
+      '<input type="checkbox" id="rs-analise" checked>' +
+      '<input type="checkbox" id="rs-graficos" checked>' +
+      '<input type="checkbox" id="rs-cenarios" checked>' +
+      '<input type="checkbox" id="rs-ocorrencias" checked>' +
+      '<input type="checkbox" id="rs-equipe" checked>' +
+    '</div>';
+  }
+
+  function applyCadunicoBrand() {
+    document.title = 'CadÚnico - Gestão';
+    document.querySelectorAll('.brand-mark, .report-logo-box').forEach(function (el) {
+      el.classList.add('govflow-logo-mark');
+      el.innerHTML = flowLogo(44);
+    });
+    document.querySelectorAll('.brand-name').forEach(function (el) { el.innerText = 'CadÚnico'; });
+    document.querySelectorAll('.brand-sub').forEach(function (el) { el.innerText = 'São Sebastião - SP'; });
+    document.querySelectorAll('.auth-title').forEach(function (el) { el.innerText = 'Entrar no CadÚnico'; });
+    document.querySelectorAll('.auth-sub').forEach(function (el) { el.innerText = 'Acesso restrito aos funcionários autorizados da coordenação.'; });
+    document.querySelectorAll('.govflow-cad-badge').forEach(function (el) { el.remove(); });
+    document.querySelectorAll('body *').forEach(function (el) {
+      if (el.children.length || ['SCRIPT','STYLE','INPUT','TEXTAREA','SELECT','OPTION'].includes(el.tagName)) return;
+      const t = el.innerText || '';
+      if (/GovFlow|GOVFLOW/i.test(t)) el.innerText = t.replace(/GOVFLOW v\d+\s*·\s*/i, '').replace(/GovFlow\s*·\s*/gi, '').replace(/GOVFLOW\s*·\s*/gi, '').replace(/Admin GovFlow/gi, 'Admin CadÚnico').replace(/GovFlow/gi, 'CadÚnico').replace(/GOVFLOW/g, 'CadÚnico');
+    });
+  }
+
+  function simplifyReportScreen() {
+    const screen = document.getElementById('screen-relatorio');
+    if (!screen) return;
+    const title = document.getElementById('rel-titulo');
+    if (title && /GovFlow/i.test(title.value)) title.value = 'Relatório Geral CadÚnico';
+    const sections = screen.querySelector('.report-sections-grid, .clean-report-sections');
+    const field = sections ? sections.closest('.field') : null;
+    if (field) {
+      field.classList.add('report-sections-field');
+      field.innerHTML = hiddenReportSections();
+    } else if (!document.getElementById('rs-resumo')) {
+      const form = screen.querySelector('.clean-report-form');
+      if (form) form.insertAdjacentHTML('beforeend', hiddenReportSections());
+    }
+    const pageTitle = screen.querySelector('.page-hd-title');
+    if (pageTitle) pageTitle.innerText = 'Gerar Relatórios';
+    const pageSub = screen.querySelector('.page-hd-sub');
+    if (pageSub) pageSub.innerText = 'Monte documentos administrativos, relatórios de estoque e análises de gestão com padrão limpo para impressão e PDF.';
+  }
+
+  function cleanReportBranding() {
+    const report = document.getElementById('report-inner');
+    if (!report) return;
+    report.querySelectorAll('.report-brand-line, .report-logo-line').forEach(function (el) { el.remove(); });
+    report.querySelectorAll('.report-footer-govflow').forEach(function (el) { el.remove(); });
+    const header = report.querySelector('.report-header') || report;
+    const line = document.createElement('div');
+    line.className = 'report-brand-line cadunico-only-report';
+    line.innerHTML = '<span class="report-logo-box govflow-logo-mark">' + flowLogo(30) + '</span><strong>CadÚnico</strong>';
+    header.insertBefore(line, header.firstChild);
+    report.querySelectorAll('.report-title, .report-meta, .rep-sign span').forEach(function (el) {
+      el.innerText = (el.innerText || '').replace(/RELATORIO GERAL GOVFLOW/gi, 'RELATÓRIO GERAL CADÚNICO').replace(/Relatorio Geral GovFlow/gi, 'Relatório Geral CadÚnico').replace(/GovFlow\s*·\s*/gi, '').replace(/GOVFLOW\s*·\s*/gi, '').replace(/GovFlow/gi, 'CadÚnico').replace(/GOVFLOW/g, 'CADÚNICO');
+    });
+    const footer = document.createElement('div');
+    footer.className = 'report-footer-govflow cadunico-only-footer';
+    footer.innerHTML = '<span>CadÚnico - São Sebastião/SP</span><span>Documento gerado em ' + new Date().toLocaleString('pt-BR') + '</span>';
+    report.appendChild(footer);
+  }
+
+  window.setDashTab = function setDashTab(name) {
+    const targetName = name || 'resumo';
+    const dashboard = document.getElementById('screen-dashboard');
+    if (dashboard) dashboard.classList.toggle('dashboard-overview-mode', targetName === 'resumo');
+    document.querySelectorAll('#screen-dashboard .dash-tab').forEach(function (btn) { btn.classList.toggle('active', btn.dataset.tab === targetName); });
+    document.querySelectorAll('#screen-dashboard .dash-panel').forEach(function (panel) {
+      panel.classList.toggle('active', panel.classList.contains('dash-panel-' + targetName));
+    });
+  };
+
+  const buildReportBeforeCadunicoFinal = window.buildReport;
+  if (typeof buildReportBeforeCadunicoFinal === 'function') {
+    window.buildReport = function buildReport() {
+      simplifyReportScreen();
+      const result = buildReportBeforeCadunicoFinal.apply(this, arguments);
+      setTimeout(function () { applyCadunicoBrand(); simplifyReportScreen(); cleanReportBranding(); }, 80); setTimeout(function () { applyCadunicoBrand(); simplifyReportScreen(); cleanReportBranding(); }, 220); setTimeout(function () { applyCadunicoBrand(); simplifyReportScreen(); cleanReportBranding(); }, 520);
+      return result;
+    };
+  }
+  const printReportBeforeCadunicoFinal = window.printReport;
+  if (typeof printReportBeforeCadunicoFinal === 'function') {
+    window.printReport = function printReport() {
+      applyCadunicoBrand();
+      simplifyReportScreen();
+      cleanReportBranding();
+      return printReportBeforeCadunicoFinal.apply(this, arguments);
+    };
+  }
+
+  function applyAll() {
+    applyCadunicoBrand();
+    simplifyReportScreen();
+    cleanReportBranding();
+    if (document.getElementById('screen-dashboard')?.classList.contains('active')) window.setDashTab(document.querySelector('#screen-dashboard .dash-tab.active')?.dataset.tab || 'resumo');
+  }
+  window.addEventListener('load', function () {
+    applyAll();
+    setTimeout(applyAll, 400);
+    setTimeout(applyAll, 1400);
+  });
+})();
+</script>
+<!-- /CODEX CADUNICO FINAL FLOW THEME --></body>
 </html>
