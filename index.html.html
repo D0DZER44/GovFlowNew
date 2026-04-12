@@ -11936,5 +11936,411 @@ body.light .nav-item { color: #1e293b !important; }
   });
 })();
 </script>
-<!-- /CODEX GOVFLOW MURAL SUBTITLE LOCK --></body>
+<!-- /CODEX GOVFLOW MURAL SUBTITLE LOCK --><!-- CODEX GOVFLOW PREMIUM SAAS FINAL 2026-04-12 -->
+<style>
+/* GovFlow Premium SaaS - camada final: visual, mobile, graficos e fontes oficiais */
+:root {
+  --gf-sidebar: 236px;
+  --gf-bg: #050914;
+  --gf-bg-soft: #07111f;
+  --gf-panel: rgba(12, 22, 38, .88);
+  --gf-panel-2: rgba(17, 29, 49, .92);
+  --gf-line: rgba(148, 163, 184, .20);
+  --gf-text: #f8fafc;
+  --gf-muted: #bac7d8;
+  --gf-soft: #8fa3ba;
+  --gf-blue: #2970ff;
+  --gf-cyan: #19c8e8;
+  --gf-teal: #17c6a3;
+  --gf-yellow: #f5c542;
+  --gf-red: #ff4d5e;
+  --gf-good: #2edb84;
+  --gf-radius: 14px;
+  --gf-font: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+}
+html { scroll-behavior: auto !important; }
+body {
+  font-family: var(--gf-font) !important;
+  font-size: 15.5px !important;
+  line-height: 1.55 !important;
+  letter-spacing: 0 !important;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(25, 200, 232, .14), transparent 26rem),
+    radial-gradient(circle at 82% 12%, rgba(41, 112, 255, .12), transparent 30rem),
+    linear-gradient(145deg, #040812 0%, #07111f 54%, #050914 100%) !important;
+  color: var(--gf-text) !important;
+  overflow-x: hidden !important;
+  text-rendering: optimizeLegibility !important;
+  -webkit-font-smoothing: antialiased !important;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  opacity: .34;
+  background-image:
+    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: linear-gradient(to bottom, #000, transparent 78%);
+}
+.main { margin-left: var(--gf-sidebar) !important; min-width: 0 !important; }
+.screen.active {
+  width: 100% !important;
+  max-width: 1420px !important;
+  margin: 0 auto !important;
+  padding: clamp(16px, 2vw, 28px) !important;
+}
+.topbar {
+  min-height: 62px !important;
+  height: auto !important;
+  padding: 10px clamp(14px, 2vw, 24px) !important;
+  background: rgba(5, 9, 20, .84) !important;
+  border-bottom: 1px solid var(--gf-line) !important;
+  backdrop-filter: blur(18px) saturate(140%) !important;
+}
+.sidebar {
+  width: var(--gf-sidebar) !important;
+  background: linear-gradient(180deg, rgba(6,12,23,.98), rgba(7,17,31,.96)) !important;
+  border-right: 1px solid var(--gf-line) !important;
+  box-shadow: 28px 0 70px rgba(0,0,0,.18) !important;
+  scrollbar-width: thin !important;
+  overflow-x: hidden !important;
+}
+.brand, .sidebar .brand, .sidebar-logo {
+  min-height: 76px !important;
+  padding: 16px 14px !important;
+  border-bottom: 1px solid var(--gf-line) !important;
+  gap: 11px !important;
+}
+.brand-mark, .brand-mark.govflow-logo-mark, .report-logo-box.govflow-logo-mark {
+  width: 46px !important;
+  height: 46px !important;
+  min-width: 46px !important;
+  border-radius: 13px !important;
+  overflow: visible !important;
+  filter: drop-shadow(0 14px 20px rgba(25,200,232,.20)) !important;
+}
+.brand-title, .logo-name {
+  font-size: 17px !important;
+  font-weight: 950 !important;
+  letter-spacing: -.03em !important;
+  color: var(--gf-text) !important;
+}
+.brand-sub, .logo-sub { font-size: 12px !important; color: var(--gf-muted) !important; }
+.sidebar-section {
+  margin: 14px 12px 4px !important;
+  padding: 0 !important;
+  font-size: 10.5px !important;
+  letter-spacing: .09em !important;
+  text-transform: uppercase !important;
+  color: rgba(203,213,225,.62) !important;
+  font-weight: 950 !important;
+}
+.nav-item, .sidebar .nav-item {
+  width: calc(100% - 18px) !important;
+  min-height: 42px !important;
+  margin: 3px 9px !important;
+  padding: 10px 12px !important;
+  border-radius: 9px !important;
+  border: 1px solid transparent !important;
+  background: transparent !important;
+  color: rgba(226,232,240,.82) !important;
+  font-size: 14px !important;
+  font-weight: 850 !important;
+  line-height: 1.2 !important;
+  justify-content: flex-start !important;
+  transition: transform .14s ease, background .14s ease, border-color .14s ease, color .14s ease !important;
+}
+.nav-item:hover, .sidebar .nav-item:hover {
+  transform: translateX(2px) !important;
+  background: rgba(25,200,232,.08) !important;
+  border-color: rgba(25,200,232,.20) !important;
+  color: #fff !important;
+}
+.nav-item.active, .sidebar .nav-item.active {
+  background: linear-gradient(135deg, rgba(41,112,255,.24), rgba(25,200,232,.13)) !important;
+  border-color: rgba(25,200,232,.38) !important;
+  color: #efffff !important;
+  box-shadow: inset 3px 0 0 var(--gf-cyan), 0 10px 30px rgba(25,200,232,.08) !important;
+}
+.sidebar #cad-dashboard-nav-sidebar { display: none !important; }
+.sidebar-live-card {
+  margin: 14px 10px !important;
+  max-height: 320px !important;
+  overflow: auto !important;
+  border-radius: var(--gf-radius) !important;
+}
+.card, .saas-card, .overview-card, .dash-panel, .rel-config, .rel-preview, .fixed-chart-card, .ia-operacional-panel, .govflow-public-panel {
+  border-radius: var(--gf-radius) !important;
+  border: 1px solid var(--gf-line) !important;
+  background: linear-gradient(180deg, var(--gf-panel-2), rgba(9,16,29,.86)) !important;
+  box-shadow: 0 22px 70px rgba(0,0,0,.22) !important;
+  overflow: hidden !important;
+}
+.card-head, .fixed-chart-title, .ia-operacional-head, .govflow-public-head {
+  border-bottom: 1px solid var(--gf-line) !important;
+  background: linear-gradient(90deg, rgba(25,200,232,.08), rgba(41,112,255,.06), transparent) !important;
+}
+.card-title, .fixed-chart-card h3, .page-hd-title, .report-section-title, .cad-resumo-title, .govflow-public-title, .ia-operacional-title {
+  text-align: center !important;
+  justify-content: center !important;
+  color: var(--gf-text) !important;
+  letter-spacing: -.01em !important;
+  font-weight: 950 !important;
+}
+.page-hd, .page-header, .hero-panel {
+  border-radius: 18px !important;
+  background: linear-gradient(135deg, rgba(25,200,232,.13), rgba(41,112,255,.16) 44%, rgba(5,9,20,.92)) !important;
+  border: 1px solid rgba(25,200,232,.22) !important;
+  box-shadow: 0 24px 80px rgba(0,0,0,.22) !important;
+}
+.kpi-strip, .kpi-bar {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(150px, 1fr)) !important;
+  gap: 12px !important;
+  margin: 16px 0 18px !important;
+}
+.kpi-card, .kpi-cell, #screen-dashboard .kpi-strip > * {
+  min-height: 112px !important;
+  padding: 16px !important;
+  border-radius: var(--gf-radius) !important;
+  border: 1px solid var(--gf-line) !important;
+  background: linear-gradient(180deg, rgba(17,29,49,.94), rgba(8,15,28,.88)) !important;
+}
+.kpi-value, .kpi-cell-value, .metric-value, .saas-metric {
+  font-size: clamp(25px, 2.6vw, 38px) !important;
+  line-height: 1 !important;
+  letter-spacing: -.045em !important;
+  font-weight: 950 !important;
+}
+.kpi-label, .kpi-cell-label, .metric-label, .saas-label {
+  font-size: 12px !important;
+  line-height: 1.25 !important;
+  letter-spacing: .06em !important;
+  text-transform: uppercase !important;
+  color: var(--gf-muted) !important;
+  font-weight: 850 !important;
+}
+.mp, .pill, .status-badge, .ia-operacional-badge, .public-new, .tb-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  min-height: 26px !important;
+  padding: 5px 10px !important;
+  border-radius: 999px !important;
+  font-size: 12px !important;
+  line-height: 1 !important;
+  font-weight: 900 !important;
+  letter-spacing: 0 !important;
+  white-space: nowrap !important;
+  border: 1px solid currentColor !important;
+}
+.mp-r, .danger, .critical, .critico, .gov-status-red, [class*="status-red"] { color: var(--gf-red) !important; background: rgba(255,77,94,.12) !important; }
+.mp-a, .warn, .warning, .atencao, .gov-status-yellow, [class*="status-yellow"] { color: var(--gf-yellow) !important; background: rgba(245,197,66,.12) !important; }
+.mp-g, .ok, .normal, .bom, .gov-status-green, [class*="status-green"] { color: var(--gf-good) !important; background: rgba(46,219,132,.12) !important; }
+.mp-b, .info, .revisar, .status-fresh, [class*="status-blue"] { color: var(--gf-cyan) !important; background: rgba(25,200,232,.12) !important; }
+#screen-dashboard .dashboard-tabs {
+  position: sticky !important;
+  top: 64px !important;
+  z-index: 90 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  padding: 12px !important;
+  margin: 12px auto 18px !important;
+  border-radius: 14px !important;
+  border: 1px solid var(--gf-line) !important;
+  background: rgba(5,9,20,.78) !important;
+  backdrop-filter: blur(16px) !important;
+}
+#screen-dashboard .dash-tab {
+  height: 42px !important;
+  min-height: 42px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 16px !important;
+  border-radius: 9px !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+  white-space: nowrap !important;
+  transition: transform .14s ease, background .14s ease, border-color .14s ease !important;
+}
+#screen-dashboard .dash-tab:hover { transform: translateY(-1px) !important; }
+#screen-dashboard .dash-tab.active { background: linear-gradient(135deg, rgba(41,112,255,.35), rgba(25,200,232,.24)) !important; border-color: rgba(25,200,232,.44) !important; color: #fff !important; }
+#cad-dashboard-graficos-fixos {
+  display: block !important;
+  width: 100% !important;
+  overflow: hidden !important;
+  contain: layout paint !important;
+  margin: 18px 0 !important;
+  padding: clamp(14px, 2vw, 22px) !important;
+}
+#cad-dashboard-graficos-fixos .fixed-chart-title { font-size: clamp(21px, 2.1vw, 28px) !important; text-align: center !important; margin-bottom: 6px !important; }
+#cad-dashboard-graficos-fixos .fixed-chart-sub { max-width: 760px !important; margin: 0 auto 18px !important; text-align: center !important; color: var(--gf-muted) !important; }
+#cad-dashboard-graficos-fixos .fixed-chart-grid.primary { display: grid !important; grid-template-columns: repeat(2, minmax(300px, 1fr)) !important; gap: 16px !important; margin-bottom: 14px !important; }
+#cad-dashboard-graficos-fixos .fixed-chart-grid.secondary { display: grid !important; grid-template-columns: repeat(3, minmax(180px, 1fr)) !important; gap: 12px !important; }
+#cad-dashboard-graficos-fixos .fixed-chart-grid.primary .fixed-chart-card { min-height: 340px !important; padding: 14px !important; }
+#cad-dashboard-graficos-fixos .fixed-chart-grid.secondary .fixed-chart-card { min-height: 218px !important; max-height: 232px !important; padding: 12px !important; }
+#cad-dashboard-graficos-fixos .fixed-chart-grid.primary .chart-wrap, #cad-dashboard-graficos-fixos .fixed-chart-grid.primary canvas { height: 265px !important; max-height: 265px !important; }
+#cad-dashboard-graficos-fixos .fixed-chart-grid.secondary .chart-wrap, #cad-dashboard-graficos-fixos .fixed-chart-grid.secondary canvas { height: 150px !important; max-height: 150px !important; }
+#cad-dashboard-graficos-fixos canvas { display: block !important; width: 100% !important; max-width: 100% !important; margin: 0 auto !important; }
+#cad-dashboard-graficos-fixos + #cad-dashboard-graficos-fixos { display: none !important; }
+#screen-dashboard .dashboard-charts-top, #screen-dashboard .two-col, #screen-dashboard #cadunico-analytics-panel, #screen-dashboard .cadunico-analytics-panel { display: none !important; visibility: hidden !important; height: 0 !important; margin: 0 !important; padding: 0 !important; overflow: hidden !important; }
+#cad-resumo-importante, #gf-official-sources-panel {
+  display: grid !important;
+  gap: 12px !important;
+  margin: 16px 0 !important;
+}
+#cad-resumo-importante { grid-template-columns: repeat(4, minmax(170px, 1fr)) !important; }
+#gf-official-sources-panel { grid-template-columns: repeat(4, minmax(180px, 1fr)) !important; }
+#cad-resumo-importante .resumo-important-card, #gf-official-sources-panel .gf-source-card {
+  border-radius: 14px !important;
+  border: 1px solid var(--gf-line) !important;
+  background: linear-gradient(180deg, rgba(17,29,49,.92), rgba(8,15,28,.86)) !important;
+  padding: 14px !important;
+  min-height: 120px !important;
+  text-align: center !important;
+}
+.gf-source-card strong { display: block !important; font-size: 14px !important; color: var(--gf-text) !important; margin-bottom: 6px !important; }
+.gf-source-card span { display: block !important; font-size: 12.5px !important; color: var(--gf-muted) !important; line-height: 1.35 !important; }
+.gf-source-card a { display: inline-flex !important; margin-top: 10px !important; color: var(--gf-cyan) !important; font-weight: 900 !important; text-decoration: none !important; }
+#ia-operacional-panel .ia-operacional-title { font-size: 0 !important; }
+#ia-operacional-panel .ia-operacional-title::after { content: "Mural Informativo" !important; font-size: 20px !important; font-weight: 950 !important; }
+#ia-operacional-panel .ia-operacional-sub { display: none !important; visibility: hidden !important; height: 0 !important; font-size: 0 !important; margin: 0 !important; padding: 0 !important; }
+input, select, textarea, button { font-family: var(--gf-font) !important; font-size: 15px !important; }
+.btn { min-height: 40px !important; border-radius: 9px !important; font-weight: 900 !important; }
+.btn-primary { background: linear-gradient(135deg, var(--gf-cyan), var(--gf-blue)) !important; color: #fff !important; border-color: rgba(25,200,232,.38) !important; box-shadow: 0 14px 38px rgba(41,112,255,.20) !important; }
+.btn-ghost { border-color: var(--gf-line) !important; background: rgba(148,163,184,.06) !important; color: var(--gf-text) !important; }
+html[data-theme="light"], body.light { --gf-text: #0f172a; --gf-muted: #42526a; --gf-line: rgba(15,23,42,.14); }
+html[data-theme="light"] body, body.light { background: linear-gradient(145deg, #eef7fb 0%, #f8fafc 55%, #eaf4ff 100%) !important; color: #0f172a !important; }
+html[data-theme="light"] .card, html[data-theme="light"] .saas-card, html[data-theme="light"] .overview-card, html[data-theme="light"] .dash-panel, html[data-theme="light"] .rel-config, html[data-theme="light"] .rel-preview, body.light .card, body.light .saas-card, body.light .overview-card, body.light .dash-panel, body.light .rel-config, body.light .rel-preview { background: #fff !important; border-color: rgba(15,23,42,.13) !important; color: #0f172a !important; box-shadow: 0 18px 50px rgba(15,23,42,.09) !important; }
+@media (prefers-reduced-motion: no-preference) {
+  .card, .saas-card, .overview-card, .fixed-chart-card, .nav-item, .btn { transition: transform .16s ease, border-color .16s ease, background .16s ease, box-shadow .16s ease !important; }
+  .card:hover, .saas-card:hover, .overview-card:hover, .fixed-chart-card:hover { transform: translateY(-2px) !important; border-color: rgba(25,200,232,.34) !important; }
+}
+@media (max-width: 1180px) {
+  .kpi-strip, .kpi-bar { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+  #cad-resumo-importante, #gf-official-sources-panel { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+@media (max-width: 860px) {
+  :root { --gf-sidebar: min(310px, 86vw); }
+  .main { margin-left: 0 !important; }
+  .screen.active { padding: 12px !important; }
+  .sidebar { top: 62px !important; width: min(310px, 86vw) !important; transform: translateX(-104%) !important; z-index: 500 !important; }
+  .sidebar.open { transform: translateX(0) !important; }
+  .sidebar .sidebar-section, .sidebar .nav-item { display: none !important; }
+  .sidebar .brand, .sidebar #nav-dashboard, .sidebar #nav-registros, .sidebar #nav-historico, .sidebar #nav-relatorio, .sidebar #nav-ordens, .sidebar #nav-estoque, .sidebar #nav-performance, .sidebar .sidebar-live-card, .sidebar .sidebar-footer { display: flex !important; }
+  #screen-dashboard .dashboard-tabs { position: static !important; justify-content: flex-start !important; overflow-x: auto !important; flex-wrap: nowrap !important; scroll-snap-type: x proximity !important; }
+  #screen-dashboard .dash-tab { flex: 0 0 auto !important; scroll-snap-align: start !important; }
+  .kpi-strip, .kpi-bar { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  #cad-dashboard-graficos-fixos .fixed-chart-grid.primary, #cad-dashboard-graficos-fixos .fixed-chart-grid.secondary { grid-template-columns: 1fr !important; }
+  #cad-dashboard-graficos-fixos .fixed-chart-grid.primary .chart-wrap, #cad-dashboard-graficos-fixos .fixed-chart-grid.primary canvas { height: 235px !important; max-height: 235px !important; }
+  #cad-dashboard-graficos-fixos .fixed-chart-grid.secondary .chart-wrap, #cad-dashboard-graficos-fixos .fixed-chart-grid.secondary canvas { height: 145px !important; max-height: 145px !important; }
+}
+@media (max-width: 540px) {
+  body { font-size: 15px !important; }
+  .screen.active { padding: 10px !important; }
+  .kpi-strip, .kpi-bar, #cad-resumo-importante, #gf-official-sources-panel { grid-template-columns: 1fr !important; }
+  .page-hd-title { font-size: 26px !important; }
+  .topbar { padding: 8px 10px !important; }
+}
+</style>
+<script>
+(function () {
+  const LOGO = '<svg class="cadunico-flow-logo premium-logo" viewBox="0 0 120 120" width="46" height="46" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="CadÚnico"><defs><linearGradient id="gfPremiumFlow" x1="12" y1="14" x2="104" y2="104"><stop stop-color="#19c8e8"/><stop offset=".48" stop-color="#2970ff"/><stop offset="1" stop-color="#17c6a3"/></linearGradient><filter id="gfPremiumShadow" x="-25%" y="-25%" width="150%" height="150%"><feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#020617" flood-opacity=".38"/></filter></defs><rect x="9" y="9" width="102" height="102" rx="28" fill="url(#gfPremiumFlow)" filter="url(#gfPremiumShadow)"/><path d="M25 40c18-18 45-22 70-5" fill="none" stroke="#f8ffff" stroke-width="8" stroke-linecap="round"/><path d="M26 59c21 18 48 18 70 0" fill="none" stroke="#f8ffff" stroke-width="8" stroke-linecap="round"/><path d="M29 78c18 12 41 12 61-1" fill="none" stroke="#dffaff" stroke-width="7" stroke-linecap="round" opacity=".92"/><path d="M42 36v48" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/><path d="M82 39H61v20h17" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M62 59v24" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/><circle cx="94" cy="28" r="7" fill="#f5c542"/><circle cx="27" cy="91" r="5" fill="#f5c542"/></svg>';
+  const SOURCES = [
+    { t:'Informes do CadÚnico', d:'Comunicados oficiais do MDS para gestão municipal.', u:'https://www.gov.br/mds/pt-br/acoes-e-programas/cadastro-unico/informes', s:'Novo' },
+    { t:'CECAD 2.0', d:'Consulta pública de informações agregadas e desidentificadas do CadÚnico.', u:'https://cecad.cidadania.gov.br/tab_cad.php/layout/tab_cad.php', s:'Dados' },
+    { t:'Relatório de Informações', d:'Painel do MDS para programas e ações por município.', u:'https://aplicacoes.cidadania.gov.br/ri/ri/relatorios/cidadania/index.php?codigo=355070', s:'Oficial' },
+    { t:'Defesa Civil Municipal', d:'Contato e referência institucional para alertas locais.', u:'https://www.saosebastiao.sp.gov.br/conselhos_municipais.asp', s:'Atenção' },
+    { t:'Prefeitura de São Sebastião', d:'Notícias, diário oficial e serviços municipais.', u:'https://www.saosebastiao.sp.gov.br/', s:'Local' },
+    { t:'Política de dados', d:'Regras para acesso a bases identificadas do Cadastro Único.', u:'https://www.gov.br/mds/pt-br/acesso-a-informacao/carta-de-servicos/avaliacao-e-gesta-o-da-informacao-e-cadastro-unico/cadastro-unico/politica-utilizacao-dados', s:'Revisar' }
+  ];
+  function qs(sel, root){ return (root || document).querySelector(sel); }
+  function qsa(sel, root){ return Array.from((root || document).querySelectorAll(sel)); }
+  function fixLogo(){ qsa('.brand-mark, .report-logo-box').forEach(function(el){ el.classList.add('govflow-logo-mark'); el.dataset.logoStable='1'; if (el.innerHTML.indexOf('gfPremiumFlow') === -1) el.innerHTML = LOGO; }); }
+  function corrigirGrafia(){
+    const trocas = [
+      [/\bRevisoes\b/g,'Revisões'], [/\bAusencias\b/g,'Ausências'], [/\bOperacao\b/g,'Operação'], [/\bCenarios\b/g,'Cenários'], [/\bAcoes\b/g,'Ações'], [/\bAtendimento por unidade\b/g,'Atendimentos por unidade'], [/\bUnidades de Atendimetno\b/g,'Unidades de Atendimento'], [/\bRelatorios\b/g,'Relatórios'], [/\brelatorios\b/g,'relatórios'], [/\bOcorrencias\b/g,'Ocorrências'], [/\bocorrencias\b/g,'ocorrências'], [/\bcoordenacao\b/g,'coordenação'], [/\bCoordenacao\b/g,'Coordenação'], [/\bacoes\b/g,'ações'], [/\bacao\b/g,'ação'], [/\banalise\b/g,'análise'], [/\badministravel\b/g,'administrável'], [/\besta em\b/g,'está em']
+    ];
+    qsa('body *:not(script):not(style):not(input):not(textarea):not(select)').forEach(function(el){
+      if (el.children.length) return;
+      const old = el.textContent;
+      if (!old || old.length > 220) return;
+      let next = old;
+      trocas.forEach(function(pair){ next = next.replace(pair[0], pair[1]); });
+      if (next !== old) el.textContent = next;
+    });
+  }
+  function renderSources(){
+    const dash = document.getElementById('screen-dashboard');
+    if (!dash) return;
+    let panel = document.getElementById('gf-official-sources-panel');
+    if (!panel) { panel = document.createElement('section'); panel.id = 'gf-official-sources-panel'; panel.className = 'dash-panel dash-panel-resumo active'; }
+    panel.innerHTML = SOURCES.map(function(s){
+      const cls = /Atenção|Revisar/i.test(s.s) ? 'mp-a' : /Novo|Dados|Oficial/i.test(s.s) ? 'mp-b' : 'mp-g';
+      return '<article class="gf-source-card"><span class="mp '+cls+'">'+s.s+'</span><strong>'+s.t+'</strong><span>'+s.d+'</span><a href="'+s.u+'" target="_blank" rel="noopener">Abrir fonte</a></article>';
+    }).join('');
+    const ref = document.getElementById('cad-resumo-importante') || document.getElementById('cad-dashboard-graficos-fixos') || qs('#screen-dashboard .dashboard-tabs') || qs('#screen-dashboard .kpi-strip');
+    if (ref && ref.nextElementSibling !== panel) ref.insertAdjacentElement('afterend', panel);
+  }
+  function removeChartDuplicates(){
+    const panels = qsa('#cad-dashboard-graficos-fixos');
+    panels.slice(1).forEach(function(p){ p.remove(); });
+    const keep = panels[0];
+    qsa('#screen-dashboard .dashboard-charts-top, #screen-dashboard .two-col, #screen-dashboard #cadunico-analytics-panel, #screen-dashboard .cadunico-analytics-panel').forEach(function(el){ if (el !== keep) { el.style.setProperty('display','none','important'); el.style.setProperty('visibility','hidden','important'); el.style.setProperty('height','0','important'); el.style.setProperty('overflow','hidden','important'); } });
+  }
+  function fitCharts(){
+    const panel = document.getElementById('cad-dashboard-graficos-fixos');
+    if (!panel) return;
+    qsa('.fixed-chart-grid.primary canvas', panel).forEach(function(c){ c.style.setProperty('height', window.innerWidth <= 860 ? '235px' : '265px', 'important'); c.style.setProperty('max-height', window.innerWidth <= 860 ? '235px' : '265px', 'important'); c.style.setProperty('width','100%','important'); });
+    qsa('.fixed-chart-grid.secondary canvas', panel).forEach(function(c){ c.style.setProperty('height', window.innerWidth <= 860 ? '145px' : '150px', 'important'); c.style.setProperty('max-height', window.innerWidth <= 860 ? '145px' : '150px', 'important'); c.style.setProperty('width','100%','important'); });
+  }
+  function fixTabs(){
+    qsa('#screen-dashboard .dash-tab').forEach(function(tab){
+      if (tab.dataset.tab === 'resumo') tab.textContent = 'Resumo operacional';
+      if (tab.dataset.tab === 'orientacao') tab.textContent = 'Sala de decisão';
+    });
+  }
+  function fixMural(){
+    const title = qs('#ia-operacional-panel .ia-operacional-title'); if (title) title.textContent = 'Mural Informativo';
+    const sub = qs('#ia-operacional-panel .ia-operacional-sub'); if (sub) { sub.textContent = ''; sub.innerHTML = ''; sub.style.setProperty('display','none','important'); }
+    qsa('#ia-operacional-panel button').forEach(function(btn){ if (/Cop|Copmuralr/i.test(btn.textContent || '')) btn.textContent='Copiar resumo'; if (/Atualizar/i.test(btn.textContent || '')) btn.textContent='Atualizar mural'; });
+  }
+  function syncResumo(){
+    const box = document.getElementById('cad-resumo-importante');
+    if (!box) return;
+    const cards = qsa('.resumo-important-card', box);
+    if (cards[2]) cards[2].innerHTML = '<div class="resumo-important-kicker">Defesa Civil</div><div class="resumo-important-title">Monitorar</div><div class="resumo-important-desc">Acompanhe chuva forte, queda de barreira, interdição, alagamento e impacto em mutirões ou visitas externas.</div>';
+  }
+  function premiumApply(){ fixLogo(); corrigirGrafia(); fixTabs(); removeChartDuplicates(); fitCharts(); fixMural(); syncResumo(); renderSources(); }
+  const oldRender = window.renderFixedDashboardCharts;
+  if (typeof oldRender === 'function' && !oldRender.__premiumFinalWrapped) {
+    const wrapped = function(){ const r = oldRender.apply(this, arguments); requestAnimationFrame(premiumApply); return r; };
+    wrapped.__premiumFinalWrapped = true; window.renderFixedDashboardCharts = wrapped;
+  }
+  const oldSetDashTab = window.setDashTab;
+  if (typeof oldSetDashTab === 'function' && !oldSetDashTab.__premiumNoScroll) {
+    const wrappedTab = function(name){ const x=window.scrollX, y=window.scrollY; const r=oldSetDashTab.apply(this, arguments); premiumApply(); if (name === 'resumo') { window.scrollTo(x,y); setTimeout(function(){ window.scrollTo(x,y); }, 50); } return r; };
+    wrappedTab.__premiumNoScroll = true; window.setDashTab = wrappedTab;
+  }
+  window.addEventListener('load', function(){ premiumApply(); setTimeout(premiumApply, 500); setTimeout(premiumApply, 1600); });
+  window.addEventListener('resize', function(){ requestAnimationFrame(premiumApply); });
+  window.addEventListener('orientationchange', function(){ setTimeout(premiumApply, 250); });
+  if (window.MutationObserver) {
+    window.addEventListener('load', function(){
+      const dash = document.getElementById('screen-dashboard') || document.body;
+      let busy = false;
+      new MutationObserver(function(){ if (busy) return; busy = true; requestAnimationFrame(function(){ busy = false; removeChartDuplicates(); fitCharts(); fixMural(); }); }).observe(dash, { childList:true, subtree:true });
+    });
+  }
+})();
+</script>
+<!-- /CODEX GOVFLOW PREMIUM SAAS FINAL 2026-04-12 --></body>
 </html>
