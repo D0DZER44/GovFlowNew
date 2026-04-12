@@ -12512,5 +12512,89 @@ html[data-theme="light"] .card, html[data-theme="light"] .saas-card, html[data-t
   });
 })();
 </script>
-<!-- /CODEX GOVFLOW TAREFAS LABEL LOCK --></body>
+<!-- /CODEX GOVFLOW TAREFAS LABEL LOCK --><!-- CODEX GOVFLOW INTERACTIVE GRADIENT BUTTONS -->
+<style>
+/* Todos os botoes interativos no degrade premium azul/ciano */
+:root {
+  --gf-action-gradient: linear-gradient(135deg, #19c8e8 0%, #2970ff 54%, #17c6a3 100%);
+  --gf-action-gradient-hover: linear-gradient(135deg, #38e5ff 0%, #3b82f6 52%, #22d3a8 100%);
+}
+button,
+.btn,
+.btn-primary,
+.btn-ghost,
+.btn-sm,
+.dash-tab,
+.report-model-btn,
+.report-model-general,
+.stock-actions button,
+.admin-user-actions button,
+.daily-task-actions button,
+.report-primary-actions button,
+.report-action-bar-top button,
+.clean-report-actions button,
+.modal button,
+.stock-modal-actions button,
+.nav-item,
+.sidebar .nav-item,
+[role="button"] {
+  border: 1px solid rgba(25, 200, 232, .38) !important;
+  background: var(--gf-action-gradient) !important;
+  color: #ffffff !important;
+  box-shadow: 0 12px 32px rgba(41, 112, 255, .22), inset 0 1px 0 rgba(255,255,255,.18) !important;
+  font-weight: 900 !important;
+  text-shadow: 0 1px 10px rgba(0,0,0,.18) !important;
+}
+button:hover,
+.btn:hover,
+.dash-tab:hover,
+.report-model-btn:hover,
+.nav-item:hover,
+.sidebar .nav-item:hover,
+[role="button"]:hover {
+  background: var(--gf-action-gradient-hover) !important;
+  border-color: rgba(56, 229, 255, .58) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 16px 40px rgba(41, 112, 255, .30), inset 0 1px 0 rgba(255,255,255,.24) !important;
+}
+button:active,
+.btn:active,
+.dash-tab:active,
+.report-model-btn:active,
+.nav-item:active,
+.sidebar .nav-item:active,
+[role="button"]:active {
+  transform: translateY(0) scale(.99) !important;
+}
+button:disabled,
+.btn:disabled,
+[aria-disabled="true"] {
+  opacity: .55 !important;
+  filter: grayscale(.2) !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+.dash-tab.active,
+.report-model-btn.active,
+.report-model-active,
+.nav-item.active,
+.sidebar .nav-item.active {
+  background: var(--gf-action-gradient-hover) !important;
+  color: #ffffff !important;
+  border-color: rgba(56, 229, 255, .70) !important;
+  box-shadow: 0 18px 46px rgba(25, 200, 232, .28), inset 0 1px 0 rgba(255,255,255,.26) !important;
+}
+/* Mantem badges/status sem virar botao */
+.mp,
+.pill,
+.status-badge,
+.ia-operacional-badge,
+.public-new,
+.live-value,
+.func-status,
+.task-badge {
+  text-shadow: none !important;
+}
+</style>
+<!-- /CODEX GOVFLOW INTERACTIVE GRADIENT BUTTONS --></body>
 </html>
