@@ -12673,5 +12673,316 @@ body.light .sidebar .nav-item {
   color: #334155 !important;
 }
 </style>
-<!-- /CODEX GOVFLOW SIDEBAR OLD COLORS RESTORE --></body>
+<!-- /CODEX GOVFLOW SIDEBAR OLD COLORS RESTORE --><!-- CODEX GOVFLOW SIDEBAR STOCK FINAL TUNE -->
+<style>
+/* Sidebar na cor escura da referencia e sem a secao Operacao */
+.sidebar {
+  background: #111827 !important;
+  border-right: 1px solid rgba(148,163,184,.18) !important;
+  box-shadow: none !important;
+}
+.sidebar .brand,
+.sidebar-logo,
+.sidebar-footer,
+.sidebar-live-card {
+  background: #111827 !important;
+  border-color: rgba(148,163,184,.18) !important;
+  box-shadow: none !important;
+}
+.sidebar .nav-item,
+.sidebar #nav-dashboard,
+.sidebar #nav-registros,
+.sidebar #nav-historico,
+.sidebar #nav-relatorio,
+.sidebar #nav-ordens,
+.sidebar #nav-estoque,
+.sidebar #nav-performance,
+.sidebar #nav-funcionarios {
+  background: transparent !important;
+  color: rgba(226,232,240,.86) !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+.sidebar .nav-item:hover {
+  background: rgba(148,163,184,.10) !important;
+  color: #ffffff !important;
+  border-color: rgba(148,163,184,.18) !important;
+}
+.sidebar .nav-item.active,
+.sidebar #nav-dashboard.active,
+.sidebar #nav-registros.active,
+.sidebar #nav-historico.active,
+.sidebar #nav-relatorio.active,
+.sidebar #nav-ordens.active,
+.sidebar #nav-estoque.active,
+.sidebar #nav-performance.active,
+.sidebar #nav-funcionarios.active {
+  background: rgba(59,130,246,.16) !important;
+  color: #dbeafe !important;
+  border-color: rgba(59,130,246,.30) !important;
+  box-shadow: inset 3px 0 0 #3b82f6 !important;
+}
+#cad-dashboard-nav-sidebar,
+.sidebar #cad-dashboard-nav-sidebar,
+.sidebar .sidebar-section.govflow-operation-section-hidden,
+.sidebar .nav-item.govflow-operation-item-hidden {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+}
+/* Estoque: lapis e X centralizados, com cores proprias */
+#screen-estoque #stock-list .saas-row {
+  display: grid !important;
+  grid-template-columns: minmax(0,1fr) auto auto !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+#screen-estoque .stock-actions,
+.stock-actions {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  min-width: 88px !important;
+  justify-self: center !important;
+}
+#screen-estoque .stock-icon-btn,
+.stock-icon-btn {
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  min-height: 38px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 9px !important;
+  font-size: 19px !important;
+  line-height: 1 !important;
+  font-weight: 950 !important;
+  text-align: center !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  transform: none !important;
+}
+#screen-estoque .stock-icon-btn.edit,
+.stock-icon-btn.edit {
+  color: #19c8e8 !important;
+  background: rgba(25,200,232,.13) !important;
+  border-color: rgba(25,200,232,.38) !important;
+}
+#screen-estoque .stock-icon-btn.delete,
+.stock-icon-btn.delete {
+  color: #ff4d5e !important;
+  background: rgba(255,77,94,.12) !important;
+  border-color: rgba(255,77,94,.42) !important;
+}
+#screen-estoque .stock-icon-btn.edit:hover,
+.stock-icon-btn.edit:hover {
+  background: rgba(25,200,232,.20) !important;
+  color: #67e8f9 !important;
+}
+#screen-estoque .stock-icon-btn.delete:hover,
+.stock-icon-btn.delete:hover {
+  background: rgba(255,77,94,.20) !important;
+  color: #ff8a98 !important;
+}
+@media (max-width: 760px) {
+  #screen-estoque #stock-list .saas-row {
+    grid-template-columns: 1fr !important;
+  }
+  #screen-estoque .stock-actions,
+  .stock-actions {
+    justify-self: center !important;
+    width: 100% !important;
+  }
+}
+</style>
+<script>
+(function () {
+  function norm(s) {
+    return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+  }
+  function removeOperationFromSidebar() {
+    document.querySelectorAll('#cad-dashboard-nav-sidebar').forEach(function (el) { el.remove(); });
+    const sidebar = document.getElementById('sidebar') || document.querySelector('.sidebar');
+    if (!sidebar) return;
+    const sections = Array.from(sidebar.querySelectorAll('.sidebar-section'));
+    sections.forEach(function (sec) {
+      if (norm(sec.textContent).indexOf('operacao') === -1) return;
+      sec.classList.add('govflow-operation-section-hidden');
+      let node = sec.nextElementSibling;
+      while (node && !node.classList.contains('sidebar-section') && !node.classList.contains('sidebar-footer')) {
+        const next = node.nextElementSibling;
+        if (node.classList.contains('nav-item')) node.classList.add('govflow-operation-item-hidden');
+        node = next;
+      }
+    });
+  }
+  function tuneStockIcons() {
+    document.querySelectorAll('.stock-icon-btn.edit').forEach(function (btn) {
+      btn.textContent = '✎';
+      btn.setAttribute('aria-label', 'Editar item');
+      btn.title = 'Editar';
+    });
+    document.querySelectorAll('.stock-icon-btn.delete').forEach(function (btn) {
+      btn.textContent = '×';
+      btn.setAttribute('aria-label', 'Excluir item');
+      btn.title = 'Excluir';
+    });
+  }
+  function applyFinalTune() {
+    removeOperationFromSidebar();
+    tuneStockIcons();
+  }
+  const oldRenderStock = window.renderStock;
+  if (typeof oldRenderStock === 'function' && !oldRenderStock.__stockIconTune) {
+    const wrapped = function () {
+      const result = oldRenderStock.apply(this, arguments);
+      tuneStockIcons();
+      return result;
+    };
+    wrapped.__stockIconTune = true;
+    window.renderStock = wrapped;
+  }
+  window.addEventListener('load', function () { applyFinalTune(); setTimeout(applyFinalTune, 500); setTimeout(applyFinalTune, 1600); });
+  window.addEventListener('resize', function () { requestAnimationFrame(applyFinalTune); });
+})();
+</script>
+<!-- /CODEX GOVFLOW SIDEBAR STOCK FINAL TUNE --><!-- CODEX GOVFLOW CENTER KPI BUTTON TEXT FINAL -->
+<style>
+/* Centralizacao geral dos dados e textos de botoes interativos */
+.kpi-strip > *,
+.kpi-card,
+.kpi-cell,
+.metric-card,
+.saas-metric-card,
+#screen-dashboard .kpi-strip > * {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+.kpi-strip .kpi-label,
+.kpi-strip .kpi-value,
+.kpi-strip .kpi-sub,
+.kpi-strip .kpi-cell-label,
+.kpi-strip .kpi-cell-value,
+.kpi-strip .kpi-cell-sub,
+.kpi-card .kpi-label,
+.kpi-card .kpi-value,
+.kpi-card .kpi-sub,
+.metric-label,
+.metric-value,
+.metric-sub,
+.saas-metric,
+.saas-label {
+  width: 100% !important;
+  text-align: center !important;
+  justify-content: center !important;
+  align-items: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+.kpi-strip .mp,
+.kpi-strip .pill,
+.kpi-card .mp,
+.kpi-card .pill,
+.kpi-cell .mp,
+.kpi-cell .pill {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+button,
+.btn,
+.btn-primary,
+.btn-ghost,
+.btn-sm,
+.dash-tab,
+.report-model-btn,
+.nav-item,
+.sidebar .nav-item,
+.stock-icon-btn,
+.daily-task-actions button,
+.report-primary-actions button,
+.report-action-bar-top button,
+.clean-report-actions button,
+.stock-modal-actions button,
+.admin-user-actions button,
+[role="button"] {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  white-space: normal !important;
+  line-height: 1.15 !important;
+}
+.btn,
+.btn-primary,
+.btn-ghost,
+.report-model-btn,
+.report-primary-actions button,
+button[onclick="addStockItem()"],
+button[onclick="buildReport()"],
+button[onclick="printReport()"],
+button[onclick="copyReport()"],
+button[onclick="saveDailyTask()"],
+button[onclick="exportDailyTasksCSV()"] {
+  width: auto;
+  min-width: 0;
+  text-align: center !important;
+}
+#screen-usuarios button,
+#screen-admin button,
+#screen-relatorio button,
+#screen-estoque button,
+#screen-ordens button,
+.auth-card button,
+.auth-google-btn {
+  justify-content: center !important;
+  text-align: center !important;
+}
+#screen-dashboard .dashboard-tabs,
+#report-model-tabs,
+.report-primary-actions,
+.report-action-bar-top,
+.clean-report-actions,
+.stock-modal-actions,
+.daily-task-actions,
+.admin-user-actions {
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+.sidebar .nav-item,
+#nav-dashboard,
+#nav-registros,
+#nav-historico,
+#nav-relatorio,
+#nav-ordens,
+#nav-estoque,
+#nav-performance,
+#nav-funcionarios {
+  justify-content: center !important;
+  text-align: center !important;
+}
+.sidebar .nav-item svg,
+.sidebar .nav-item span:not(.nav-badge) {
+  flex: 0 0 auto !important;
+}
+#screen-estoque .stock-actions,
+.stock-actions {
+  justify-content: center !important;
+  text-align: center !important;
+}
+</style>
+<!-- /CODEX GOVFLOW CENTER KPI BUTTON TEXT FINAL --></body>
 </html>
