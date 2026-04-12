@@ -9329,5 +9329,347 @@ body {
   window.addEventListener('load', function () { recolorLogos(); setTimeout(recolorLogos, 500); setTimeout(recolorLogos, 1500); });
 })();
 </script>
-<!-- /CODEX CADUNICO COLOR TONE FINAL --></body>
+<!-- /CODEX CADUNICO COLOR TONE FINAL --><!-- CODEX CADUNICO LIGHT DATE ANALYTICS FINAL -->
+<style>
+/* CadUnico: modo claro, data simples e graficos de qualificacao cadastral */
+html[data-theme="light"],
+:root[data-theme="light"] {
+  --bg: #f4f7fb !important;
+  --bg1: #ffffff !important;
+  --bg2: #f8fafc !important;
+  --bg3: #eef5ff !important;
+  --bg4: #e0f2fe !important;
+  --ink: #0f172a !important;
+  --ink2: #334155 !important;
+  --ink3: #64748b !important;
+  --line: rgba(15,23,42,.12) !important;
+  --line2: rgba(37,99,235,.18) !important;
+  --blue: #2563eb !important;
+  --teal: #0891b2 !important;
+  --green: #0284c7 !important;
+  --amber: #ca8a04 !important;
+  --red: #dc2626 !important;
+}
+html[data-theme="light"] body,
+:root[data-theme="light"] body {
+  background: linear-gradient(180deg, #f8fafc 0%, #eef5ff 48%, #f4f7fb 100%) !important;
+  color: var(--ink) !important;
+}
+html[data-theme="light"] .sidebar,
+html[data-theme="light"] .topbar,
+html[data-theme="light"] .card,
+html[data-theme="light"] .saas-card,
+html[data-theme="light"] .overview-card,
+html[data-theme="light"] .dash-panel,
+html[data-theme="light"] .rel-config,
+html[data-theme="light"] .rel-preview,
+html[data-theme="light"] .form-section,
+html[data-theme="light"] .govflow-public-panel,
+html[data-theme="light"] .ia-operacional-panel,
+html[data-theme="light"] .insights-auto-panel {
+  background: rgba(255,255,255,.94) !important;
+  color: var(--ink) !important;
+  border-color: rgba(15,23,42,.12) !important;
+  box-shadow: 0 18px 44px rgba(15,23,42,.08) !important;
+}
+html[data-theme="light"] input,
+html[data-theme="light"] select,
+html[data-theme="light"] textarea {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: rgba(15,23,42,.16) !important;
+}
+html[data-theme="light"] .topbar-center {
+  background: #ffffff !important;
+  border-color: rgba(37,99,235,.18) !important;
+  color: #0f172a !important;
+}
+.topbar-center {
+  min-width: 0 !important;
+  padding: 7px 14px !important;
+  gap: 8px !important;
+  border-radius: 999px !important;
+}
+.tb-clock, .tb-date {
+  font-family: var(--mono, monospace) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  line-height: 1 !important;
+}
+.tb-clock { font-size: 13px !important; font-weight: 800 !important; color: var(--ink) !important; }
+.tb-date { font-size: 12px !important; color: var(--ink2) !important; }
+input.date-br-field { font-family: var(--mono, monospace) !important; letter-spacing: 0 !important; }
+.cadunico-analytics-panel { margin-top: 18px !important; }
+.cadunico-analytics-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+}
+.cadunico-analytics-grid .card { min-width: 0 !important; }
+.cadunico-analytics-grid .chart-wrap { height: 230px !important; }
+.cadunico-analytics-note {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--line2);
+  border-radius: 10px;
+  color: var(--ink2);
+  background: color-mix(in srgb, var(--bg2) 88%, #2563eb 12%);
+  text-align: justify;
+  line-height: 1.65;
+}
+.report-section.cadunico-analysis-section p { text-align: justify !important; text-indent: 1.25cm !important; line-height: 1.65 !important; }
+@media (max-width: 1100px) { .cadunico-analytics-grid { grid-template-columns: 1fr 1fr !important; } }
+@media (max-width: 720px) { .cadunico-analytics-grid { grid-template-columns: 1fr !important; } .topbar-center { padding: 6px 10px !important; } }
+</style>
+<script>
+/* CadUnico: data/hora limpa, modo claro e analise operacional */
+(function () {
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function asDate(value) {
+    if (!value) return null;
+    if (value instanceof Date) return isNaN(value.getTime()) ? null : value;
+    const s = String(value).trim();
+    const br = s.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+    if (br) return new Date(Number(br[3]), Number(br[2]) - 1, Number(br[1]));
+    const iso = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (iso) return new Date(Number(iso[1]), Number(iso[2]) - 1, Number(iso[3]));
+    const d = new Date(s);
+    return isNaN(d.getTime()) ? null : d;
+  }
+  function formatDateBR(value) { const d = asDate(value) || new Date(); return pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + d.getFullYear(); }
+  function formatTimeBR(value) { const d = asDate(value) || new Date(); return pad(d.getHours()) + ':' + pad(d.getMinutes()); }
+  function formatDateTimeBR(value) { const d = asDate(value) || new Date(); return formatDateBR(d) + ' ' + formatTimeBR(d); }
+  function toISODate(value) { const d = asDate(value); return d ? d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) : ''; }
+  window.cadFormatDateBR = formatDateBR;
+  window.cadFormatDateTimeBR = formatDateTimeBR;
+
+  window.updateClock = function updateClock() {
+    const n = new Date();
+    const clock = document.getElementById('clock');
+    const date = document.getElementById('date-display');
+    if (clock) clock.textContent = formatTimeBR(n);
+    if (date) date.textContent = formatDateBR(n);
+    const dias = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+    const diasMaior = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+    const dEl = document.getElementById('dia-semana');
+    if (dEl) dEl.textContent = dias[n.getDay()];
+    const dN = document.getElementById('dia-nome');
+    if (dN) dN.textContent = diasMaior[n.getDay()];
+  };
+
+  function normalizeDateFields() {
+    ['rel-de','rel-ate'].forEach(function (id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const v = el.value || new Date();
+      if (el.type === 'date') el.type = 'text';
+      el.classList.add('date-br-field');
+      el.placeholder = 'dd/mm/aaaa';
+      el.value = formatDateBR(v);
+    });
+  }
+
+  function textNorm(value) {
+    return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  }
+  function qtyFromRecord(r) {
+    const m = String((r && r.detalhe) || '').match(/\d+/);
+    const n = m ? parseInt(m[0], 10) : 1;
+    return Number.isFinite(n) && n > 0 ? n : 1;
+  }
+  function recordDate(r) { return asDate(r && (r.created_at || r.hora || r.data)) || new Date(); }
+
+  function cadunicoStats() {
+    const registros = (window.S && Array.isArray(S.registros)) ? S.registros : [];
+    const stats = {
+      operacoes: { 'Atualizações': 0, 'Transferências': 0, 'Exclusões familiares': 0, 'Novos cadastros': 0, 'Revisões/Averiguações': 0 },
+      atualizacoes: { 'Unipessoais': 0, 'Rotina 2 anos': 0, 'Mudança de endereço': 0, 'Composição familiar': 0, 'Renda/trabalho': 0, 'Outras': 0 },
+      risco: { 'Normal': 0, 'Atenção': 0, 'Crítico': 0 },
+      total: registros.length
+    };
+    registros.forEach(function (r) {
+      const txt = textNorm([r.tipo, r.detalhe, r.categoria, r.subtipo].join(' '));
+      const qtd = qtyFromRecord(r);
+      const isAtualizacao = /atualiz|alterac|mudanca|mudanca de endereco|endereco|renda|trabalho|composicao|unipessoal|2 anos|dois anos/.test(txt);
+      if (/transfer/.test(txt)) stats.operacoes['Transferências'] += qtd;
+      else if (/exclus|cancel|retirad|obito|falec/.test(txt)) stats.operacoes['Exclusões familiares'] += qtd;
+      else if (/novo cadastro|novo|inclus/.test(txt)) stats.operacoes['Novos cadastros'] += qtd;
+      else if (/revis|averigu|pendente|qualificacao/.test(txt)) stats.operacoes['Revisões/Averiguações'] += qtd;
+      else if (isAtualizacao || /atend|atendimento/.test(txt)) stats.operacoes['Atualizações'] += qtd;
+
+      if (isAtualizacao || /atend|atendimento/.test(txt)) {
+        if (/unipessoal|mora sozinho|sozinh/.test(txt)) stats.atualizacoes['Unipessoais'] += qtd;
+        else if (/2 anos|dois anos|24 meses|desatualiz|revis/.test(txt)) stats.atualizacoes['Rotina 2 anos'] += qtd;
+        else if (/endereco|residencia|bairro|mudanca/.test(txt)) stats.atualizacoes['Mudança de endereço'] += qtd;
+        else if (/composicao|familiar|familia|nascimento|obito|membro|pessoa/.test(txt)) stats.atualizacoes['Composição familiar'] += qtd;
+        else if (/renda|trabalho|emprego|salario/.test(txt)) stats.atualizacoes['Renda/trabalho'] += qtd;
+        else stats.atualizacoes['Outras'] += qtd;
+      }
+      if (/critico|urgente|bloqueio|barreira|chuva forte|exclus/.test(txt)) stats.risco['Crítico'] += qtd;
+      else if (/atencao|pendente|averigu|revis|fila/.test(txt)) stats.risco['Atenção'] += qtd;
+      else stats.risco['Normal'] += qtd;
+    });
+    return stats;
+  }
+  window.cadunicoStats = cadunicoStats;
+
+  function chartColors() { return ['#2563eb', '#22d3ee', '#facc15', '#60a5fa', '#f97316', '#94a3b8']; }
+  function renderChart(id, type, dataObj) {
+    if (typeof Chart === 'undefined') return;
+    const canvas = document.getElementById(id);
+    if (!canvas) return;
+    const labels = Object.keys(dataObj);
+    const values = labels.map(function (k) { return dataObj[k]; });
+    const old = Chart.getChart(canvas);
+    if (old) old.destroy();
+    new Chart(canvas, { type: type, data: { labels: labels, datasets: [{ data: values, backgroundColor: chartColors(), borderColor: '#0f172a', borderWidth: 2 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: getComputedStyle(document.documentElement).getPropertyValue('--ink') || '#fff', boxWidth: 10 } } }, scales: type === 'bar' ? { x: { ticks: { color: 'rgba(148,163,184,.95)' }, grid: { display:false } }, y: { beginAtZero:true, ticks:{ color:'rgba(148,163,184,.95)', precision:0 }, grid:{ color:'rgba(148,163,184,.12)' } } } : {} } });
+  }
+
+  function ensureCadCharts() {
+    if (document.getElementById('cadunico-analytics-panel')) return;
+    const host = document.querySelector('#screen-dashboard .dashboard-charts-top');
+    if (!host || !host.parentElement) return;
+    const panel = document.createElement('section');
+    panel.id = 'cadunico-analytics-panel';
+    panel.className = 'cadunico-analytics-panel dash-panel dash-panel-resumo active';
+    panel.innerHTML = '<div class="card-head"><span class="mp mp-b">Análise</span><div class="card-title">Panorama CadÚnico</div></div><div class="cadunico-analytics-grid"><div class="card"><div class="card-head"><span class="mp mp-b">Operações</span><div class="card-title">Tipos de movimentação</div></div><div class="card-body"><div class="chart-wrap"><canvas id="chartCadOperacoes"></canvas></div></div></div><div class="card"><div class="card-head"><span class="mp mp-a">Atualizações</span><div class="card-title">Motivos de atualização</div></div><div class="card-body"><div class="chart-wrap"><canvas id="chartCadAtualizacoes"></canvas></div></div></div><div class="card"><div class="card-head"><span class="mp mp-r">Risco</span><div class="card-title">Qualificação cadastral</div></div><div class="card-body"><div class="chart-wrap"><canvas id="chartCadRisco"></canvas></div></div></div></div><div class="cadunico-analytics-note" id="cadunico-analytics-note">O painel cruza atualizações, transferências, exclusões, revisão de dois anos, unipessoais, mudança de endereço, composição familiar e renda/trabalho para orientar triagem e relatório.</div>';
+    const row = host.nextElementSibling;
+    if (row) row.insertAdjacentElement('afterend', panel); else host.insertAdjacentElement('afterend', panel);
+  }
+
+  function renderCadunicoAnalytics() {
+    ensureCadCharts();
+    const stats = cadunicoStats();
+    renderChart('chartCadOperacoes', 'doughnut', stats.operacoes);
+    renderChart('chartCadAtualizacoes', 'bar', stats.atualizacoes);
+    renderChart('chartCadRisco', 'doughnut', stats.risco);
+    const note = document.getElementById('cadunico-analytics-note');
+    if (note) note.innerText = 'Leitura técnica: atualizações de rotina devem observar endereço, composição familiar, renda/trabalho e cadastros unipessoais. Revisões e averiguações indicam prioridade de qualificação; transferências e exclusões familiares ajudam a medir retrabalho, mudança territorial e necessidade de orientação da equipe.';
+  }
+  window.renderCadunicoAnalytics = renderCadunicoAnalytics;
+
+  const carregarDashboardAntesCad = window.carregarDashboard;
+  if (typeof carregarDashboardAntesCad === 'function') {
+    window.carregarDashboard = async function carregarDashboard() {
+      const result = await carregarDashboardAntesCad.apply(this, arguments);
+      renderCadunicoAnalytics();
+      normalizeDateFields();
+      updateClock();
+      return result;
+    };
+  }
+
+  const exportBeforeCad = window.exportGovflowCSV;
+  window.exportGovflowCSV = function exportGovflowCSV(kind) {
+    let rows = [];
+    if (kind === 'historico') rows = [['id','tipo','unidade','detalhe','operador','data_hora'], ...((window.S && S.registros) || []).map(function (r) { return [r.id, r.tipo, r.unidade, r.detalhe, r.operador || '-', formatDateTimeBR(r.created_at || r.hora || r.data)]; })];
+    else if (kind === 'estoque' && typeof gfRead === 'function') rows = [['item','quantidade','unidade','local'], ...gfRead(window.GF_STOCK_KEY || 'govflow.stock.v1', []).map(function (i) { return [i.item, i.qty, i.unit, i.place]; })];
+    else if (kind === 'ordens' && typeof gfRead === 'function') rows = [['id','titulo','unidade','responsavel','prioridade','status','prazo'], ...gfRead(window.GF_ORDERS_KEY || 'govflow.orders.v1', []).map(function (o) { return [o.id, o.title, o.unit, o.owner, o.priority, o.status, formatDateBR(o.due)]; })];
+    if (!rows.length && typeof exportBeforeCad === 'function') return exportBeforeCad.apply(this, arguments);
+    const csv = rows.map(function (r) { return r.map(function (c) { return '"' + String(c ?? '').replace(/"/g,'""') + '"'; }).join(';'); }).join('\n');
+    const blob = new Blob([csv], { type:'text/csv;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'cadunico-' + (kind || 'dados') + '-' + formatDateBR(new Date()).replace(/\//g,'-') + '.csv';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  };
+
+  const buildBeforeCadAnalytics = window.buildReport;
+  if (typeof buildBeforeCadAnalytics === 'function') {
+    window.buildReport = function buildReport() {
+      normalizeDateFields();
+      const de = document.getElementById('rel-de');
+      const ate = document.getElementById('rel-ate');
+      const oldDe = de ? de.value : '';
+      const oldAte = ate ? ate.value : '';
+      if (de) de.value = toISODate(de.value) || de.value;
+      if (ate) ate.value = toISODate(ate.value) || ate.value;
+      const result = buildBeforeCadAnalytics.apply(this, arguments);
+      if (de) de.value = oldDe || formatDateBR(new Date());
+      if (ate) ate.value = oldAte || formatDateBR(new Date());
+      setTimeout(function () {
+        normalizeDateFields();
+        addCadunicoReportAnalysis();
+      }, 180);
+      setTimeout(addCadunicoReportAnalysis, 600);
+      return result;
+    };
+  }
+
+  function addCadunicoReportAnalysis() {
+    const report = document.getElementById('report-inner');
+    if (!report || report.querySelector('.cadunico-analysis-section')) return;
+    const stats = cadunicoStats();
+    const totalAtual = Object.values(stats.atualizacoes).reduce(function (a,b) { return a + b; }, 0);
+    const sec = document.createElement('div');
+    sec.className = 'report-section cadunico-analysis-section';
+    sec.innerHTML = '<div class="report-section-title">Panorama de Qualificação Cadastral</div>' +
+      '<p>O Cadastro Único identifica e caracteriza famílias de baixa renda e registra endereço, composição familiar, escolaridade, trabalho, renda e outras condições relevantes. Por isso, a análise operacional deve separar registros novos, atualizações, transferências, exclusões familiares, revisões e averiguações, pois cada grupo exige resposta administrativa diferente.</p>' +
+      '<p>As atualizações foram classificadas por motivo provável: unipessoais, rotina de dois anos, mudança de endereço, composição familiar e renda/trabalho. Essa leitura ajuda a coordenação a diferenciar atualização simples de caso que exige qualificação, busca ativa, revisão documental ou orientação ao responsável familiar.</p>' +
+      '<table class="rep-table"><tr><th>Grupo</th><th>Total</th><th>Uso na gestão</th></tr>' +
+      '<tr><td>Atualizações</td><td>' + stats.operacoes['Atualizações'] + '</td><td>Medem manutenção cadastral e demanda de rotina.</td></tr>' +
+      '<tr><td>Transferências</td><td>' + stats.operacoes['Transferências'] + '</td><td>Indicam deslocamento territorial e necessidade de validação de unidade/bairro.</td></tr>' +
+      '<tr><td>Exclusões familiares</td><td>' + stats.operacoes['Exclusões familiares'] + '</td><td>Sinalizam alteração de composição, óbito, duplicidade ou encerramento de vínculo.</td></tr>' +
+      '<tr><td>Revisões/Averiguações</td><td>' + stats.operacoes['Revisões/Averiguações'] + '</td><td>Apontam prioridade de qualificação cadastral e pendências a acompanhar.</td></tr>' +
+      '<tr><td>Subtipos de atualização</td><td>' + totalAtual + '</td><td>Unipessoais, endereço, composição familiar, renda/trabalho e revisão de dois anos.</td></tr></table>';
+    const footer = report.querySelector('.report-footer-govflow');
+    if (footer) report.insertBefore(sec, footer); else report.appendChild(sec);
+  }
+
+  function initCadunicoAnalytics() {
+    updateClock();
+    normalizeDateFields();
+    renderCadunicoAnalytics();
+    setInterval(updateClock, 30000);
+    setTimeout(renderCadunicoAnalytics, 900);
+  }
+  window.addEventListener('load', function () {
+    initCadunicoAnalytics();
+    setTimeout(initCadunicoAnalytics, 1200);
+  });
+})();
+</script>
+<!-- /CODEX CADUNICO LIGHT DATE ANALYTICS FINAL --><!-- CODEX CADUNICO SIMPLE TIME LABELS FINAL -->
+<script>
+/* CadUnico: remove data/hora longa dos badges visiveis */
+(function () {
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function hhmm() { const d = new Date(); return pad(d.getHours()) + ':' + pad(d.getMinutes()); }
+  function simplifyLiveTimeLabels() {
+    const iaStatus = document.getElementById('ia-status');
+    if (iaStatus) iaStatus.innerText = 'Atualizado ' + hhmm();
+    const auto = document.getElementById('insights-auto-badge');
+    if (auto) auto.innerText = hhmm();
+    document.querySelectorAll('#ia-narrativa, #ia-insights .ia-insight span, #ia-insights .ia-insight strong').forEach(function (el) {
+      el.innerText = (el.innerText || '')
+        .replace(/A IA operacional analisou/i, 'O mural analisou')
+        .replace(/IA operacional/gi, 'mural')
+        .replace(/\bNao\b/g, 'Não')
+        .replace(/\bcriticos\b/g, 'críticos')
+        .replace(/\beficiencia\b/g, 'eficiência')
+        .replace(/\bSugestao\b/g, 'Sugestão')
+        .replace(/\bmudancas\b/g, 'mudanças')
+        .replace(/\bperiodo\b/g, 'período')
+        .replace(/\bmedia\b/g, 'média')
+        .replace(/\bhorario\b/g, 'horário')
+        .replace(/\bConcentracao\b/g, 'Concentração')
+        .replace(/\bRecomendacao\b/g, 'Recomendação');
+    });
+  }
+  const oldAtualizarIA = window.atualizarIAOperacional;
+  if (typeof oldAtualizarIA === 'function') {
+    window.atualizarIAOperacional = function atualizarIAOperacional() {
+      const result = oldAtualizarIA.apply(this, arguments);
+      setTimeout(simplifyLiveTimeLabels, 60);
+      return result;
+    };
+  }
+  window.addEventListener('load', function () { simplifyLiveTimeLabels(); setTimeout(simplifyLiveTimeLabels, 1000); setInterval(simplifyLiveTimeLabels, 60000); });
+})();
+</script>
+<!-- /CODEX CADUNICO SIMPLE TIME LABELS FINAL --></body>
 </html>
