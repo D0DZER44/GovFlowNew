@@ -14383,5 +14383,311 @@ body.light .gf-live-action-item {
   window.addEventListener('resize', function(){ requestAnimationFrame(run); });
 })();
 </script>
-<!-- /CODEX GOVFLOW SIDEBAR LIVE TASKS REORG --></body>
+<!-- /CODEX GOVFLOW SIDEBAR LIVE TASKS REORG --><!-- CODEX GOVFLOW LIVE_ACTIONS_CHARTS_REORG -->
+<style>
+/* Resumo operacional: graficos + tarefas + acoes; Ao vivo: fontes, status e central */
+#screen-dashboard .dash-tab[data-tab="acoes"] { display: none !important; }
+#screen-dashboard .dash-panel-acoes { display: none !important; }
+#sec-unidades > .card:first-child,
+#sec-unidades > .sidebar-live-card,
+#sec-unidades .card:has(#last-upd) { display: none !important; }
+#cad-dashboard-graficos-fixos .gf-charts-task-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 340px) !important;
+  gap: 14px !important;
+  align-items: stretch !important;
+}
+#cad-dashboard-graficos-fixos .gf-charts-main-stack {
+  display: grid !important;
+  gap: 12px !important;
+  min-width: 0 !important;
+}
+#cad-dashboard-graficos-fixos .fixed-chart-grid.primary {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(220px, 1fr)) !important;
+  gap: 12px !important;
+  margin: 0 !important;
+}
+#cad-dashboard-graficos-fixos .fixed-chart-grid.primary .fixed-chart-card {
+  min-height: 270px !important;
+  padding: 12px !important;
+}
+#cad-dashboard-graficos-fixos .fixed-chart-grid.primary .chart-wrap,
+#cad-dashboard-graficos-fixos .fixed-chart-grid.primary canvas {
+  height: 205px !important;
+  max-height: 205px !important;
+}
+#cad-dashboard-graficos-fixos .fixed-chart-grid.secondary {
+  grid-template-columns: repeat(3, minmax(150px, 1fr)) !important;
+  gap: 10px !important;
+  margin-top: 0 !important;
+}
+#cad-dashboard-graficos-fixos .fixed-chart-grid.secondary .fixed-chart-card {
+  min-height: 178px !important;
+  max-height: 198px !important;
+  padding: 10px !important;
+}
+#cad-dashboard-graficos-fixos .fixed-chart-grid.secondary .chart-wrap,
+#cad-dashboard-graficos-fixos .fixed-chart-grid.secondary canvas {
+  height: 112px !important;
+  max-height: 112px !important;
+}
+.gf-summary-side-stack {
+  display: grid !important;
+  gap: 12px !important;
+  align-content: start !important;
+}
+.gf-summary-task-card,
+.gf-summary-actions-card,
+.gf-live-card,
+.gf-live-sources {
+  border: 1px solid rgba(103, 232, 249, .22) !important;
+  background: linear-gradient(180deg, rgba(15, 23, 42, .96), rgba(8, 13, 25, .98)) !important;
+  border-radius: 16px !important;
+  padding: 14px !important;
+  box-shadow: 0 18px 44px rgba(0,0,0,.20) !important;
+}
+.gf-summary-actions-card h3,
+.gf-summary-task-card h3,
+.gf-live-section-title {
+  margin: 0 0 11px !important;
+  text-align: center !important;
+  color: var(--ink) !important;
+  font-size: 15px !important;
+  font-weight: 950 !important;
+}
+.gf-summary-actions-list,
+.gf-summary-task-list,
+.gf-live-status-list,
+.gf-live-action-list,
+.gf-live-timeline { display: grid !important; gap: 9px !important; }
+.gf-summary-action-item,
+.gf-summary-task-item,
+.gf-live-status-item,
+.gf-live-action-item,
+.gf-live-timeline-item {
+  display: grid !important;
+  grid-template-columns: 24px minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 9px !important;
+  padding: 9px 10px !important;
+  border: 1px solid rgba(148, 163, 184, .13) !important;
+  border-radius: 11px !important;
+  background: rgba(15, 23, 42, .58) !important;
+}
+.gf-summary-action-dot,
+.gf-summary-task-dot,
+.gf-live-dot-soft {
+  width: 11px !important;
+  height: 11px !important;
+  border-radius: 999px !important;
+  justify-self: center !important;
+  box-shadow: 0 0 0 5px rgba(94, 234, 212, .08) !important;
+}
+.gf-summary-action-title,
+.gf-summary-task-title,
+.gf-live-main strong {
+  display: block !important;
+  color: var(--ink) !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  line-height: 1.25 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+.gf-summary-action-meta,
+.gf-summary-task-meta,
+.gf-live-main span {
+  display: block !important;
+  color: var(--ink2) !important;
+  font-size: 11.6px !important;
+  line-height: 1.35 !important;
+  margin-top: 3px !important;
+}
+.gf-live-layout {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+  margin-top: 14px !important;
+}
+.gf-live-card.wide,
+.gf-live-sources { grid-column: 1 / -1 !important; }
+.gf-live-sources #gf-official-sources-panel {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.gf-live-sources #gf-official-sources-panel::before { display: none !important; content: none !important; }
+.gf-live-sources #gf-official-sources-panel .gf-source-card { min-height: 142px !important; }
+html[data-theme="light"] .gf-summary-actions-card,
+html[data-theme="light"] .gf-summary-task-card,
+html[data-theme="light"] .gf-live-card,
+html[data-theme="light"] .gf-live-sources,
+html[data-theme="light"] .gf-summary-action-item,
+html[data-theme="light"] .gf-summary-task-item,
+html[data-theme="light"] .gf-live-status-item,
+html[data-theme="light"] .gf-live-action-item,
+html[data-theme="light"] .gf-live-timeline-item,
+body.light .gf-summary-actions-card,
+body.light .gf-summary-task-card,
+body.light .gf-live-card,
+body.light .gf-live-sources,
+body.light .gf-summary-action-item,
+body.light .gf-summary-task-item,
+body.light .gf-live-status-item,
+body.light .gf-live-action-item,
+body.light .gf-live-timeline-item {
+  background: #ffffff !important;
+  border-color: rgba(15,23,42,.12) !important;
+  box-shadow: 0 14px 36px rgba(15,23,42,.08) !important;
+}
+@media (max-width: 1280px) {
+  #cad-dashboard-graficos-fixos .gf-charts-task-row { grid-template-columns: 1fr !important; }
+  .gf-summary-side-stack { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+@media (max-width: 900px) {
+  #cad-dashboard-graficos-fixos .fixed-chart-grid.primary,
+  #cad-dashboard-graficos-fixos .fixed-chart-grid.secondary,
+  .gf-summary-side-stack,
+  .gf-live-layout,
+  .gf-live-sources #gf-official-sources-panel { grid-template-columns: 1fr !important; }
+  #cad-dashboard-graficos-fixos .fixed-chart-grid.primary .chart-wrap,
+  #cad-dashboard-graficos-fixos .fixed-chart-grid.primary canvas { height: 220px !important; max-height: 220px !important; }
+}
+</style>
+<script>
+(function(){
+  function qs(sel, root){ return (root || document).querySelector(sel); }
+  function qsa(sel, root){ return Array.from((root || document).querySelectorAll(sel)); }
+  function collectTasks(){
+    const tasks=[];
+    qsa('#lista-hoje .task-item, #lista-semana .task-item').forEach(function(item){
+      if(tasks.length>=4) return;
+      tasks.push({
+        title: qs('.task-name', item)?.textContent?.trim() || 'Tarefa',
+        meta: qs('.task-meta', item)?.textContent?.trim() || 'Sem prazo definido',
+        badge: qs('.task-badge', item)?.textContent?.trim() || 'Pendente',
+        color: qs('.task-dot', item)?.style?.background || 'var(--blue)'
+      });
+    });
+    if(!tasks.length) tasks.push({title:'Nenhuma tarefa cadastrada', meta:'Registre as demandas do dia para aparecerem aqui.', badge:'Livre', color:'var(--green)'});
+    return tasks;
+  }
+  function collectActions(){
+    const out=[];
+    qsa('.acao-item').forEach(function(item){
+      if(out.length>=4) return;
+      const title=qs('.acao-title', item)?.textContent?.trim();
+      if(!title) return;
+      out.push({
+        title:title,
+        meta: qs('.acao-desc', item)?.textContent?.trim() || 'Encaminhamento operacional.',
+        badge: qs('.mp', item)?.textContent?.trim() || 'Plano'
+      });
+    });
+    if(!out.length) out.push({title:'Nenhuma ação crítica', meta:'A operação segue sem ações prioritárias registradas.', badge:'OK'});
+    return out;
+  }
+  function itemHtml(cls, dotCls, titleCls, metaCls, item, color){
+    return '<div class="'+cls+'"><span class="'+dotCls+'" style="background:'+(color || item.color || 'var(--amber)')+'"></span><div><span class="'+titleCls+'">'+item.title+'</span><span class="'+metaCls+'">'+item.meta+'</span></div><span class="mp mp-b">'+item.badge+'</span></div>';
+  }
+  function rebuildSummaryChartsArea(){
+    const panel=document.getElementById('cad-dashboard-graficos-fixos');
+    if(!panel) return;
+    const primary=qs('.fixed-chart-grid.primary', panel);
+    const secondary=qs('.fixed-chart-grid.secondary', panel);
+    if(!primary) return;
+    let row=qs('.gf-charts-task-row', panel);
+    if(!row){ row=document.createElement('div'); row.className='gf-charts-task-row'; primary.parentNode.insertBefore(row, primary); }
+    let main=qs('.gf-charts-main-stack', row);
+    if(!main){ main=document.createElement('div'); main.className='gf-charts-main-stack'; row.insertBefore(main, row.firstChild); }
+    if(primary.parentElement!==main) main.appendChild(primary);
+    if(secondary && secondary.parentElement!==main) main.appendChild(secondary);
+    let side=qs('.gf-summary-side-stack', row);
+    if(!side){ side=document.createElement('aside'); side.className='gf-summary-side-stack'; row.appendChild(side); }
+    let taskCard=document.getElementById('gf-summary-task-card');
+    if(!taskCard){ taskCard=document.createElement('section'); taskCard.id='gf-summary-task-card'; taskCard.className='gf-summary-task-card'; }
+    let actionCard=document.getElementById('gf-summary-actions-card');
+    if(!actionCard){ actionCard=document.createElement('section'); actionCard.id='gf-summary-actions-card'; actionCard.className='gf-summary-actions-card'; }
+    if(taskCard.parentElement!==side) side.appendChild(taskCard);
+    if(actionCard.parentElement!==side) side.appendChild(actionCard);
+    taskCard.innerHTML='<h3>Tarefas</h3><div class="gf-summary-task-list">'+collectTasks().map(function(t){ return itemHtml('gf-summary-task-item','gf-summary-task-dot','gf-summary-task-title','gf-summary-task-meta',t,t.color); }).join('')+'</div>';
+    actionCard.innerHTML='<h3>Ações</h3><div class="gf-summary-actions-list">'+collectActions().map(function(a){ return itemHtml('gf-summary-action-item','gf-summary-action-dot','gf-summary-action-title','gf-summary-action-meta',a,'var(--amber)'); }).join('')+'</div>';
+  }
+  function ensureOfficialSourcesInsideLive(layout){
+    let box=document.getElementById('gf-live-sources-box');
+    if(!box){ box=document.createElement('section'); box.id='gf-live-sources-box'; box.className='gf-live-sources'; layout.appendChild(box); }
+    let sources=document.getElementById('gf-official-sources-panel');
+    if(!sources){ return; }
+    sources.classList.remove('dash-panel','dash-panel-resumo','active');
+    if(sources.parentElement!==box) box.appendChild(sources);
+    if(!box.querySelector('.gf-live-section-title')) box.insertAdjacentHTML('afterbegin','<h3 class="gf-live-section-title">Fontes públicas</h3>');
+  }
+  function ensureLiveFull(){
+    const panel=document.getElementById('cad-central-live-panel');
+    if(!panel) return;
+    const title=qs('.central-live-title', panel); if(title) title.textContent='Ao vivo';
+    const sub=qs('.central-live-sub', panel); if(sub) sub.textContent='Status, central de operações, plano de ação e fontes públicas.';
+    let layout=document.getElementById('gf-live-layout');
+    if(!layout){ layout=document.createElement('div'); layout.id='gf-live-layout'; layout.className='gf-live-layout'; panel.appendChild(layout); }
+    const fila=document.getElementById('fila-desc')?.textContent || '0 pessoas. Tempo médio 0 min';
+    const cad=document.getElementById('cad-desc')?.textContent || 'Novos, atualizações e revisões do dia.';
+    const liveStatus=[
+      {title:'Status de atendimentos', meta:'Atendimentos em andamento, guichês ativos e pausas operacionais.', badge:document.getElementById('live-cad')?.textContent || '0'},
+      {title:'Fila de espera', meta:fila, badge:document.getElementById('live-fila')?.textContent || 'Normal'},
+      {title:'Cadastros processados', meta:cad, badge:'Atualizado'},
+      {title:'Defesa Civil', meta:'Monitorar chuva forte, interdição, queda de barreira e impacto em visitas externas.', badge:'Monitorar'}
+    ];
+    let statusCard=document.getElementById('gf-live-status-card');
+    if(!statusCard){ statusCard=document.createElement('section'); statusCard.id='gf-live-status-card'; statusCard.className='gf-live-card'; layout.appendChild(statusCard); }
+    statusCard.innerHTML='<h3 class="gf-live-section-title">Status de atendimento</h3><div class="gf-live-status-list">'+liveStatus.map(function(s){ return '<div class="gf-live-status-item"><span class="gf-live-dot-soft" style="background:var(--teal)"></span><div class="gf-live-main"><strong>'+s.title+'</strong><span>'+s.meta+'</span></div><span class="mp mp-b">'+s.badge+'</span></div>'; }).join('')+'</div>';
+    let central=document.getElementById('gf-live-central-card');
+    if(!central){ central=document.createElement('section'); central.id='gf-live-central-card'; central.className='gf-live-card'; layout.appendChild(central); }
+    const centralItems=[
+      {title:'Clima - São Sebastião', meta:'Parcialmente nublado. Sem previsão de chuva.', badge:'26°C'},
+      {title:'Fila de espera', meta:fila, badge:document.getElementById('live-fila')?.textContent || 'Normal'},
+      {title:'Atendimentos em andamento', meta:'7 guichês ativos. 2 em pausa.', badge:'7'},
+      {title:'Cadastros processados', meta:cad, badge:document.getElementById('live-cad')?.textContent || '0'}
+    ];
+    central.innerHTML='<h3 class="gf-live-section-title">Central de operações</h3><div class="gf-live-timeline">'+centralItems.map(function(s){ return '<div class="gf-live-timeline-item"><span class="gf-live-dot-soft" style="background:var(--cyan)"></span><div class="gf-live-main"><strong>'+s.title+'</strong><span>'+s.meta+'</span></div><span class="mp mp-b">'+s.badge+'</span></div>'; }).join('')+'</div>';
+    let actions=document.getElementById('gf-live-actions-card');
+    if(!actions){ actions=document.createElement('section'); actions.id='gf-live-actions-card'; actions.className='gf-live-card wide'; layout.appendChild(actions); }
+    actions.innerHTML='<h3 class="gf-live-section-title">Plano de ação</h3><div class="gf-live-action-list">'+collectActions().map(function(a){ return '<div class="gf-live-action-item"><span class="gf-live-dot-soft" style="background:var(--amber)"></span><div class="gf-live-main"><strong>'+a.title+'</strong><span>'+a.meta+'</span></div><span class="mp mp-a">'+a.badge+'</span></div>'; }).join('')+'</div>';
+    ensureOfficialSourcesInsideLive(layout);
+  }
+  function rerouteActionsNav(){
+    qsa('#screen-dashboard .dash-tab[data-tab="acoes"]').forEach(function(t){ t.remove(); });
+    qsa('.nav-item').forEach(function(btn){
+      if(/Ações|Acoes/i.test(btn.textContent || '')){
+        btn.onclick=function(){ if(typeof window.goTo==='function') window.goTo('dashboard'); setTimeout(function(){ if(typeof window.setDashTab==='function') window.setDashTab('resumo'); const c=document.getElementById('gf-summary-actions-card'); if(c) c.scrollIntoView({behavior:'smooth', block:'center'}); },100); };
+      }
+    });
+  }
+  function hideOldUnitCentral(){
+    const sec=document.getElementById('sec-unidades');
+    if(!sec) return;
+    const first=sec.querySelector('.card');
+    if(first && /Painel Ao Vivo|Central de Operação|Central ao vivo/i.test(first.textContent || '')) first.style.setProperty('display','none','important');
+  }
+  function run(){ rebuildSummaryChartsArea(); ensureLiveFull(); rerouteActionsNav(); hideOldUnitCentral(); }
+  const oldSetDashTab=window.setDashTab;
+  if(typeof oldSetDashTab==='function' && !oldSetDashTab.__liveActionsChartsReorg){
+    const wrapped=function(){ const r=oldSetDashTab.apply(this,arguments); setTimeout(run,70); return r; };
+    wrapped.__liveActionsChartsReorg=true; window.setDashTab=wrapped;
+  }
+  const oldGoTo=window.goTo;
+  if(typeof oldGoTo==='function' && !oldGoTo.__liveActionsChartsReorg){
+    const wrappedGo=function(){ const r=oldGoTo.apply(this,arguments); setTimeout(run,90); return r; };
+    wrappedGo.__liveActionsChartsReorg=true; window.goTo=wrappedGo;
+  }
+  window.addEventListener('load', function(){ run(); setTimeout(run,700); setTimeout(run,1800); });
+  window.addEventListener('resize', function(){ requestAnimationFrame(run); });
+})();
+</script>
+<!-- /CODEX GOVFLOW LIVE_ACTIONS_CHARTS_REORG --></body>
 </html>
