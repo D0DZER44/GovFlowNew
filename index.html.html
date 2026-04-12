@@ -12984,5 +12984,543 @@ button[onclick="exportDailyTasksCSV()"] {
   text-align: center !important;
 }
 </style>
-<!-- /CODEX GOVFLOW CENTER KPI BUTTON TEXT FINAL --></body>
+<!-- /CODEX GOVFLOW CENTER KPI BUTTON TEXT FINAL --><!-- CODEX GOVFLOW SIDEBAR_TIMELINE_TAB_REORG_FINAL -->
+<style>
+/* Sidebar alinhada a esquerda, aba organizada em cards e Central de Operacao estilo timeline/stories */
+.sidebar .nav-item,
+.sidebar #nav-dashboard,
+.sidebar #nav-registros,
+.sidebar #nav-historico,
+.sidebar #nav-relatorio,
+.sidebar #nav-ordens,
+.sidebar #nav-estoque,
+.sidebar #nav-performance,
+.sidebar #nav-funcionarios {
+  width: calc(100% - 18px) !important;
+  min-height: 42px !important;
+  height: 42px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  text-align: left !important;
+  gap: 10px !important;
+  padding: 0 12px !important;
+  margin: 3px 9px !important;
+  border-radius: 9px !important;
+  font-size: 13.5px !important;
+  line-height: 1.1 !important;
+  white-space: nowrap !important;
+}
+.sidebar .nav-item svg,
+.sidebar .nav-item > span:not(.nav-badge) {
+  flex: 0 0 auto !important;
+}
+.sidebar .nav-item .nav-badge {
+  margin-left: auto !important;
+}
+.sidebar-section {
+  text-align: left !important;
+  padding-left: 12px !important;
+}
+/* Reorganizacao de telas administrativas/listas no estilo SaaS compacto da referencia */
+#screen-funcionarios .saas-grid,
+#screen-estoque .saas-grid,
+#screen-performance .saas-grid,
+#screen-ordens .daily-task-layout {
+  max-width: 1120px !important;
+  margin: 0 auto !important;
+  align-items: start !important;
+}
+#screen-funcionarios .saas-grid,
+#screen-estoque .saas-grid {
+  display: grid !important;
+  grid-template-columns: minmax(300px, 420px) minmax(0, 1fr) !important;
+  gap: 18px !important;
+}
+#screen-funcionarios .saas-card,
+#screen-estoque .saas-card,
+#screen-ordens .saas-card,
+#screen-performance .saas-card {
+  border-radius: 14px !important;
+  border: 1px solid rgba(148,163,184,.16) !important;
+  background: linear-gradient(180deg, rgba(17,29,49,.94), rgba(8,15,28,.90)) !important;
+  box-shadow: 0 18px 52px rgba(0,0,0,.22) !important;
+  overflow: hidden !important;
+}
+#screen-funcionarios .saas-card[style*="grid-column"],
+#screen-estoque .saas-card[style*="grid-column"] {
+  grid-column: auto !important;
+}
+#screen-funcionarios .saas-list,
+#screen-estoque .saas-list,
+#screen-ordens .saas-list {
+  display: grid !important;
+  gap: 10px !important;
+}
+#screen-funcionarios .saas-row,
+#screen-estoque .saas-row,
+#screen-ordens .daily-task-row,
+#screen-performance .performance-row {
+  border: 1px solid rgba(148,163,184,.14) !important;
+  border-radius: 12px !important;
+  background: rgba(15,23,42,.42) !important;
+  padding: 13px 14px !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+#screen-funcionarios .admin-user-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.2fr) minmax(170px, .9fr) auto auto minmax(220px, auto) !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+#screen-funcionarios .admin-user-actions,
+#screen-estoque .stock-actions,
+#screen-ordens .daily-task-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 8px !important;
+  flex-wrap: wrap !important;
+}
+#screen-funcionarios .admin-user-actions .btn,
+#screen-ordens .daily-task-actions .btn,
+#screen-estoque .stock-actions .btn {
+  min-width: 82px !important;
+  height: 36px !important;
+  padding: 0 12px !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+/* Central de Operacao no visual de timeline/stories */
+.sidebar-live-card {
+  margin: 16px 10px 12px !important;
+  padding: 0 !important;
+  background: #0b1220 !important;
+  border: 1px solid rgba(148,163,184,.16) !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+}
+.sidebar-live-card .card-head {
+  min-height: 52px !important;
+  padding: 13px 14px !important;
+  background: linear-gradient(135deg, rgba(15,23,42,.98), rgba(17,29,49,.92)) !important;
+  border-bottom: 1px solid rgba(148,163,184,.14) !important;
+}
+.sidebar-live-card .card-title {
+  width: 100% !important;
+  justify-content: flex-start !important;
+  text-align: left !important;
+  font-size: 12px !important;
+  letter-spacing: .08em !important;
+  text-transform: uppercase !important;
+}
+.sidebar-live-card .card-body {
+  padding: 10px 10px 12px !important;
+}
+.sidebar-live-card .live-timeline {
+  position: relative !important;
+  display: grid !important;
+  gap: 10px !important;
+  padding-left: 8px !important;
+  max-height: 310px !important;
+  overflow-y: auto !important;
+  scrollbar-width: thin !important;
+}
+.sidebar-live-card .live-timeline::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 21px !important;
+  top: 10px !important;
+  bottom: 10px !important;
+  width: 2px !important;
+  border-radius: 999px !important;
+  background: linear-gradient(180deg, #19c8e8, #2970ff, #17c6a3) !important;
+  opacity: .55 !important;
+}
+.sidebar-live-card .live-row {
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: 34px minmax(0,1fr) auto !important;
+  align-items: center !important;
+  gap: 9px !important;
+  min-height: 58px !important;
+  padding: 10px 9px !important;
+  border: 1px solid rgba(148,163,184,.14) !important;
+  border-radius: 13px !important;
+  background: rgba(15,23,42,.70) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.04) !important;
+}
+.sidebar-live-card .live-icon {
+  z-index: 1 !important;
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 999px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 2px solid #0b1220 !important;
+  outline: 2px solid rgba(25,200,232,.45) !important;
+  background: linear-gradient(135deg, rgba(25,200,232,.22), rgba(41,112,255,.24)) !important;
+  font-size: 13px !important;
+}
+.sidebar-live-card .live-body {
+  min-width: 0 !important;
+  text-align: left !important;
+}
+.sidebar-live-card .live-title {
+  color: #f8fafc !important;
+  font-size: 12.5px !important;
+  font-weight: 950 !important;
+  line-height: 1.15 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+.sidebar-live-card .live-desc {
+  margin-top: 3px !important;
+  color: rgba(203,213,225,.70) !important;
+  font-size: 11px !important;
+  line-height: 1.25 !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+}
+.sidebar-live-card .live-value {
+  justify-self: end !important;
+  min-width: 54px !important;
+  max-width: 76px !important;
+  padding: 5px 7px !important;
+  border-radius: 999px !important;
+  text-align: center !important;
+  font-size: 10.5px !important;
+  font-weight: 950 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  background: rgba(148,163,184,.10) !important;
+  border: 1px solid rgba(148,163,184,.16) !important;
+}
+@media (max-width: 1000px) {
+  #screen-funcionarios .saas-grid,
+  #screen-estoque .saas-grid,
+  #screen-ordens .daily-task-layout { grid-template-columns: 1fr !important; }
+  #screen-funcionarios .admin-user-row { grid-template-columns: 1fr !important; align-items: stretch !important; }
+  #screen-funcionarios .admin-user-actions { justify-content: center !important; }
+}
+</style>
+<script>
+(function () {
+  function tuneSidebarLeft() {
+    document.querySelectorAll('.sidebar .nav-item').forEach(function (btn) {
+      btn.style.setProperty('justify-content', 'flex-start', 'important');
+      btn.style.setProperty('text-align', 'left', 'important');
+      btn.style.setProperty('height', '42px', 'important');
+    });
+  }
+  function tuneLiveTimeline() {
+    const title = document.querySelector('.sidebar-live-card .card-title');
+    if (title && !/Central de Operação/i.test(title.textContent || '')) title.textContent = 'Central de Operação';
+    document.querySelectorAll('.sidebar-live-card .live-row').forEach(function (row, idx) {
+      row.style.setProperty('--story-index', idx);
+      row.classList.add('story-timeline-item');
+    });
+  }
+  function tuneBuggedTabs() {
+    document.querySelectorAll('#screen-funcionarios .saas-card[style], #screen-estoque .saas-card[style]').forEach(function (card) {
+      card.style.removeProperty('grid-column');
+    });
+  }
+  function applyReorg() {
+    tuneSidebarLeft();
+    tuneLiveTimeline();
+    tuneBuggedTabs();
+  }
+  window.addEventListener('load', function () { applyReorg(); setTimeout(applyReorg, 500); setTimeout(applyReorg, 1500); });
+  window.addEventListener('resize', function () { requestAnimationFrame(applyReorg); });
+  const oldGoTo = window.goTo;
+  if (typeof oldGoTo === 'function' && !oldGoTo.__sidebarTimelineReorg) {
+    const wrapped = function () { const r = oldGoTo.apply(this, arguments); setTimeout(applyReorg, 80); return r; };
+    wrapped.__sidebarTimelineReorg = true;
+    window.goTo = wrapped;
+  }
+})();
+</script>
+<!-- /CODEX GOVFLOW SIDEBAR_TIMELINE_TAB_REORG_FINAL --><!-- CODEX GOVFLOW LIGHT MODE HARD FIX -->
+<style>
+/* Correção forte do modo claro: contraste, sidebar e cards legíveis */
+html[data-theme="light"],
+html[data-theme="light"] body,
+body.light {
+  --gf-text: #0f172a !important;
+  --gf-muted: #475569 !important;
+  --gf-soft: #64748b !important;
+  --gf-line: rgba(15,23,42,.14) !important;
+  --ink: #0f172a !important;
+  --ink2: #334155 !important;
+  --ink3: #64748b !important;
+  --bg: #eef3f8 !important;
+  --bg1: #ffffff !important;
+  --bg2: #f8fafc !important;
+  --line: rgba(15,23,42,.14) !important;
+  background: linear-gradient(145deg, #eef3f8 0%, #f8fafc 52%, #e7f1f8 100%) !important;
+  color: #0f172a !important;
+}
+html[data-theme="light"] body::before,
+body.light::before { opacity: .08 !important; }
+html[data-theme="light"] .sidebar,
+body.light .sidebar {
+  background: #f8fafc !important;
+  border-right: 1px solid rgba(15,23,42,.14) !important;
+  box-shadow: 18px 0 40px rgba(15,23,42,.06) !important;
+}
+html[data-theme="light"] .sidebar .brand,
+html[data-theme="light"] .sidebar-logo,
+html[data-theme="light"] .sidebar-footer,
+body.light .sidebar .brand,
+body.light .sidebar-logo,
+body.light .sidebar-footer {
+  background: #f8fafc !important;
+  border-color: rgba(15,23,42,.14) !important;
+  color: #0f172a !important;
+}
+html[data-theme="light"] .sidebar-section,
+body.light .sidebar-section {
+  color: #64748b !important;
+  opacity: 1 !important;
+}
+html[data-theme="light"] .sidebar .nav-item,
+html[data-theme="light"] #nav-dashboard,
+html[data-theme="light"] #nav-registros,
+html[data-theme="light"] #nav-historico,
+html[data-theme="light"] #nav-relatorio,
+html[data-theme="light"] #nav-ordens,
+html[data-theme="light"] #nav-estoque,
+html[data-theme="light"] #nav-performance,
+html[data-theme="light"] #nav-funcionarios,
+body.light .sidebar .nav-item,
+body.light #nav-dashboard,
+body.light #nav-registros,
+body.light #nav-historico,
+body.light #nav-relatorio,
+body.light #nav-ordens,
+body.light #nav-estoque,
+body.light #nav-performance,
+body.light #nav-funcionarios {
+  background: transparent !important;
+  color: #334155 !important;
+  border-color: transparent !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+html[data-theme="light"] .sidebar .nav-item:hover,
+body.light .sidebar .nav-item:hover {
+  background: #eaf1fb !important;
+  color: #0f172a !important;
+  border-color: rgba(59,130,246,.24) !important;
+}
+html[data-theme="light"] .sidebar .nav-item.active,
+html[data-theme="light"] #nav-dashboard.active,
+html[data-theme="light"] #nav-registros.active,
+html[data-theme="light"] #nav-historico.active,
+html[data-theme="light"] #nav-relatorio.active,
+html[data-theme="light"] #nav-ordens.active,
+html[data-theme="light"] #nav-estoque.active,
+html[data-theme="light"] #nav-performance.active,
+html[data-theme="light"] #nav-funcionarios.active,
+body.light .sidebar .nav-item.active,
+body.light #nav-dashboard.active,
+body.light #nav-registros.active,
+body.light #nav-historico.active,
+body.light #nav-relatorio.active,
+body.light #nav-ordens.active,
+body.light #nav-estoque.active,
+body.light #nav-performance.active,
+body.light #nav-funcionarios.active {
+  background: #dbeafe !important;
+  color: #1d4ed8 !important;
+  border-color: rgba(37,99,235,.34) !important;
+  box-shadow: inset 3px 0 0 #2563eb !important;
+}
+html[data-theme="light"] .brand-title,
+html[data-theme="light"] .sidebar-user-name,
+html[data-theme="light"] .logo-name,
+body.light .brand-title,
+body.light .sidebar-user-name,
+body.light .logo-name { color: #0f172a !important; }
+html[data-theme="light"] .brand-sub,
+html[data-theme="light"] .sidebar-user-role,
+body.light .brand-sub,
+body.light .sidebar-user-role { color: #475569 !important; }
+html[data-theme="light"] .topbar,
+body.light .topbar {
+  background: rgba(248,250,252,.92) !important;
+  border-bottom-color: rgba(15,23,42,.12) !important;
+  color: #0f172a !important;
+}
+html[data-theme="light"] .card,
+html[data-theme="light"] .saas-card,
+html[data-theme="light"] .overview-card,
+html[data-theme="light"] .dash-panel,
+html[data-theme="light"] .rel-config,
+html[data-theme="light"] .rel-preview,
+html[data-theme="light"] .fixed-chart-card,
+html[data-theme="light"] .ia-operacional-panel,
+html[data-theme="light"] .govflow-public-panel,
+html[data-theme="light"] .resumo-important-card,
+html[data-theme="light"] .gf-source-card,
+html[data-theme="light"] #screen-dashboard .kpi-strip > *,
+html[data-theme="light"] .kpi-card,
+html[data-theme="light"] .kpi-cell,
+body.light .card,
+body.light .saas-card,
+body.light .overview-card,
+body.light .dash-panel,
+body.light .rel-config,
+body.light .rel-preview,
+body.light .fixed-chart-card,
+body.light .ia-operacional-panel,
+body.light .govflow-public-panel,
+body.light .resumo-important-card,
+body.light .gf-source-card,
+body.light #screen-dashboard .kpi-strip > *,
+body.light .kpi-card,
+body.light .kpi-cell {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: rgba(15,23,42,.14) !important;
+  box-shadow: 0 18px 46px rgba(15,23,42,.08) !important;
+}
+html[data-theme="light"] .card-head,
+html[data-theme="light"] .fixed-chart-title,
+html[data-theme="light"] .ia-operacional-head,
+html[data-theme="light"] .govflow-public-head,
+body.light .card-head,
+body.light .fixed-chart-title,
+body.light .ia-operacional-head,
+body.light .govflow-public-head {
+  background: linear-gradient(90deg, #eaf6ff, #f8fafc) !important;
+  color: #0f172a !important;
+  border-bottom-color: rgba(15,23,42,.12) !important;
+}
+html[data-theme="light"] .card-title,
+html[data-theme="light"] .fixed-chart-card h3,
+html[data-theme="light"] .page-hd-title,
+html[data-theme="light"] .report-section-title,
+html[data-theme="light"] .cad-resumo-title,
+html[data-theme="light"] .govflow-public-title,
+html[data-theme="light"] .ia-operacional-title,
+html[data-theme="light"] .kpi-value,
+html[data-theme="light"] .kpi-label,
+html[data-theme="light"] .kpi-sub,
+html[data-theme="light"] .resumo-important-title,
+html[data-theme="light"] .resumo-important-kicker,
+html[data-theme="light"] .resumo-important-desc,
+body.light .card-title,
+body.light .fixed-chart-card h3,
+body.light .page-hd-title,
+body.light .report-section-title,
+body.light .cad-resumo-title,
+body.light .govflow-public-title,
+body.light .ia-operacional-title,
+body.light .kpi-value,
+body.light .kpi-label,
+body.light .kpi-sub,
+body.light .resumo-important-title,
+body.light .resumo-important-kicker,
+body.light .resumo-important-desc {
+  color: #0f172a !important;
+  opacity: 1 !important;
+}
+html[data-theme="light"] .kpi-sub,
+html[data-theme="light"] .fixed-chart-sub,
+html[data-theme="light"] .cad-resumo-sub,
+html[data-theme="light"] .page-hd-sub,
+html[data-theme="light"] .saas-row-desc,
+html[data-theme="light"] .live-desc,
+html[data-theme="light"] .gf-source-card span,
+html[data-theme="light"] .govflow-public-sub,
+body.light .kpi-sub,
+body.light .fixed-chart-sub,
+body.light .cad-resumo-sub,
+body.light .page-hd-sub,
+body.light .saas-row-desc,
+body.light .live-desc,
+body.light .gf-source-card span,
+body.light .govflow-public-sub {
+  color: #475569 !important;
+  opacity: 1 !important;
+}
+html[data-theme="light"] .sidebar-live-card,
+body.light .sidebar-live-card {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: rgba(15,23,42,.14) !important;
+  box-shadow: 0 12px 34px rgba(15,23,42,.08) !important;
+}
+html[data-theme="light"] .sidebar-live-card .card-head,
+body.light .sidebar-live-card .card-head {
+  background: #f8fafc !important;
+  color: #0f172a !important;
+}
+html[data-theme="light"] .sidebar-live-card .live-row,
+body.light .sidebar-live-card .live-row {
+  background: #ffffff !important;
+  border-color: rgba(15,23,42,.12) !important;
+  color: #0f172a !important;
+}
+html[data-theme="light"] .sidebar-live-card .live-title,
+body.light .sidebar-live-card .live-title { color: #0f172a !important; }
+html[data-theme="light"] .sidebar-live-card .live-value,
+body.light .sidebar-live-card .live-value {
+  color: #166534 !important;
+  background: #dcfce7 !important;
+  border-color: rgba(22,101,52,.22) !important;
+}
+html[data-theme="light"] canvas,
+body.light canvas { filter: none !important; }
+html[data-theme="light"] .fixed-chart-card,
+body.light .fixed-chart-card { background: #ffffff !important; }
+html[data-theme="light"] .chart-wrap,
+body.light .chart-wrap { background: transparent !important; }
+html[data-theme="light"] .mp-b,
+body.light .mp-b { color: #075985 !important; background: #e0f2fe !important; }
+html[data-theme="light"] .mp-g,
+body.light .mp-g { color: #166534 !important; background: #dcfce7 !important; }
+html[data-theme="light"] .mp-a,
+body.light .mp-a { color: #92400e !important; background: #fef3c7 !important; }
+html[data-theme="light"] .mp-r,
+body.light .mp-r { color: #991b1b !important; background: #fee2e2 !important; }
+</style>
+<script>
+(function () {
+  function fixChartTextForLight() {
+    const light = document.documentElement.getAttribute('data-theme') === 'light' || document.body.classList.contains('light');
+    if (typeof Chart === 'undefined') return;
+    ['chartResumoUnidades','chartResumoHorario','chartResumoOperacoes','chartResumoMotivos','chartResumoQualificacao'].forEach(function (id) {
+      const canvas = document.getElementById(id);
+      const chart = canvas ? Chart.getChart(canvas) : null;
+      if (!chart) return;
+      const color = light ? '#334155' : '#cbd5e1';
+      if (chart.options && chart.options.plugins && chart.options.plugins.legend && chart.options.plugins.legend.labels) {
+        chart.options.plugins.legend.labels.color = color;
+      }
+      chart.update('none');
+    });
+  }
+  const oldToggle = window.toggleTheme;
+  if (typeof oldToggle === 'function' && !oldToggle.__lightHardFix) {
+    const wrapped = function () {
+      const result = oldToggle.apply(this, arguments);
+      setTimeout(fixChartTextForLight, 80);
+      return result;
+    };
+    wrapped.__lightHardFix = true;
+    window.toggleTheme = wrapped;
+  }
+  window.addEventListener('load', function () { fixChartTextForLight(); setTimeout(fixChartTextForLight, 800); });
+})();
+</script>
+<!-- /CODEX GOVFLOW LIGHT MODE HARD FIX --></body>
 </html>
