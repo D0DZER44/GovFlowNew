@@ -9671,5 +9671,412 @@ input.date-br-field { font-family: var(--mono, monospace) !important; letter-spa
   window.addEventListener('load', function () { simplifyLiveTimeLabels(); setTimeout(simplifyLiveTimeLabels, 1000); setInterval(simplifyLiveTimeLabels, 60000); });
 })();
 </script>
-<!-- /CODEX CADUNICO SIMPLE TIME LABELS FINAL --></body>
+<!-- /CODEX CADUNICO SIMPLE TIME LABELS FINAL --><!-- CODEX CADUNICO PIE CHARTS FINAL -->
+<style>
+/* CadUnico: graficos secundarios em pizza */
+.cadunico-analytics-grid {
+  grid-template-columns: repeat(3, minmax(260px, 1fr)) !important;
+  align-items: stretch !important;
+}
+.cadunico-analytics-grid .card {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 360px !important;
+}
+.cadunico-analytics-grid .card-body {
+  flex: 1 !important;
+  display: grid !important;
+  place-items: center !important;
+}
+.cadunico-analytics-grid .chart-wrap {
+  width: 100% !important;
+  max-width: 330px !important;
+  height: 260px !important;
+  margin: 0 auto !important;
+}
+.cadunico-analytics-grid canvas {
+  max-width: 100% !important;
+  max-height: 260px !important;
+}
+@media (max-width: 1100px) { .cadunico-analytics-grid { grid-template-columns: 1fr 1fr !important; } }
+@media (max-width: 720px) { .cadunico-analytics-grid { grid-template-columns: 1fr !important; } }
+</style>
+<script>
+/* CadUnico: refaz os graficos novos como pizza/doughnut */
+(function () {
+  function palette() { return ['#2563eb', '#22d3ee', '#facc15', '#60a5fa', '#f97316', '#94a3b8', '#a78bfa']; }
+  function chartTextColor() { return getComputedStyle(document.documentElement).getPropertyValue('--ink') || '#f8fafc'; }
+  function cleanData(obj) {
+    const out = {};
+    Object.keys(obj || {}).forEach(function (key) { out[key] = Number(obj[key]) || 0; });
+    const total = Object.values(out).reduce(function (a,b) { return a + b; }, 0);
+    return total ? out : { 'Sem registros': 1 };
+  }
+  function renderPie(id, dataObj) {
+    if (typeof Chart === 'undefined') return;
+    const canvas = document.getElementById(id);
+    if (!canvas) return;
+    const data = cleanData(dataObj);
+    const labels = Object.keys(data);
+    const values = labels.map(function (k) { return data[k]; });
+    const old = Chart.getChart(canvas);
+    if (old) old.destroy();
+    new Chart(canvas, {
+      type: 'doughnut',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: values,
+          backgroundColor: palette(),
+          borderColor: 'rgba(5,7,13,.92)',
+          borderWidth: 2,
+          hoverOffset: 8
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '58%',
+        layout: { padding: 8 },
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              color: chartTextColor(),
+              boxWidth: 10,
+              boxHeight: 10,
+              padding: 12,
+              font: { size: 11, weight: '700' }
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: function (ctx) {
+                const total = ctx.dataset.data.reduce(function (a,b) { return a + Number(b || 0); }, 0) || 1;
+                const val = Number(ctx.raw || 0);
+                const pct = Math.round((val / total) * 100);
+                return ' ' + ctx.label + ': ' + val + ' (' + pct + '%)';
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+  window.renderCadunicoAnalytics = function renderCadunicoAnalytics() {
+    if (typeof window.cadunicoStats !== 'function') return;
+    const stats = window.cadunicoStats();
+    const ensure = document.getElementById('cadunico-analytics-panel');
+    if (!ensure) {
+      const event = new Event('load');
+      setTimeout(function () { window.dispatchEvent(event); }, 0);
+      return;
+    }
+    renderPie('chartCadOperacoes', stats.operacoes);
+    renderPie('chartCadAtualizacoes', stats.atualizacoes);
+    renderPie('chartCadRisco', stats.risco);
+    const note = document.getElementById('cadunico-analytics-note');
+    if (note) note.innerText = 'Leitura técnica: os gráficos em pizza mostram a composição das movimentações do CadÚnico, separando atualizações, transferências, exclusões familiares, revisão/averiguação e motivos de atualização.';
+  };
+  window.addEventListener('load', function () { setTimeout(window.renderCadunicoAnalytics, 250); setTimeout(window.renderCadunicoAnalytics, 1300); });
+})();
+</script>
+<!-- /CODEX CADUNICO PIE CHARTS FINAL --><!-- CODEX CADUNICO TASKS STABLE UX FINAL -->
+<style>
+/* CadUnico: UX estavel, mural diario e tarefas */
+#dash-active-panel-slot {
+  display: grid !important;
+  gap: 18px !important;
+  width: 100% !important;
+  margin-top: 16px !important;
+}
+#dash-active-panel-slot .dash-panel { margin-top: 0 !important; }
+#screen-dashboard .dashboard-tabs { margin-bottom: 0 !important; }
+.ia-operacional-head,
+.insights-auto-head,
+.govflow-public-head {
+  grid-template-columns: minmax(0,1fr) auto !important;
+}
+.ia-operacional-head > div,
+.insights-auto-head > div,
+.govflow-public-head > div {
+  grid-column: 1 !important;
+  text-align: center !important;
+}
+.ia-operacional-badge,
+.insights-auto-badge,
+#govflow-public-status {
+  grid-column: 2 !important;
+  justify-self: end !important;
+  border-radius: 999px !important;
+  padding: 7px 10px !important;
+  font-weight: 900 !important;
+  border: 1px solid currentColor !important;
+}
+.status-fresh { color: #22d3ee !important; background: rgba(34,211,238,.10) !important; }
+.status-ok { color: #38bdf8 !important; background: rgba(56,189,248,.10) !important; }
+.status-stale { color: #facc15 !important; background: rgba(250,204,21,.12) !important; }
+.status-alert { color: #ef4444 !important; background: rgba(239,68,68,.12) !important; }
+.daily-task-layout { display: grid; grid-template-columns: minmax(320px, 440px) minmax(0,1fr); gap: 18px; align-items: start; }
+.daily-task-form, .daily-task-list-card { min-width: 0; }
+.daily-task-form .saas-card-body { display: grid; gap: 14px; }
+.daily-task-row {
+  display: grid !important;
+  grid-template-columns: minmax(0,1fr) auto auto !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 14px !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 10px !important;
+  background: color-mix(in srgb, var(--bg2) 92%, #2563eb 8%) !important;
+}
+.daily-task-title { font-weight: 900; color: var(--ink); margin-bottom: 4px; }
+.daily-task-meta { color: var(--ink2); font-size: 13px; line-height: 1.45; }
+.daily-task-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-start; }
+.daily-task-dashboard { display: grid; gap: 10px; }
+.daily-task-empty { color: var(--ink2); text-align: center; padding: 18px; border: 1px dashed var(--line2); border-radius: 10px; }
+@media (max-width: 980px) { .daily-task-layout { grid-template-columns: 1fr; } .daily-task-row { grid-template-columns: 1fr !important; } }
+</style>
+<script>
+/* CadUnico: remove pisca, renomeia abas e transforma ordens em tarefas */
+(function () {
+  const TASK_KEY = 'cadunico.tarefas.diarias.v1';
+  const STATUS = ['Aguardando', 'Em andamento', 'Concluída', 'Pendente', 'Cancelada'];
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function hhmm() { const d = new Date(); return pad(d.getHours()) + ':' + pad(d.getMinutes()); }
+  function brDateTime(value) { const d = value ? new Date(value) : new Date(); if (isNaN(d.getTime())) return String(value || '-'); return pad(d.getDate()) + '/' + pad(d.getMonth()+1) + '/' + d.getFullYear() + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()); }
+  function readTasks() { try { const v = JSON.parse(localStorage.getItem(TASK_KEY) || '[]'); return Array.isArray(v) ? v : []; } catch(e) { return []; } }
+  function writeTasks(tasks) { localStorage.setItem(TASK_KEY, JSON.stringify(tasks)); }
+  function esc(v) { return String(v ?? '').replace(/[&<>"]/g, function (ch) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]); }); }
+  function statusClass(s) { if (s === 'Concluída') return 'mp-g status-ok'; if (s === 'Em andamento') return 'mp-b status-fresh'; if (s === 'Pendente') return 'mp-a status-stale'; if (s === 'Cancelada') return 'mp-r status-alert'; return 'mp-a status-stale'; }
+
+  function renameUi() {
+    document.querySelectorAll('#nav-relatorio, .nav-item').forEach(function (el) {
+      if (/Gerar\s+Relat|Relat[oó]rio/i.test(el.textContent || '') && el.id === 'nav-relatorio') el.lastChild ? el.lastChild.textContent = 'Relatórios' : el.textContent = 'Relatórios';
+      if (/Ordens de Servi|Ordens\b/i.test(el.textContent || '')) el.innerHTML = el.innerHTML.replace(/Ordens de Serviço|Ordens/g, 'Tarefas Diárias');
+    });
+    document.querySelectorAll('.dash-tab').forEach(function (el) {
+      if (/Afazeres|Plano do Dia/i.test(el.textContent || '') || el.dataset.tab === 'afazeres') el.textContent = 'Mural diário';
+    });
+    document.querySelectorAll('body *').forEach(function (el) {
+      if (el.children.length || ['SCRIPT','STYLE','INPUT','TEXTAREA','SELECT','OPTION'].includes(el.tagName)) return;
+      const t = el.innerText || '';
+      if (/Plano do Dia|Afazeres/i.test(t)) el.innerText = t.replace(/Plano do Dia|Afazeres/gi, 'Mural diário');
+      if (/Gerar Relatórios|Gerar Relatorio|Gerar Relat/i.test(t)) el.innerText = t.replace(/Gerar Relatórios|Gerar Relatorio|Gerar Relatórios/gi, 'Relatórios');
+      if (/Ordens de Serviço|Ordens abertas|Nova ordem/i.test(t)) el.innerText = t.replace(/Ordens de Serviço/gi, 'Tarefas Diárias').replace(/Ordens abertas/gi, 'Tarefas registradas').replace(/Nova ordem/gi, 'Nova tarefa');
+    });
+  }
+
+  function ensureDashSlot() {
+    const tabs = document.querySelector('#screen-dashboard .dashboard-tabs');
+    if (!tabs) return null;
+    let slot = document.getElementById('dash-active-panel-slot');
+    if (!slot) {
+      slot = document.createElement('div');
+      slot.id = 'dash-active-panel-slot';
+      tabs.insertAdjacentElement('afterend', slot);
+    }
+    return slot;
+  }
+  window.setDashTab = function setDashTab(name) {
+    const target = name || 'resumo';
+    const slot = ensureDashSlot();
+    document.querySelectorAll('#screen-dashboard .dash-tab').forEach(function (btn) { btn.classList.toggle('active', btn.dataset.tab === target); });
+    const panels = Array.from(document.querySelectorAll('#screen-dashboard .dash-panel')).filter(function (p) { return !p.classList.contains('dashboard-tabs'); });
+    panels.forEach(function (panel) {
+      const active = panel.classList.contains('dash-panel-' + target);
+      panel.classList.toggle('active', active);
+      panel.style.display = active ? '' : 'none';
+      if (active && slot && panel.parentElement !== slot) slot.appendChild(panel);
+    });
+    const dash = document.getElementById('screen-dashboard');
+    if (dash) dash.classList.toggle('dashboard-overview-mode', target === 'resumo');
+    renameUi();
+  };
+
+  function ensureTasksScreen() {
+    const screen = document.getElementById('screen-ordens');
+    if (!screen || screen.dataset.dailyTasksBuilt === '1') return;
+    screen.dataset.dailyTasksBuilt = '1';
+    screen.innerHTML = '<div class="page-hd"><div><div class="page-hd-title">Tarefas Diárias</div><div class="page-hd-sub">Registre reuniões, solicitações, manutenção, pedidos e acompanhe se foram atendidos.</div></div><button class="btn btn-primary" onclick="exportDailyTasksCSV()">Exportar CSV</button></div><div class="page-body"><div class="daily-task-layout"><div class="saas-card daily-task-form"><div class="card-head"><span class="mp mp-b">Novo</span><div class="card-title">Adicionar tarefa</div></div><div class="saas-card-body"><div class="field"><label>Tarefa</label><input id="task-title" placeholder="Ex.: Reunião com equipe, solicitar ar-condicionado"></div><div class="g2"><div class="field"><label>Data e hora</label><input id="task-when" type="datetime-local"></div><div class="field"><label>Status</label><select id="task-status"><option>Aguardando</option><option>Em andamento</option><option>Concluída</option><option>Pendente</option><option>Cancelada</option></select></div></div><div class="g2"><div class="field"><label>Responsável</label><input id="task-owner" placeholder="Ex.: Coordenação, manutenção, TI"></div><div class="field"><label>Categoria</label><select id="task-category"><option>Rotina</option><option>Reunião</option><option>Solicitação</option><option>Manutenção</option><option>Sistema</option><option>Outro</option></select></div></div><div class="field"><label>Observação</label><textarea id="task-note" rows="3" placeholder="Detalhe o pedido, retorno recebido ou protocolo."></textarea></div><button class="btn btn-primary" onclick="saveDailyTask()">Salvar tarefa</button></div></div><div class="saas-card daily-task-list-card"><div class="card-head"><span class="mp mp-b" id="daily-task-count">0</span><div class="card-title">Histórico de tarefas</div></div><div class="saas-card-body"><div class="saas-list" id="daily-task-list"></div></div></div></div></div>';
+  }
+
+  window.saveDailyTask = function saveDailyTask() {
+    const title = document.getElementById('task-title')?.value.trim();
+    if (!title) { if (typeof toast === 'function') toast('Informe a tarefa', 'err'); return; }
+    const tasks = readTasks();
+    tasks.unshift({ id: Date.now(), title, when: document.getElementById('task-when')?.value || new Date().toISOString(), status: document.getElementById('task-status')?.value || 'Aguardando', owner: document.getElementById('task-owner')?.value || '-', category: document.getElementById('task-category')?.value || 'Rotina', note: document.getElementById('task-note')?.value || '', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+    writeTasks(tasks);
+    ['task-title','task-owner','task-note'].forEach(function (id) { const el = document.getElementById(id); if (el) el.value = ''; });
+    renderDailyTasks();
+    if (typeof toast === 'function') toast('Tarefa salva');
+  };
+  window.changeDailyTaskStatus = function changeDailyTaskStatus(id, status) {
+    const tasks = readTasks().map(function (t) { if (String(t.id) === String(id)) { t.status = status; t.updatedAt = new Date().toISOString(); } return t; });
+    writeTasks(tasks); renderDailyTasks();
+  };
+  window.deleteDailyTask = function deleteDailyTask(id) {
+    writeTasks(readTasks().filter(function (t) { return String(t.id) !== String(id); })); renderDailyTasks();
+  };
+  window.renderDailyTasks = function renderDailyTasks() {
+    ensureTasksScreen();
+    const tasks = readTasks();
+    const count = document.getElementById('daily-task-count');
+    if (count) count.textContent = tasks.length + ' tarefas';
+    const list = document.getElementById('daily-task-list');
+    if (list) list.innerHTML = tasks.length ? tasks.map(function (t) {
+      return '<div class="daily-task-row"><div><div class="daily-task-title">' + esc(t.title) + '</div><div class="daily-task-meta">' + esc(t.category) + ' · ' + esc(t.owner || '-') + ' · ' + brDateTime(t.when) + '<br>' + esc(t.note || 'Sem observação') + '<br>Atualizado em ' + brDateTime(t.updatedAt) + '</div></div><span class="mp ' + statusClass(t.status) + '">' + esc(t.status) + '</span><div class="daily-task-actions"><select onchange="changeDailyTaskStatus(' + t.id + ', this.value)">' + STATUS.map(function (s) { return '<option ' + (s === t.status ? 'selected' : '') + '>' + s + '</option>'; }).join('') + '</select><button class="btn btn-ghost btn-sm" onclick="deleteDailyTask(' + t.id + ')">Excluir</button></div></div>';
+    }).join('') : '<div class="daily-task-empty">Nenhuma tarefa registrada ainda.</div>';
+    renderDailyTasksDashboard();
+  };
+  window.exportDailyTasksCSV = function exportDailyTasksCSV() {
+    const rows = [['tarefa','data_hora','status','responsavel','categoria','observacao','atualizado_em']].concat(readTasks().map(function (t) { return [t.title, brDateTime(t.when), t.status, t.owner, t.category, t.note, brDateTime(t.updatedAt)]; }));
+    const csv = rows.map(function (r) { return r.map(function (c) { return '"' + String(c ?? '').replace(/"/g,'""') + '"'; }).join(';'); }).join('\n');
+    const blob = new Blob([csv], { type:'text/csv;charset=utf-8' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'tarefas-diarias-' + new Date().toISOString().slice(0,10) + '.csv'; a.click(); URL.revokeObjectURL(a.href);
+  };
+
+  function renderDailyTasksDashboard() {
+    const card = Array.from(document.querySelectorAll('#screen-dashboard .card')).find(function (c) { return /Mural diário|Plano do Dia|Afazeres/i.test(c.textContent || ''); });
+    if (!card) return;
+    const body = card.querySelector('.card-body') || card;
+    const tasks = readTasks().slice(0, 4);
+    body.innerHTML = '<div class="daily-task-dashboard">' + (tasks.length ? tasks.map(function (t) { return '<div class="daily-task-row"><div><div class="daily-task-title">' + esc(t.title) + '</div><div class="daily-task-meta">' + esc(t.category) + ' · ' + brDateTime(t.when) + '</div></div><span class="mp ' + statusClass(t.status) + '">' + esc(t.status) + '</span></div>'; }).join('') : '<div class="daily-task-empty">Nenhuma tarefa cadastrada para hoje.</div>') + '<button class="btn btn-primary btn-sm" onclick="goTo(\'ordens\')">Abrir tarefas diárias</button></div>';
+  }
+
+  function updateBadges() {
+    const ia = document.getElementById('ia-status');
+    if (ia) { ia.textContent = 'Atualizado ' + hhmm(); ia.className = 'ia-operacional-badge status-fresh'; }
+    const pub = document.getElementById('govflow-public-status');
+    if (pub) { pub.textContent = 'Atualizado ' + hhmm(); pub.className = 'mp status-fresh'; }
+    const inf = document.getElementById('insights-auto-badge');
+    if (inf) { inf.textContent = hhmm(); inf.className = 'insights-auto-badge status-fresh'; }
+  }
+
+  function updateCadChartsNoFlicker() {
+    if (typeof Chart === 'undefined' || typeof window.cadunicoStats !== 'function') return;
+    const stats = window.cadunicoStats();
+    const ids = { chartCadOperacoes: stats.operacoes, chartCadAtualizacoes: stats.atualizacoes, chartCadRisco: stats.risco };
+    Object.keys(ids).forEach(function (id) {
+      const canvas = document.getElementById(id);
+      if (!canvas) return;
+      const labels = Object.keys(ids[id]);
+      const data = labels.map(function (k) { return ids[id][k] || 0; });
+      const chart = Chart.getChart(canvas);
+      if (chart) { chart.config.type = 'doughnut'; chart.data.labels = labels; chart.data.datasets[0].data = data; chart.update('none'); }
+    });
+  }
+  window.renderCadunicoAnalytics = updateCadChartsNoFlicker;
+
+  const oldGoTo = window.goTo;
+  if (typeof oldGoTo === 'function') {
+    window.goTo = function goTo(section) {
+      const result = oldGoTo.apply(this, arguments);
+      if (section === 'ordens') setTimeout(function () { ensureTasksScreen(); renderDailyTasks(); }, 40);
+      if (section === 'dashboard') setTimeout(function () { setDashTab('resumo'); renderDailyTasksDashboard(); }, 80);
+      if (section === 'relatorio') setTimeout(renameUi, 80);
+      return result;
+    };
+  }
+
+  function initFinalTasksUx() {
+    renameUi(); ensureTasksScreen(); renderDailyTasks(); updateBadges(); updateCadChartsNoFlicker();
+    if (document.getElementById('screen-dashboard')?.classList.contains('active')) setDashTab(document.querySelector('#screen-dashboard .dash-tab.active')?.dataset.tab || 'resumo');
+  }
+  window.addEventListener('load', function () { initFinalTasksUx(); setTimeout(initFinalTasksUx, 600); setTimeout(initFinalTasksUx, 1600); setInterval(function () { updateBadges(); updateCadChartsNoFlicker(); }, 60000); });
+})();
+</script>
+<!-- /CODEX CADUNICO TASKS STABLE UX FINAL --><!-- CODEX CADUNICO TAB STATUS FINAL FIX -->
+<script>
+/* CadUnico: prioridade das abas e status publico sempre atualizado */
+(function () {
+  const tabClasses = ['unidades','equipe','cenarios','demanda','acoes','afazeres'];
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function hhmm() { const d = new Date(); return pad(d.getHours()) + ':' + pad(d.getMinutes()); }
+  function brDate(value) {
+    const raw = String(value || '').trim();
+    const m = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (m) return m[3] + '/' + m[2] + '/' + m[1];
+    return raw || (pad(new Date().getDate()) + '/' + pad(new Date().getMonth()+1) + '/' + new Date().getFullYear());
+  }
+  function forcePublicStatus() {
+    const pub = document.getElementById('govflow-public-status');
+    if (pub) { pub.textContent = 'Atualizado ' + hhmm(); pub.className = 'mp status-fresh'; }
+    const ia = document.getElementById('ia-status');
+    if (ia) { ia.textContent = 'Atualizado ' + hhmm(); ia.className = 'ia-operacional-badge status-fresh'; }
+  }
+  function normalizeReportDatesHard() {
+    ['rel-de','rel-ate'].forEach(function (id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const v = brDate(el.value || el.getAttribute('value'));
+      if (el.type === 'date') el.type = 'text';
+      el.value = v;
+      el.setAttribute('value', v);
+      el.placeholder = 'dd/mm/aaaa';
+      el.classList.add('date-br-field');
+    });
+  }
+  window.setDashTab = function setDashTab(name) {
+    const target = name || 'resumo';
+    let slot = document.getElementById('dash-active-panel-slot');
+    const tabs = document.querySelector('#screen-dashboard .dashboard-tabs');
+    if (!slot && tabs) { slot = document.createElement('div'); slot.id = 'dash-active-panel-slot'; tabs.insertAdjacentElement('afterend', slot); }
+    document.querySelectorAll('#screen-dashboard .dash-tab').forEach(function (btn) { btn.classList.toggle('active', btn.dataset.tab === target); });
+    Array.from(document.querySelectorAll('#screen-dashboard .dash-panel')).forEach(function (panel) {
+      const ownTabs = tabClasses.filter(function (t) { return panel.classList.contains('dash-panel-' + t); });
+      let active = false;
+      if (target === 'resumo') active = panel.classList.contains('dash-panel-resumo') && ownTabs.length === 0;
+      else active = panel.classList.contains('dash-panel-' + target) || (target === 'demanda' && panel.classList.contains('dash-panel-cenarios'));
+      panel.classList.toggle('active', active);
+      panel.style.display = active ? '' : 'none';
+      if (active && slot && panel.parentElement !== slot) slot.appendChild(panel);
+    });
+    const dash = document.getElementById('screen-dashboard');
+    if (dash) dash.classList.toggle('dashboard-overview-mode', target === 'resumo');
+  };
+  const oldGoTo = window.goTo;
+  if (typeof oldGoTo === 'function' && !oldGoTo.__cadTabFinalWrapped) {
+    const wrapped = function goTo(section) {
+      const result = oldGoTo.apply(this, arguments);
+      setTimeout(function () { if (section === 'dashboard') window.setDashTab('resumo'); normalizeReportDatesHard(); forcePublicStatus(); }, 120);
+      return result;
+    };
+    wrapped.__cadTabFinalWrapped = true;
+    window.goTo = wrapped;
+  }
+  window.addEventListener('load', function () {
+    setTimeout(function () { window.setDashTab(document.querySelector('#screen-dashboard .dash-tab.active')?.dataset.tab || 'resumo'); normalizeReportDatesHard(); forcePublicStatus(); }, 500);
+    setTimeout(function () { normalizeReportDatesHard(); forcePublicStatus(); }, 2500);
+    setTimeout(forcePublicStatus, 6000);
+    setInterval(function () { normalizeReportDatesHard(); forcePublicStatus(); }, 5000);
+  });
+})();
+</script>
+<!-- /CODEX CADUNICO TAB STATUS FINAL FIX --><!-- CODEX CADUNICO REPORT TASK LABEL FINAL -->
+<script>
+(function () {
+  function fixReportTaskLabels() {
+    const title = document.getElementById('rel-titulo');
+    if (title && /GovFlow/i.test(title.value || title.getAttribute('value') || '')) {
+      title.value = 'Relatório Geral CadÚnico';
+      title.setAttribute('value', 'Relatório Geral CadÚnico');
+    }
+    document.querySelectorAll('#report-model-tabs button, .report-model-btn').forEach(function (btn) {
+      if ((btn.dataset && btn.dataset.model === 'ordens') || /Ordens/i.test(btn.textContent || '')) btn.textContent = 'Tarefas';
+    });
+    document.querySelectorAll('.report-section-title').forEach(function (el) {
+      el.innerText = (el.innerText || '').replace(/Ordens de Serviço/gi, 'Tarefas Diárias').replace(/Estoque e Ordens/gi, 'Estoque e Tarefas');
+    });
+  }
+  const before = window.buildReport;
+  if (typeof before === 'function' && !before.__cadTaskReportWrapped) {
+    const wrapped = function buildReport() { const r = before.apply(this, arguments); setTimeout(fixReportTaskLabels, 120); setTimeout(fixReportTaskLabels, 600); return r; };
+    wrapped.__cadTaskReportWrapped = true;
+    window.buildReport = wrapped;
+  }
+  window.addEventListener('load', function () { fixReportTaskLabels(); setTimeout(fixReportTaskLabels, 1200); setInterval(fixReportTaskLabels, 5000); });
+})();
+</script>
+<!-- /CODEX CADUNICO REPORT TASK LABEL FINAL --></body>
 </html>
