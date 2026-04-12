@@ -14689,5 +14689,278 @@ body.light .gf-live-timeline-item {
   window.addEventListener('resize', function(){ requestAnimationFrame(run); });
 })();
 </script>
-<!-- /CODEX GOVFLOW LIVE_ACTIONS_CHARTS_REORG --></body>
+<!-- /CODEX GOVFLOW LIVE_ACTIONS_CHARTS_REORG --><!-- CODEX GOVFLOW FONTES_PUBLICAS_TAB_FINAL -->
+<style>
+/* Aba propria de Fontes publicas, ligada aos informativos oficiais do MDS */
+#nav-fontes {
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: 22px minmax(0,1fr) auto !important;
+  align-items: center !important;
+  gap: 10px !important;
+  width: calc(100% - 18px) !important;
+  min-height: 42px !important;
+  height: 42px !important;
+  padding: 0 12px !important;
+  margin: 3px 9px !important;
+  border-radius: 9px !important;
+  border: 1px solid transparent !important;
+  background: transparent !important;
+  color: rgba(226,232,240,.86) !important;
+  font-size: 13.5px !important;
+  font-weight: 900 !important;
+  text-align: left !important;
+}
+#nav-fontes:hover { background: rgba(148,163,184,.10) !important; color: #fff !important; border-color: rgba(148,163,184,.18) !important; }
+#nav-fontes.active { background: rgba(59,130,246,.16) !important; color: #dbeafe !important; border-color: rgba(59,130,246,.30) !important; box-shadow: inset 3px 0 0 #3b82f6 !important; }
+#fontes-publicas-panel {
+  border: 1px solid rgba(103,232,249,.24) !important;
+  border-radius: 18px !important;
+  background: linear-gradient(180deg, rgba(15,23,42,.92), rgba(8,13,25,.98)) !important;
+  padding: 20px !important;
+  margin: 14px 0 !important;
+}
+#fontes-publicas-panel:not(.active) { display: none !important; }
+.fontes-publicas-head { text-align: center !important; margin-bottom: 18px !important; }
+.fontes-publicas-head h2 { margin: 0 !important; color: var(--ink) !important; font-size: clamp(22px,2vw,30px) !important; font-weight: 950 !important; }
+.fontes-publicas-head p { max-width: 820px !important; margin: 8px auto 0 !important; color: var(--ink2) !important; line-height: 1.55 !important; }
+.fontes-publicas-grid { display: grid !important; grid-template-columns: repeat(3, minmax(0,1fr)) !important; gap: 14px !important; }
+.fontes-publicas-card {
+  min-height: 168px !important;
+  padding: 18px !important;
+  border-radius: 12px !important;
+  background: #060b16 !important;
+  border: 1px solid rgba(148,163,184,.16) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+}
+.fontes-publicas-card strong { color: var(--ink) !important; font-size: 16px !important; line-height: 1.25 !important; }
+.fontes-publicas-card span:not(.mp) { color: var(--ink2) !important; line-height: 1.5 !important; font-size: 13.5px !important; }
+.fontes-publicas-card a { margin-top: auto !important; color: #67e8f9 !important; font-weight: 950 !important; text-decoration: none !important; }
+.fontes-publicas-card .mp { width: fit-content !important; min-width: 0 !important; padding: 5px 11px !important; }
+html[data-theme="light"] #fontes-publicas-panel,
+body.light #fontes-publicas-panel { background: #f8fafc !important; border-color: rgba(15,23,42,.14) !important; }
+html[data-theme="light"] .fontes-publicas-card,
+body.light .fontes-publicas-card { background: #ffffff !important; border-color: rgba(15,23,42,.12) !important; }
+html[data-theme="light"] #nav-fontes,
+body.light #nav-fontes { color: #334155 !important; }
+@media (max-width: 980px) { .fontes-publicas-grid { grid-template-columns: 1fr !important; } }
+</style>
+<script>
+(function(){
+  const MDS_INFORMES_URL = 'https://www.gov.br/mds/pt-br/acoes-e-programas/cadastro-unico/informes';
+  const MDS_CADUNICO_URL = 'https://www.gov.br/mds/pt-br/acoes-e-programas/cadastro-unico';
+  const MDS_DADOS_URL = 'https://www.gov.br/mds/pt-br/acesso-a-informacao/carta-de-servicos/avaliacao-e-gestao-da-informacao-e-cadastro-unico/cadastro-unico/politica-utilizacao-dados';
+  function icon(){ return '<svg class="gf-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>'; }
+  function ensureNav(){
+    const sidebar=document.getElementById('sidebar') || document.querySelector('.sidebar');
+    if(!sidebar) return;
+    let nav=document.getElementById('nav-fontes');
+    if(!nav){
+      nav=document.createElement('button'); nav.id='nav-fontes'; nav.type='button'; nav.className='nav-item';
+      const live=document.getElementById('nav-live'); const footer=sidebar.querySelector('.sidebar-footer');
+      sidebar.insertBefore(nav, live ? live.nextSibling : footer || null);
+    }
+    nav.innerHTML=icon() + '<span class="gf-nav-label">Fontes públicas</span>';
+    nav.onclick=function(){ showFontes(); };
+  }
+  function ensureDashboardTab(){
+    const tabs=document.querySelector('#screen-dashboard .dashboard-tabs');
+    if(tabs && !tabs.querySelector('.dash-tab[data-tab="fontes"]')){
+      tabs.insertAdjacentHTML('beforeend','<button class="dash-tab" data-tab="fontes" onclick="gfShowFontesPublicas && gfShowFontesPublicas()">Fontes públicas</button>');
+    }
+  }
+  function card(label,title,desc,url,sev){
+    return '<article class="fontes-publicas-card"><span class="mp '+(sev||'mp-b')+'">'+label+'</span><strong>'+title+'</strong><span>'+desc+'</span><a href="'+url+'" target="_blank" rel="noopener">Abrir fonte oficial</a></article>';
+  }
+  function ensurePanel(){
+    const dash=document.getElementById('screen-dashboard');
+    if(!dash) return null;
+    let panel=document.getElementById('fontes-publicas-panel');
+    if(!panel){
+      panel=document.createElement('section'); panel.id='fontes-publicas-panel'; panel.className='dash-panel dash-panel-fontes';
+      const ref=document.getElementById('cad-central-live-panel') || document.getElementById('cad-dashboard-graficos-fixos') || document.querySelector('#screen-dashboard .dashboard-tabs');
+      if(ref) ref.insertAdjacentElement('afterend', panel); else dash.appendChild(panel);
+    }
+    panel.innerHTML='<div class="fontes-publicas-head"><h2>Fontes públicas</h2><p>Informes oficiais do MDS, página principal do Cadastro Único e orientação sobre acesso a dados. Quando o navegador permitir, o GovFlow tenta conferir a página de informes; se bloquear, os links oficiais continuam disponíveis.</p></div><div class="fontes-publicas-grid" id="fontes-publicas-grid">'+
+      card('Novo','Informe Cadastro Único 89','Mantenha a segurança reforçada da conta Gov.br para o Portal do Cadastro Único. Publicado em 02/04/2026.',MDS_INFORMES_URL,'mp-g')+
+      card('MDS','Informes Cadastro Único','Página oficial de informes do Ministério do Desenvolvimento e Assistência Social para acompanhamento da gestão municipal.',MDS_INFORMES_URL,'mp-b')+
+      card('Dados','Dados do Cadastro Único','Dados identificados exigem solicitação formal/autorização. Use esta fonte para regras de acesso e utilização.',MDS_DADOS_URL,'mp-b')+
+      card('Portal','Cadastro Único - MDS','Página central do Cadastro Único com notícias, orientações, programas e materiais de referência.',MDS_CADUNICO_URL,'mp-a')+
+      '</div>';
+    return panel;
+  }
+  function setOnlyFontesActive(){
+    document.querySelectorAll('.screen').forEach(function(s){ s.classList.toggle('active', s.id === 'screen-dashboard'); });
+    document.querySelectorAll('#screen-dashboard .dash-tab').forEach(function(t){ t.classList.toggle('active', t.dataset.tab === 'fontes'); });
+    document.querySelectorAll('#screen-dashboard .dash-panel').forEach(function(p){ p.classList.toggle('active', p.id === 'fontes-publicas-panel'); });
+    document.querySelectorAll('.nav-item').forEach(function(n){ n.classList.remove('active'); });
+    const nav=document.getElementById('nav-fontes'); if(nav) nav.classList.add('active');
+  }
+  function showFontes(){ ensureNav(); ensureDashboardTab(); ensurePanel(); setOnlyFontesActive(); updateInformes(); }
+  function updateInformes(){
+    const grid=document.getElementById('fontes-publicas-grid');
+    if(!grid || !window.fetch) return;
+    fetch(MDS_INFORMES_URL, { cache:'no-store' }).then(function(r){ return r.ok ? r.text() : ''; }).then(function(html){
+      if(!html) return;
+      const m=html.match(/Informe\s+Cadastro\s+Único\s+(\d+)[\s\S]{0,260}?publicado\s+([0-9\/]{10})/i);
+      if(!m) return;
+      const first=grid.querySelector('.fontes-publicas-card strong');
+      const desc=grid.querySelector('.fontes-publicas-card span:not(.mp)');
+      if(first) first.textContent='Informe Cadastro Único ' + m[1];
+      if(desc) desc.textContent='Último informe conferido na página oficial do MDS. Publicado em ' + m[2] + '.';
+    }).catch(function(){ /* CORS/offline: mantem fallback oficial */ });
+  }
+  window.gfShowFontesPublicas=showFontes;
+  const oldSetDashTab=window.setDashTab;
+  window.setDashTab=function(name){ if(name==='fontes'){ showFontes(); return; } if(typeof oldSetDashTab==='function') return oldSetDashTab.apply(this, arguments); };
+  document.addEventListener('click', function(ev){
+    const target=ev.target.closest && ev.target.closest('#nav-fontes, .dash-tab[data-tab="fontes"]');
+    if(!target) return;
+    ev.preventDefault(); ev.stopPropagation(); ev.stopImmediatePropagation(); showFontes();
+  }, true);
+  window.addEventListener('load', function(){ ensureNav(); ensureDashboardTab(); ensurePanel(); setTimeout(updateInformes, 600); });
+})();
+</script>
+<!-- /CODEX GOVFLOW FONTES_PUBLICAS_TAB_FINAL --><!-- CODEX GOVFLOW FAST_NAV_STATUS_CLEAN_V2 -->
+<style>
+/* Camada final enxuta: cores por gravidade + navegação sem delay */
+.mp,.task-badge,.func-status,.live-value,.central-live-badge,.public-new,.status-pill,.gov-status-pill,
+.gf-summary-task-item .mp,.gf-summary-action-item .mp,.gf-live-status-item .mp,.gf-live-action-item .mp,.gf-live-timeline-item .mp {
+  border: 1px solid transparent !important;
+  border-radius: 999px !important;
+  font-weight: 950 !important;
+  letter-spacing: 0 !important;
+  white-space: nowrap !important;
+  text-align: center !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+.gf-sev-red,.mp-r,.task-badge.gf-sev-red,.central-live-badge.gf-sev-red {
+  color:#fecdd3 !important; background:rgba(244,63,94,.18) !important; border-color:rgba(251,113,133,.46) !important; box-shadow:0 0 0 3px rgba(244,63,94,.08) !important;
+}
+.gf-sev-yellow,.mp-a,.task-badge.gf-sev-yellow,.central-live-badge.gf-sev-yellow {
+  color:#fde68a !important; background:rgba(245,158,11,.18) !important; border-color:rgba(251,191,36,.46) !important; box-shadow:0 0 0 3px rgba(245,158,11,.08) !important;
+}
+.gf-sev-green,.mp-g,.task-badge.gf-sev-green,.central-live-badge.gf-sev-green {
+  color:#bbf7d0 !important; background:rgba(34,197,94,.18) !important; border-color:rgba(74,222,128,.46) !important; box-shadow:0 0 0 3px rgba(34,197,94,.08) !important;
+}
+.gf-sev-blue,.mp-b,.mp-t,.task-badge.gf-sev-blue,.central-live-badge.gf-sev-blue,.public-new {
+  color:#bae6fd !important; background:rgba(14,165,233,.18) !important; border-color:rgba(56,189,248,.46) !important; box-shadow:0 0 0 3px rgba(14,165,233,.08) !important;
+}
+.gf-sev-muted { color:#cbd5e1 !important; background:rgba(148,163,184,.14) !important; border-color:rgba(148,163,184,.30) !important; }
+.sidebar .nav-item,#nav-live,#nav-ordens,#nav-fontes,.dash-tab,.btn,button { transition-duration:.06s !important; }
+#screen-dashboard .dash-tab[data-tab="acoes"], #screen-dashboard .dash-tab[data-tab="afazeres"] { display:none !important; }
+html[data-theme="light"] .gf-sev-red,body.light .gf-sev-red,html[data-theme="light"] .mp-r,body.light .mp-r { color:#991b1b !important; background:#fee2e2 !important; border-color:rgba(153,27,27,.30) !important; }
+html[data-theme="light"] .gf-sev-yellow,body.light .gf-sev-yellow,html[data-theme="light"] .mp-a,body.light .mp-a { color:#92400e !important; background:#fef3c7 !important; border-color:rgba(146,64,14,.30) !important; }
+html[data-theme="light"] .gf-sev-green,body.light .gf-sev-green,html[data-theme="light"] .mp-g,body.light .mp-g { color:#166534 !important; background:#dcfce7 !important; border-color:rgba(22,101,52,.30) !important; }
+html[data-theme="light"] .gf-sev-blue,body.light .gf-sev-blue,html[data-theme="light"] .mp-b,html[data-theme="light"] .mp-t,body.light .mp-b,body.light .mp-t { color:#075985 !important; background:#e0f2fe !important; border-color:rgba(7,89,133,.30) !important; }
+</style>
+<script>
+(function(){
+  function qsa(sel, root){ return Array.from((root || document).querySelectorAll(sel)); }
+  function norm(text){ return (text || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase(); }
+  function classifyText(text){
+    const t=norm(text);
+    if(/critico|critica|urgente|alto|alta|atrasado|bloqueado|risco|erro|pendente|maxima|parada|excluir|remover/.test(t)) return 'gf-sev-red';
+    if(/atencao|aguardando|medio|media|planejado|semana|monitorar|revisar|alerta|repor|hoje|andamento/.test(t)) return 'gf-sev-yellow';
+    if(/livre|normal|bom|boa|ok|feito|concluido|confirmado|ativo|atualizado|sem pendencias|sistema ok|regular/.test(t)) return 'gf-sev-green';
+    if(/info|base|modelo|dados|plano|novo|administrador|coordenacao|revisao|fontes|mds|oficial/.test(t)) return 'gf-sev-blue';
+    return '';
+  }
+  function colorizeBadges(){
+    qsa('.mp,.task-badge,.func-status,.live-value,.central-live-badge,.public-new,.status-pill,.gov-status-pill').forEach(function(el){
+      el.classList.remove('gf-sev-red','gf-sev-yellow','gf-sev-green','gf-sev-blue','gf-sev-muted');
+      const cls=classifyText(el.textContent || el.getAttribute('aria-label') || '');
+      if(cls) el.classList.add(cls);
+    });
+  }
+  function activateScreen(screen){
+    qsa('.screen').forEach(function(s){ s.classList.toggle('active', s.id === 'screen-' + screen); });
+    if(screen === 'estoque' && typeof window.renderStock === 'function') window.renderStock();
+    if(screen === 'performance' && typeof window.renderPerformance === 'function') window.renderPerformance();
+    if(screen === 'funcionarios' && typeof window.renderFuncionarios === 'function') window.renderFuncionarios();
+    if(screen === 'historico' && typeof window.carregarHistorico === 'function') window.carregarHistorico();
+  }
+  function activateDashboardTab(tab){
+    const target = tab === 'demanda' ? 'cenarios' : (tab || 'resumo');
+    if(target === 'fontes' && typeof window.gfShowFontesPublicas === 'function') { window.gfShowFontesPublicas(); colorizeBadges(); return; }
+    activateScreen('dashboard');
+    qsa('#screen-dashboard .dash-tab').forEach(function(btn){ btn.classList.toggle('active', btn.dataset.tab === target); });
+    qsa('#screen-dashboard .dash-panel').forEach(function(panel){
+      const on = panel.classList.contains('dash-panel-' + target) || (target === 'resumo' && panel.id === 'cad-dashboard-graficos-fixos') || (target === 'live' && panel.id === 'cad-central-live-panel');
+      panel.classList.toggle('active', !!on);
+      if(panel.id === 'cad-dashboard-graficos-fixos') panel.classList.toggle('force-show-resumo', target === 'resumo');
+    });
+    if(target === 'live') { const live=document.getElementById('cad-central-live-panel'); if(live) live.classList.add('active'); }
+    if(target === 'resumo') { const charts=document.getElementById('cad-dashboard-graficos-fixos'); if(charts) charts.classList.add('active','force-show-resumo'); }
+    if(typeof window.removeChartDuplicates === 'function') window.removeChartDuplicates();
+    if(typeof window.fitCharts === 'function') window.fitCharts();
+    colorizeBadges();
+  }
+  function getRoute(btn){
+    const text=norm((btn.textContent || '') + ' ' + (btn.getAttribute('onclick') || '') + ' ' + (btn.id || ''));
+    if(/fontes/.test(text)) return {screen:'dashboard', tab:'fontes'};
+    if(/ao vivo|live/.test(text)) return {screen:'dashboard', tab:'live'};
+    if(/unidades/.test(text)) return {screen:'dashboard', tab:'unidades'};
+    if(/equipe/.test(text)) return {screen:'dashboard', tab:'equipe'};
+    if(/demanda|cenario/.test(text)) return {screen:'dashboard', tab:'cenarios'};
+    if(/acao|acoes/.test(text)) return {screen:'dashboard', tab:'resumo', focus:'gf-summary-actions-card'};
+    if(/tarefa|ordens|afazeres/.test(text)) return {screen:'dashboard', tab:'resumo', focus:'gf-summary-task-card'};
+    if(/dashboard|resumo/.test(text)) return {screen:'dashboard', tab:'resumo'};
+    if(/registros/.test(text)) return {screen:'registros'};
+    if(/historico/.test(text)) return {screen:'historico'};
+    if(/relatorio|relatorios/.test(text)) return {screen:'relatorio'};
+    if(/estoque/.test(text)) return {screen:'estoque'};
+    if(/performance/.test(text)) return {screen:'performance'};
+    if(/administracao|funcionario/.test(text)) return {screen:'funcionarios'};
+    return null;
+  }
+  function routeNow(btn){
+    const route=getRoute(btn); if(!route) return false;
+    activateScreen(route.screen);
+    qsa('.nav-item').forEach(function(n){ n.classList.remove('active'); });
+    btn.classList.add('active');
+    if(route.screen === 'dashboard') activateDashboardTab(route.tab || 'resumo');
+    if(route.focus){ const el=document.getElementById(route.focus); if(el) el.scrollIntoView({behavior:'auto', block:'nearest'}); }
+    colorizeBadges();
+    return true;
+  }
+  function installFastNavigation(){
+    if(document.__gfFastNavV2) return; document.__gfFastNavV2=true;
+    document.addEventListener('click', function(ev){
+      const btn=ev.target.closest && ev.target.closest('.sidebar .nav-item, #cad-dashboard-nav-sidebar .nav-item');
+      if(!btn) return;
+      if(routeNow(btn)){ ev.preventDefault(); ev.stopPropagation(); ev.stopImmediatePropagation(); }
+    }, true);
+    document.addEventListener('click', function(ev){
+      const tab=ev.target.closest && ev.target.closest('#screen-dashboard .dash-tab');
+      if(!tab || !tab.dataset.tab) return;
+      ev.preventDefault(); ev.stopPropagation(); ev.stopImmediatePropagation();
+      activateDashboardTab(tab.dataset.tab);
+    }, true);
+  }
+  function patchGlobals(){
+    window.setDashTab=function(name){ activateDashboardTab(name || 'resumo'); };
+    window.gfFastGoTo=function(screen, tab){ activateScreen(screen || 'dashboard'); if(screen === 'dashboard' || tab) activateDashboardTab(tab || 'resumo'); colorizeBadges(); };
+  }
+  function cleanupRuntime(){
+    qsa('#screen-dashboard .dash-tab[data-tab="acoes"], #screen-dashboard .dash-tab[data-tab="afazeres"]').forEach(function(el){ el.remove(); });
+    qsa('.sidebar-live-card').forEach(function(el){ el.remove(); });
+  }
+  function run(){ cleanupRuntime(); colorizeBadges(); installFastNavigation(); patchGlobals(); }
+  window.addEventListener('load', function(){ run(); setTimeout(run,300); setTimeout(run,900); });
+  window.addEventListener('resize', function(){ requestAnimationFrame(run); });
+  if(window.MutationObserver){
+    window.addEventListener('load', function(){
+      let busy=false;
+      new MutationObserver(function(){ if(busy) return; busy=true; requestAnimationFrame(function(){ busy=false; cleanupRuntime(); colorizeBadges(); }); }).observe(document.body,{childList:true,subtree:true,characterData:true});
+    });
+  }
+})();
+</script>
+<!-- /CODEX GOVFLOW FAST_NAV_STATUS_CLEAN_V2 --></body>
 </html>
