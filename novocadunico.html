@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestão Cadastro Único | São Sebastião/SP — Centro de Comando</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root {
+  --bg:#03060e; --sidebar:linear-gradient(180deg, rgba(7,11,20,.98), rgba(3,6,14,.98));
+  --topbar:rgba(4,8,18,.55); --card:rgba(10,20,42,0.78); --card2:rgba(8,16,34,0.92);
+  --accent:#5B6BF8; --purple:#9B6DFF; --cyan:#2DD4BF;
+  --green:#4caf50; --amber:#FBBF24; --red:#F87171;
+  --yellow:#fdd835; --blue:#2c4e8f;
+  --text:#eef4ff; --text2:#8ea0c5; --border:rgba(255,255,255,0.08);
+  --r:14px; --t:all 0.28s cubic-bezier(.2,.8,.2,1);
+  --grad1:linear-gradient(135deg,#5B6BF8,#9B6DFF);
+  --grad2:linear-gradient(135deg,#9B6DFF,#5B6BF8);
+  --input-bg:rgba(10,20,42,0.78); --modal-bg:rgba(0,0,0,0.75);
+  --shadow:0 30px 80px rgba(0,0,0,.55);
+  --glow-yellow:0 0 0 1px rgba(253,216,53,.22), 0 0 28px rgba(253,216,53,.10);
+}
+body.lt {
+  --bg:#f3f6fb; --sidebar:linear-gradient(180deg, rgba(255,255,255,.96), rgba(246,249,253,.96));
+  --topbar:rgba(255,255,255,.72); --card:rgba(255,255,255,.82); --card2:rgba(244,248,255,.95);
+  --text:#0f1728; --text2:#5d6b89; --border:rgba(10,20,50,.08);
+  --input-bg:rgba(255,255,255,.8); --modal-bg:rgba(0,0,0,0.45);
+  --shadow:0 24px 60px rgba(20,30,60,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+html,body{height:100%;overflow:hidden;}
+body{color:var(--text);transition:var(--t);font-size:15px;
+  background:radial-gradient(circle at 82% 4%, rgba(253,216,53,.09), transparent 18%),radial-gradient(circle at 8% 0%, rgba(44,78,143,.22), transparent 28%),linear-gradient(180deg, #050914 0%, var(--bg) 100%);}
+body.lt{background:radial-gradient(circle at 82% 4%, rgba(253,216,53,.18), transparent 18%),radial-gradient(circle at 8% 0%, rgba(44,78,143,.12), transparent 28%),linear-gradient(180deg, #f7f9fd 0%, #edf2f9 100%);}
+.shell{display:flex;height:100vh;width:100vw;}
+
+/* SIDEBAR */
+.sb{width:268px;min-width:268px;background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:22px 16px;z-index:100;transition:var(--t);overflow-y:auto;position:relative;}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding:8px 10px 18px;border-bottom:1px solid rgba(255,255,255,.05);}
+.logo{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-weight:800;color:#0b0d10;background:linear-gradient(135deg, #fff7c7 0%, var(--yellow) 100%);box-shadow:0 12px 28px rgba(253,216,53,.22);flex-shrink:0;overflow:hidden;}
+.logo svg{width:26px;height:26px;}
+.brand h1{font-family:'Outfit',sans-serif;font-weight:900;font-size:14px;color:var(--text);letter-spacing:-.02em;line-height:1.2;}
+.brand-sub{font-size:.78rem;color:var(--text2);margin-top:2px;}
+.nav-sec{margin-bottom:14px;}
+.nav-lbl{color:rgba(255,255,255,.38);font-size:.7rem;text-transform:uppercase;letter-spacing:.18em;padding:0 10px;margin:8px 0;}
+.nl{position:relative;display:flex;align-items:center;gap:12px;padding:11px 14px;color:#cfdbff;border-radius:16px;border:1px solid transparent;transition:var(--t);cursor:pointer;font-weight:600;font-size:.95rem;overflow:hidden;}
+.nl::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:999px;background:transparent;transition:var(--t);}
+.nl:hover{background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.05);transform:translateX(4px);}
+.nl.active{background:linear-gradient(90deg, rgba(253,216,53,.14), rgba(44,78,143,.08) 60%, transparent);border-color:rgba(253,216,53,.18);box-shadow:var(--glow-yellow);}
+.nl.active::before{background:var(--yellow);box-shadow:0 0 14px rgba(253,216,53,.55);}
+.nl svg{width:18px;height:18px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.95;}
+body.lt .nl{color:#2d3b58;}
+
+/* THEME SWITCH — iOS style in sidebar footer */
+.sb-footer{margin-top:auto;padding:14px 10px;display:flex;align-items:center;justify-content:center;gap:12px;}
+.ios-switch{position:relative;width:56px;height:28px;cursor:pointer;flex-shrink:0;}
+.ios-switch input{opacity:0;width:0;height:0;position:absolute;}
+.ios-track{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(40,60,100,.45);border-radius:28px;transition:.3s;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;padding:0 6px;}
+.ios-thumb{position:absolute;width:22px;height:22px;top:2px;left:3px;border-radius:50%;background:linear-gradient(135deg, #1a1f3d, #2a3464);transition:.3s;box-shadow:0 3px 12px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;}
+.ios-thumb svg{width:13px;height:13px;stroke:#aabbee;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.ios-switch input:checked ~ .ios-track{background:linear-gradient(135deg, rgba(253,216,53,.55), rgba(255,243,176,.35));border-color:rgba(253,216,53,.35);}
+.ios-switch input:checked ~ .ios-track .ios-thumb{transform:translateX(27px);background:linear-gradient(135deg, var(--yellow), #fff3b0);box-shadow:0 3px 14px rgba(253,216,53,.35);}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+.topbar{height:72px;background:var(--topbar);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;flex-shrink:0;}
+.topbar h2{font-family:'Outfit',sans-serif;font-weight:800;font-size:1.4rem;letter-spacing:-.04em;}
+.topbar-mid{position:absolute;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--border);padding:6px 18px;border-radius:50px;font-weight:700;font-size:13px;display:flex;align-items:center;gap:8px;color:var(--cyan);box-shadow:var(--shadow);}
+.vc{flex:1;padding:24px 28px;overflow-y:auto;display:none;}
+.vc.active{display:block;animation:fi .28s ease-out;}
+@keyframes fi{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+
+/* CARDS */
+.card{position:relative;background:linear-gradient(145deg, rgba(25,40,80,.34), rgba(5,10,25,.95));border:1px solid var(--border);border-radius:20px;padding:22px;backdrop-filter:blur(40px);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),inset 0 -28px 60px rgba(0,0,0,.35),var(--shadow);overflow:hidden;transition:var(--t);isolation:isolate;}
+.card::before{content:"";position:absolute;inset:-2px;background:linear-gradient(120deg, transparent 30%, rgba(255,255,255,.12) 45%, transparent 60%);transform:translateX(-80%) skewX(-18deg);opacity:0;transition:650ms ease;z-index:0;pointer-events:none;}
+.card::after{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg, transparent, rgba(255,255,255,.22), transparent);opacity:.8;z-index:0;}
+.card:hover::before{opacity:1;transform:translateX(85%) skewX(-18deg);}
+.card:hover{transform:translateY(-3px);border-color:rgba(253,216,53,.24);box-shadow:inset 0 1px 0 rgba(255,255,255,.1),inset 0 -30px 60px rgba(0,0,0,.42),0 36px 90px rgba(0,0,0,.62),0 0 24px rgba(253,216,53,.08);}
+.card > *{position:relative;z-index:1;}
+body.lt .card{background:linear-gradient(145deg, rgba(255,255,255,.82), rgba(244,248,255,.95));box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 24px 60px rgba(20,30,60,.08);}
+
+/* GRID */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+.gcol{display:flex;flex-direction:column;gap:14px;}
+
+/* BADGES */
+.badge{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;text-transform:uppercase;display:inline-block;letter-spacing:.3px;}
+.bs{background:rgba(45,212,191,.12);color:var(--cyan);}
+.bw{background:rgba(251,191,36,.12);color:var(--amber);}
+.bd{background:rgba(248,113,113,.12);color:var(--red);}
+.bn{background:rgba(255,255,255,.07);color:var(--text2);}
+.bg{background:rgba(76,175,80,.12);color:var(--green);}
+
+/* BUTTONS */
+.btn{padding:10px 18px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(145deg, rgba(20,35,70,.6), rgba(5,10,25,.92));color:#eaf2ff;font-weight:700;cursor:pointer;transition:var(--t);display:inline-flex;align-items:center;gap:6px;font-size:13px;text-transform:uppercase;letter-spacing:.4px;font-family:'Inter',sans-serif;}
+.btn:hover{transform:translateY(-2px);border-color:rgba(253,216,53,.28);box-shadow:0 0 18px rgba(253,216,53,.08);}
+.btn-p{background:linear-gradient(135deg, var(--yellow), #ffea70);color:#15130b;border:none;box-shadow:0 10px 28px rgba(253,216,53,.18);}
+.btn-p:hover{opacity:.88;transform:translateY(-2px);}
+.btn-sm{padding:6px 12px;font-size:11px;border-radius:9px;}
+.btn-g{background:rgba(255,255,255,.05);color:var(--text2);border:1px solid var(--border);}
+.btn-g:hover{background:rgba(255,255,255,.09);color:var(--text);}
+.btn-d{background:rgba(248,113,113,.1);color:var(--red);border:none;}
+.btn-d:hover{background:rgba(248,113,113,.2);}
+.btn-edit{background:rgba(91,107,248,.1);color:var(--accent);border:none;}
+.btn-edit:hover{background:rgba(91,107,248,.2);}
+body.lt .btn-g,body.lt .btn{background:linear-gradient(145deg, rgba(255,255,255,.82), rgba(241,245,252,.95));color:#1b2436;}
+
+/* FORMS */
+.fg{margin-bottom:13px;}
+label{display:block;margin-bottom:5px;font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.4px;}
+input,select,textarea{width:100%;padding:11px 14px;background:var(--input-bg);border:1px solid var(--border);border-radius:12px;color:var(--text);outline:none;transition:var(--t);font-size:14px;font-family:'Inter',sans-serif;}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(91,107,248,.1);}
+
+/* TABLES */
+table{width:100%;border-collapse:separate;border-spacing:0 4px;}
+th{text-align:center;padding:10px 14px;color:var(--text2);font-size:11px;text-transform:uppercase;letter-spacing:.9px;font-weight:700;}
+td{padding:13px 14px;background:rgba(255,255,255,.03);border-top:1px solid var(--border);border-bottom:1px solid var(--border);font-size:14px;text-align:center;vertical-align:middle;}
+body.lt td{background:rgba(0,0,0,.02);}
+td:first-child{border-left:1px solid var(--border);border-radius:12px 0 0 12px;}
+td:last-child{border-right:1px solid var(--border);border-radius:0 12px 12px 0;}
+
+/* SECTION HEADERS */
+.sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.st{font-family:'Outfit',sans-serif;font-weight:800;font-size:16px;}
+
+/* KANBAN */
+.kb{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.kc{background:rgba(120,150,200,.04);border:1px solid var(--border);border-radius:var(--r);padding:14px;min-height:200px;transition:var(--t);}
+.kc.dt{background:rgba(61,126,240,.06);border-color:var(--accent);}
+.kct{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.kcnt{background:rgba(120,150,200,.12);color:var(--text2);padding:3px 8px;border-radius:8px;font-size:10px;}
+.klist{display:flex;flex-direction:column;gap:8px;min-height:60px;}
+.kcard{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;cursor:grab;transition:var(--t);user-select:none;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+.kcard:hover{border-color:rgba(253,216,53,.24);transform:translateY(-2px);box-shadow:0 5px 16px rgba(0,0,0,.2),0 0 24px rgba(253,216,53,.06);}
+.kcard.dragging{opacity:.45;cursor:grabbing;}
+.kcard-body{flex:1;min-width:0;}
+.kcard-body h5{font-size:14px;font-weight:700;margin-bottom:6px;}
+.kcard .meta{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-top:6px;}
+.pd{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.ph{background:var(--red);}.pm{background:var(--amber);}.pl{background:var(--green);}
+.kca{display:flex;flex-direction:column;gap:4px;flex-shrink:0;opacity:0;transition:.2s;}
+.kcard:hover .kca{opacity:1;}
+
+/* MODAL */
+.mo{position:fixed;inset:0;background:var(--modal-bg);display:flex;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(8px);animation:fi .18s ease;}
+.mb{background:linear-gradient(145deg, rgba(25,40,80,.90), rgba(5,10,25,.98));border:1px solid var(--border);border-radius:24px;padding:28px;width:min(520px,93vw);max-height:92vh;overflow-y:auto;box-shadow:0 40px 100px rgba(0,0,0,.6);}
+body.lt .mb{background:linear-gradient(145deg, rgba(255,255,255,.95), rgba(244,248,255,.98));}
+.mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;}
+.mc{background:rgba(240,99,122,.14);border:none;color:var(--red);width:30px;height:30px;border-radius:10px;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;transition:var(--t);}
+.mc:hover{background:rgba(240,99,122,.3);transform:scale(1.1);}
+
+/* CONFIRM */
+.confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:2000;backdrop-filter:blur(8px);animation:fi .15s ease;}
+.confirm-box{background:linear-gradient(145deg, rgba(25,40,80,.95), rgba(5,10,25,.98));border:1px solid rgba(253,216,53,.18);border-radius:24px;padding:32px;text-align:center;box-shadow:0 0 40px rgba(253,216,53,.12),0 40px 100px rgba(0,0,0,.6);max-width:400px;width:90%;}
+.confirm-box h3{font-family:'Outfit',sans-serif;font-size:18px;margin-bottom:12px;}
+.confirm-box p{color:var(--text2);margin-bottom:24px;font-size:15px;}
+.confirm-actions{display:flex;gap:12px;justify-content:center;}
+
+/* TODO */
+.ti{display:flex;align-items:center;gap:9px;padding:10px 12px;border-radius:12px;margin-bottom:5px;border-left:3px solid transparent;background:rgba(120,150,200,.04);font-size:14px;font-weight:500;cursor:pointer;transition:var(--t);}
+.ti.urg{border-left-color:var(--red);background:rgba(240,99,122,.06);}
+.ti.att{border-left-color:var(--amber);background:rgba(245,192,67,.06);}
+.tck{width:15px;height:15px;border-radius:5px;border:2px solid var(--border);flex-shrink:0;}
+.tt{font-size:11px;color:var(--text2);margin-left:auto;white-space:nowrap;}
+
+/* UNIT CARDS */
+.uc{border-radius:16px;overflow:hidden;}
+.uh{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;}
+.ub{padding:14px 16px;text-align:center;}
+
+/* LIVE */
+.li{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px;}
+.li:last-child{border-bottom:none;}
+@keyframes pu{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* NEWS */
+.nc{padding:14px;border-bottom:1px solid var(--border);}
+.nc:last-child{border-bottom:none;}
+.nc h4{font-size:14px;font-weight:700;color:var(--cyan);margin:4px 0;}
+.nc p{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:7px;}
+.nm{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--purple);}
+.nl2{font-size:13px;color:var(--accent);font-weight:600;cursor:pointer;background:none;border:none;padding:0;text-decoration:none;display:inline-flex;align-items:center;gap:4px;}
+.nl2:hover{text-decoration:underline;}
+
+/* REPORT CARDS */
+.rg{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+.rc{text-align:center;cursor:pointer;padding:28px 18px;border:2px solid transparent;transition:var(--t);}
+.rc:hover{border-color:rgba(253,216,53,.24);background:rgba(253,216,53,.04);transform:translateY(-3px);}
+
+/* ACTIVITY */
+.ai{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
+.ai:last-child{border-bottom:none;}
+.ai-t{font-size:14px;font-weight:500;}
+.ai-s{font-size:12px;color:var(--text2);margin-top:2px;}
+
+/* MOBILE */
+.mob-btn{display:none;}
+@media(max-width:900px){
+  .sb{position:fixed;left:-270px;top:0;bottom:0;z-index:200;transition:.3s;width:268px;}
+  .sb.open{left:0;box-shadow:0 0 40px rgba(0,0,0,.5);}
+  .mob-btn{display:flex;align-items:center;justify-content:center;background:none;border:none;color:var(--text);font-size:21px;cursor:pointer;width:38px;height:38px;}
+  .main{width:100%;}
+  .topbar-mid{display:none;}
+  .vc{padding:12px;}
+  .g3,.kb,.rg{grid-template-columns:1fr;}
+  .g2{grid-template-columns:1fr;}
+}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(120,150,200,.18);border-radius:4px;}
+
+@media print{
+  body{background:#fff!important;color:#000!important;overflow:visible!important;}
+  .shell{display:block!important;}
+  .sb,.topbar,.btn,.kca,.mc{display:none!important;}
+  .vc,.main{display:block!important;overflow:visible!important;height:auto!important;}
+  .vc.active{display:block!important;}
+  *{background:transparent!important;border-color:#ddd!important;}
+  .mb{max-height:none!important;border:none!important;}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- SIDEBAR -->
+<aside class="sb" id="sb">
+  <div class="brand">
+    <div class="logo">
+      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="32" cy="20" r="8" fill="#1a237e"/>
+        <circle cx="18" cy="28" r="5.5" fill="#283593"/>
+        <circle cx="46" cy="28" r="5.5" fill="#283593"/>
+        <path d="M32 30c-10 0-18 6-18 13v5h36v-5c0-7-8-13-18-13z" fill="#1a237e"/>
+        <path d="M18 35c-6 0-11 4-11 9v4h14v-8c0-2 .3-3.5 1-5h-4z" fill="#283593"/>
+        <path d="M46 35c6 0 11 4 11 9v4H43v-8c0-2-.3-3.5-1-5h4z" fill="#283593"/>
+      </svg>
+    </div>
+    <div>
+      <h1>Gestão Cadastro<br>Único</h1>
+      <div class="brand-sub">São Sebastião</div>
+    </div>
+  </div>
+
+  <nav class="nav-sec">
+    <p class="nav-lbl">Menu Principal</p>
+    <div class="nl active" onclick="go('dash',this)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/></svg>Dashboard</div>
+    <div class="nl" onclick="go('reg',this)"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Registros</div>
+    <div class="nl" onclick="go('tasks',this)"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Tarefas</div>
+    <div class="nl" onclick="go('acoes',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Ação Móvel</div>
+  </nav>
+  <nav class="nav-sec">
+    <p class="nav-lbl">Gestão e Apoio</p>
+    <div class="nl" onclick="go('almox',this)"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Almoxarifado</div>
+    <div class="nl" onclick="go('units',this)"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Unidades</div>
+    <div class="nl" onclick="go('rel',this)"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Relatórios</div>
+    <div class="nl" onclick="go('inf',this)"><svg viewBox="0 0 24 24"><path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3zm-8.27 4a2 2 0 0 1-3.46 0"/></svg>Informes e News</div>
+  </nav>
+  <nav class="nav-sec">
+    <p class="nav-lbl">Administração</p>
+    <div class="nl" onclick="go('eq',this)"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Equipe</div>
+    <div class="nl" onclick="go('setores',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Setores / Perfis</div>
+  </nav>
+
+  <div class="sb-footer">
+    <label class="ios-switch" title="Modo claro/escuro">
+      <input type="checkbox" id="thm" onchange="toggleTheme()">
+      <div class="ios-track">
+        <div class="ios-thumb" id="thmThumb">
+          <svg id="thmIcon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </div>
+      </div>
+    </label>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <header class="topbar" style="position:relative;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button class="mob-btn" onclick="document.getElementById('sb').classList.toggle('open')">☰</button>
+      <div><h2 id="vtitle">Dashboard</h2></div>
+    </div>
+    <div class="topbar-mid" id="clk">00:00:00 • 01 jan</div>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <div style="text-align:right;">
+        <p style="font-size:14px;font-weight:700;">São Sebastião, SP</p>
+        <p style="font-size:11px;color:var(--text2);text-transform:uppercase;">Gestão Municipal</p>
+      </div>
+      <div style="width:38px;height:38px;border-radius:14px;background:var(--grad2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:17px;">👤</div>
+    </div>
+  </header>
+
+  <!-- DASHBOARD -->
+  <section id="dash" class="vc active">
+    <div class="g3" style="margin-bottom:16px;">
+      <div class="gcol">
+        <div class="card"><div class="sh"><span class="st">📋 Afazeres</span><div style="display:flex;gap:6px;"><button class="btn btn-sm" id="tb-hj" onclick="todotab('hj')" style="background:linear-gradient(135deg,var(--yellow),#ffea70);color:#15130b;border:none;">Hoje</button><button class="btn btn-sm btn-g" id="tb-sm" onclick="todotab('sm')">Semana</button></div></div><div id="td-hj"></div><div id="td-sm" style="display:none;"></div></div>
+        <div class="card"><div class="sh"><span class="st">⚡ Painel Ao Vivo</span><span class="badge bd" style="animation:pu 2s infinite;">● LIVE</span></div><div class="li"><span style="font-size:17px;">🌤️</span><span style="margin-left:8px;">São Sebastião</span><span style="margin-left:auto;font-weight:700;">27°C</span></div><div style="margin-top:11px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);margin-bottom:8px;">Tarefas Urgentes</div><div id="live-urgent"><p style="font-size:13px;color:var(--text2);">Nenhuma tarefa urgente.</p></div></div>
+        <div class="card"><div class="sh"><span class="st">🚐 Ações Móveis</span></div><div id="dash-acoes"></div></div>
+      </div>
+      <div class="gcol">
+        <div class="card"><div class="sh"><span class="st">🏢 Unidades</span></div><div id="dash-units"></div></div>
+        <div class="card"><div class="sh"><span class="st">📈 Gráfico Semanal</span></div><div class="cbox" style="height:210px;"><canvas id="chartSemanal"></canvas></div><div style="display:flex;gap:12px;margin-top:10px;font-size:12px;"><span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:10px;border-radius:50%;background:var(--cyan);display:inline-block;"></span>Atualizações</span><span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:10px;border-radius:50%;background:var(--purple);display:inline-block;"></span>Inclusões</span></div></div>
+      </div>
+      <div class="gcol">
+        <div class="card"><div class="sh"><span class="st">🧠 Orientação de Gestão</span></div><div id="dash-gestao"></div><div style="border-top:1px solid var(--border);margin-top:14px;padding-top:14px;"><p id="dash-leitura" style="font-size:14px;color:var(--text2);line-height:1.7;"></p></div></div>
+        <div class="card"><div class="sh"><span class="st">🔔 Últimas Atualizações</span><span class="badge bn" id="act-cnt">0</span></div><div id="actFeed" style="max-height:240px;overflow-y:auto;"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REGISTROS -->
+  <section id="reg" class="vc">
+    <div class="card" style="margin-bottom:16px;">
+      <div class="sh"><span class="st">Lançar Atendimento</span></div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:14px;">
+        <div class="fg"><label>Tipo de Serviço</label><select id="rType"><option>Atualização Cadastral</option><option>Inclusão Cadastral</option><option>Atendimento Recepção</option></select></div>
+        <div class="fg"><label>Responsável</label><select id="rStaff" class="ssy"></select></div>
+        <div class="fg"><label>Unidade</label><select id="rUnit"><option>Centro</option><option>Boiçucanga</option><option>Canto do Mar</option><option>Morro do Abrigo</option></select></div>
+        <div class="fg"><label>Quantidade</label><input type="number" id="rQtd" min="1" value="1"></div>
+        <div class="fg"><label>Data</label><input type="date" id="rDate"></div>
+      </div>
+      <button class="btn btn-p" onclick="saveReg()">💾 Salvar Registro</button>
+    </div>
+    <div class="g3" style="margin-bottom:16px;">
+      <div class="card" style="text-align:center;padding:18px;"><div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;margin-bottom:5px;">Total Hoje</div><div style="font-size:30px;font-weight:800;font-family:'Outfit';color:var(--accent);" id="tot-d">0</div></div>
+      <div class="card" style="text-align:center;padding:18px;"><div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;margin-bottom:5px;">Total Semana</div><div style="font-size:30px;font-weight:800;font-family:'Outfit';color:var(--purple);" id="tot-w">0</div></div>
+      <div class="card" style="text-align:center;padding:18px;"><div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;margin-bottom:5px;">Total Mês</div><div style="font-size:30px;font-weight:800;font-family:'Outfit';color:var(--cyan);" id="tot-m">0</div></div>
+    </div>
+    <div class="card">
+      <div class="sh"><span class="st">Histórico</span></div>
+      <table><thead><tr><th>Protocolo</th><th>Serviço</th><th>Responsável</th><th>Unidade</th><th>Qtd</th><th>Data</th><th>Status</th><th>Ações</th></tr></thead><tbody id="regTB"></tbody></table>
+    </div>
+  </section>
+
+  <!-- TAREFAS -->
+  <section id="tasks" class="vc">
+    <div class="sh" style="margin-bottom:16px;"><span class="st">Fluxo Operacional</span><button class="btn btn-p btn-sm" onclick="openM('mTask')">+ Nova Tarefa</button></div>
+    <div class="kb">
+      <div class="kc" id="col-todo" ondragover="adr(event)" ondrop="drp(event,'todo')" ondragleave="rmdt(event)"><div class="kct" style="color:var(--red);">🔴 A Fazer <span class="kcnt" id="cnt-todo">0</span></div><div class="klist" id="tl-todo"></div></div>
+      <div class="kc" id="col-doing" ondragover="adr(event)" ondrop="drp(event,'doing')" ondragleave="rmdt(event)"><div class="kct" style="color:var(--amber);">🟡 Em Andamento <span class="kcnt" id="cnt-doing">0</span></div><div class="klist" id="tl-doing"></div></div>
+      <div class="kc" id="col-done" ondragover="adr(event)" ondrop="drp(event,'done')" ondragleave="rmdt(event)"><div class="kct" style="color:var(--green);">🟢 Concluído <span class="kcnt" id="cnt-done">0</span></div><div class="klist" id="tl-done"></div></div>
+    </div>
+  </section>
+
+  <!-- AÇÃO MÓVEL -->
+  <section id="acoes" class="vc">
+    <div class="sh" style="margin-bottom:16px;"><span class="st">Ação Móvel e Visita Domiciliar</span><button class="btn btn-p btn-sm" onclick="openM('mAcao')">+ Nova Ação</button></div>
+    <div class="kb">
+      <div class="kc" ondragover="adr(event)" ondrop="drpA(event,'plan')" ondragleave="rmdt(event)"><div class="kct" style="color:var(--purple);">📋 Planejado <span class="kcnt" id="cnt-aplan">0</span></div><div class="klist" id="al-plan"></div></div>
+      <div class="kc" ondragover="adr(event)" ondrop="drpA(event,'exec')" ondragleave="rmdt(event)"><div class="kct" style="color:var(--amber);">🚐 Em Execução <span class="kcnt" id="cnt-aexec">0</span></div><div class="klist" id="al-exec"></div></div>
+      <div class="kc" ondragover="adr(event)" ondrop="drpA(event,'fin')" ondragleave="rmdt(event)"><div class="kct" style="color:var(--green);">✅ Finalizado <span class="kcnt" id="cnt-afin">0</span></div><div class="klist" id="al-fin"></div></div>
+    </div>
+  </section>
+
+  <!-- ALMOXARIFADO -->
+  <section id="almox" class="vc">
+    <div class="g2" style="margin-bottom:0;">
+      <div class="card">
+        <div class="sh"><span class="st">Inventário por Quantidade</span></div>
+        <div class="cbox" style="height:240px;"><canvas id="stockChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="sh"><span class="st">Inventário</span><button class="btn btn-p btn-sm" onclick="openM('mAlmox')">+ Novo Item</button></div>
+        <table><thead><tr><th>Item</th><th>Cat.</th><th>Qtd</th><th>Status</th><th>Ações</th></tr></thead><tbody id="almoxTB"></tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- UNIDADES -->
+  <section id="units" class="vc">
+    <div class="sh" style="margin-bottom:16px;"><span class="st">Setores e Unidades — CadÚnico</span><button class="btn btn-p btn-sm" onclick="openM('mUnit')">+ Nova Unidade</button></div>
+    <div class="g2" style="margin-bottom:14px;" id="unitCards"></div>
+    <div class="card" style="margin-bottom:14px;"><div class="sh"><span class="st">Índices IGD — São Sebastião / Nacional</span></div><div id="igd-card"></div></div>
+    <div class="card"><div class="sh"><span class="st">Setores Cadastrados</span></div><table><thead><tr><th>Setor</th><th>Responsável</th><th>Unidade</th><th>Ações</th></tr></thead><tbody id="unitTB"></tbody></table></div>
+  </section>
+
+  <!-- RELATÓRIOS -->
+  <section id="rel" class="vc">
+    <div class="sh" style="margin-bottom:20px;"><span class="st">Hub de Relatórios — CadÚnico</span></div>
+    <div class="rg">
+      <div class="card rc" onclick="genRel('geral')"><div style="width:48px;height:48px;border-radius:12px;background:rgba(91,107,248,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div><h3 style="font-family:'Outfit';font-size:16px;font-weight:800;">Relatório Geral</h3><p style="color:var(--text2);margin-top:8px;font-size:14px;">Consolidado de todas as atividades e metas municipais.</p><button class="btn btn-p btn-sm" style="margin-top:14px;">Gerar</button></div>
+      <div class="card rc" onclick="genRel('semanal')"><div style="width:48px;height:48px;border-radius:12px;background:rgba(45,212,191,.12);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><h3 style="font-family:'Outfit';font-size:16px;font-weight:800;">Relatório Semanal</h3><p style="color:var(--text2);margin-top:8px;font-size:14px;">Síntese semanal de atendimentos, tarefas e ações.</p><button class="btn btn-p btn-sm" style="margin-top:14px;">Gerar</button></div>
+      <div class="card rc" onclick="genRel('adm')"><div style="width:48px;height:48px;border-radius:12px;background:rgba(155,109,255,.12);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><h3 style="font-family:'Outfit';font-size:16px;font-weight:800;">Relatório Administrativo</h3><p style="color:var(--text2);margin-top:8px;font-size:14px;">Performance da equipe e recursos.</p><button class="btn btn-p btn-sm" style="margin-top:14px;">Gerar</button></div>
+      <div class="card rc" onclick="genRel('unidades')"><div style="width:48px;height:48px;border-radius:12px;background:rgba(52,211,153,.12);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><h3 style="font-family:'Outfit';font-size:16px;font-weight:800;">Relatório por Unidade</h3><p style="color:var(--text2);margin-top:8px;font-size:14px;">Cobertura territorial e famílias por bairro.</p><button class="btn btn-p btn-sm" style="margin-top:14px;">Gerar</button></div>
+    </div>
+  </section>
+
+  <!-- INFORMES -->
+  <section id="inf" class="vc">
+    <div class="g2" style="margin-bottom:16px;">
+      <div class="card"><div class="sh"><span class="st">📋 Informes MDS — CadÚnico</span></div><div id="informes-list"></div><a class="btn btn-g" style="margin-top:12px;width:100%;justify-content:center;text-decoration:none;" href="https://www.gov.br/mds/pt-br/acoes-e-programas/cadastro-unico/informes" target="_blank">Ver todos os Informes →</a></div>
+      <div class="gcol">
+        <div class="card"><div class="sh"><span class="st">🏙️ Notícias</span></div><div class="nc"><span class="nm">Ação Social • Abr 2026</span><h4>São Sebastião realiza ação móvel do CadÚnico em Boiçucanga</h4><p>Mutirão de cadastramento e atualização realizado em 14 de abril de 2026.</p><a class="nl2" href="https://www.saosebastiao.sp.gov.br" target="_blank">Ver no site da Prefeitura →</a></div><div class="nc"><span class="nm">CadÚnico • Abr 2026</span><h4>Prefeitura convoca famílias para atualização cadastral</h4><p>Moradores com cadastro desatualizado devem comparecer às unidades.</p><a class="nl2" href="https://www.saosebastiao.sp.gov.br" target="_blank">Ver no site da Prefeitura →</a></div></div>
+        <div class="card"><div class="sh"><span class="st">🔗 Links Úteis</span></div><div style="display:flex;flex-direction:column;gap:7px;"><a href="https://www.gov.br/mds/pt-br/acoes-e-programas/cadastro-unico" target="_blank" class="nl2" style="padding:11px;border-radius:13px;background:rgba(61,126,240,.08);border:1px solid rgba(61,126,240,.14);">🏛️ Portal CadÚnico — MDS</a><a href="https://cecad.cidadania.gov.br" target="_blank" class="nl2" style="padding:11px;border-radius:13px;background:rgba(0,200,214,.08);border:1px solid rgba(0,200,214,.14);">📊 CECAD — Consulta Extrato</a><a href="https://sibec.caixa.gov.br" target="_blank" class="nl2" style="padding:11px;border-radius:13px;background:rgba(0,200,214,.08);border:1px solid rgba(0,200,214,.14);">💰 SIBEC — Benefícios ao Cidadão</a><a href="https://www.saosebastiao.sp.gov.br" target="_blank" class="nl2" style="padding:11px;border-radius:13px;background:rgba(245,192,67,.08);border:1px solid rgba(245,192,67,.14);">🏙️ Prefeitura de São Sebastião</a></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EQUIPE -->
+  <section id="eq" class="vc">
+    <div class="g2">
+      <div class="card"><div class="sh"><span class="st">Cadastrar Membro</span></div><div class="fg"><label>Nome</label><input type="text" id="stName" placeholder="Ex: Ana Souza"></div><div class="fg"><label>Cargo</label><select id="stRole"><option>Cadastrador</option><option>Administrativo</option><option>PEAD</option><option>Recepção</option><option>Coordenação</option><option>Chefe de Divisão</option></select></div><button class="btn btn-p" style="width:100%;" onclick="addSt()">+ Adicionar</button></div>
+      <div class="card"><div class="sh"><span class="st">Corpo Técnico</span></div><table><thead><tr><th>Nome</th><th>Cargo</th><th>Ações</th></tr></thead><tbody id="stTB"></tbody></table></div>
+    </div>
+  </section>
+
+  <!-- SETORES -->
+  <section id="setores" class="vc">
+    <div class="sh" style="margin-bottom:20px;"><span class="st">Gestão de Perfis de Acesso</span></div>
+    <div class="g2" style="margin-bottom:16px;">
+      <div class="card"><div class="sh"><span class="st" style="font-size:15px;">Perfis Disponíveis</span></div><p style="font-size:14px;color:var(--text2);margin-bottom:16px;line-height:1.7;text-align:center;">Configure quais seções e funcionalidades cada perfil pode acessar.</p><div id="perfis-list" style="display:flex;flex-direction:column;gap:10px;"></div></div>
+      <div class="card"><div class="sh"><span class="st" style="font-size:15px;">Matriz de Permissões</span></div><table><thead><tr><th>Seção</th><th>Coord.</th><th>Cad.</th><th>Recep.</th><th>Apoio</th></tr></thead><tbody>
+        <tr><td>Dashboard</td><td><span class="badge bg">Ver</span></td><td><span class="badge bg">Ver</span></td><td><span class="badge bg">Ver</span></td><td><span class="badge bg">Ver</span></td></tr>
+        <tr><td>Registros</td><td><span class="badge bg">Total</span></td><td><span class="badge bg">Total</span></td><td><span class="badge bs">Ver</span></td><td><span class="badge bn">—</span></td></tr>
+        <tr><td>Tarefas</td><td><span class="badge bg">Total</span></td><td><span class="badge bg">Total</span></td><td><span class="badge bs">Ver</span></td><td><span class="badge bs">Ver</span></td></tr>
+        <tr><td>Equipe</td><td><span class="badge bg">Total</span></td><td><span class="badge bn">—</span></td><td><span class="badge bn">—</span></td><td><span class="badge bn">—</span></td></tr>
+      </tbody></table></div>
+    </div>
+    <div class="card"><div class="sh" style="justify-content:center;"><span class="st" style="font-size:15px;">Atribuição de Perfil por Membro</span></div><table><thead><tr><th>Nome</th><th>Cargo</th><th>Perfil Atual</th><th>Alterar Perfil</th></tr></thead><tbody id="perfis-staff-tb"></tbody></table></div>
+  </section>
+</main>
+</div>
+
+<!-- MODALS -->
+<div id="mTask" class="mo" style="display:none;" onclick="cmOut(event,'mTask')"><div class="mb"><div class="mh"><h3 style="font-family:'Outfit';" id="mTaskT">Nova Tarefa</h3><button class="mc" onclick="closeM('mTask')">✕</button></div><input type="hidden" id="editTaskId" value=""><div class="fg"><label>Título</label><input type="text" id="tTitle" placeholder="Ex: Revisar cadastros bloqueados"></div><div class="fg"><label>Prioridade</label><select id="tPri"><option value="high">Alta 🔴</option><option value="med">Média 🟡</option><option value="low">Baixa 🟢</option></select></div><div class="fg"><label>Urgente?</label><select id="tUrg"><option value="0">Não</option><option value="1">Sim</option></select></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;"><div class="fg"><label>Início</label><input type="date" id="tStart"></div><div class="fg"><label>Fim</label><input type="date" id="tEnd"></div></div><div class="fg"><label>Coluna</label><select id="tStage"><option value="todo">A Fazer</option><option value="doing">Em Andamento</option><option value="done">Concluído</option></select></div><button class="btn btn-p" onclick="saveTask()">💾 Salvar</button></div></div>
+
+<div id="mAcao" class="mo" style="display:none;" onclick="cmOut(event,'mAcao')"><div class="mb"><div class="mh"><h3 style="font-family:'Outfit';" id="mAcaoT">Nova Ação Móvel</h3><button class="mc" onclick="closeM('mAcao')">✕</button></div><input type="hidden" id="editAcaoId" value=""><div class="fg"><label>Tipo</label><select id="aTipo"><option>Ação Móvel</option><option>Visita Domiciliar</option></select></div><div class="fg"><label>Localização</label><input type="text" id="aLocal" placeholder="Ex: Boiçucanga"></div><div class="fg"><label>Data</label><input type="date" id="aData"></div><div class="fg"><label>Objetivo</label><input type="text" id="aObj" placeholder="Ex: 60 famílias"></div><div class="fg"><label>Responsáveis (Ctrl para múltiplos)</label><select id="aResp" class="ssy" multiple style="min-height:90px;"></select></div><button class="btn btn-p" onclick="saveAcao()">💾 Salvar</button></div></div>
+
+<div id="mUnit" class="mo" style="display:none;" onclick="cmOut(event,'mUnit')"><div class="mb"><div class="mh"><h3 style="font-family:'Outfit';" id="mUnitT">Nova Unidade</h3><button class="mc" onclick="closeM('mUnit')">✕</button></div><input type="hidden" id="editUnitIdx" value=""><div class="fg"><label>Setor</label><input type="text" id="uSetor"></div><div class="fg"><label>Responsável</label><select id="uResp" class="ssy"></select></div><div class="fg"><label>Unidade</label><select id="uUnit"><option>Centro</option><option>Boiçucanga</option><option>Canto do Mar</option><option>Morro do Abrigo</option></select></div><button class="btn btn-p" onclick="saveUnit()">💾 Salvar</button></div></div>
+
+<div id="mAlmox" class="mo" style="display:none;" onclick="cmOut(event,'mAlmox')"><div class="mb"><div class="mh"><h3 style="font-family:'Outfit';" id="mAlmoxT">Novo Item</h3><button class="mc" onclick="closeM('mAlmox')">✕</button></div><input type="hidden" id="editAlmoxIdx" value=""><div class="fg"><label>Nome</label><input type="text" id="almNome" placeholder="Ex: Papel A4"></div><div class="fg"><label>Categoria</label><select id="almCat"><option>Escritório</option><option>Documentação</option><option>Arquivamento</option><option>Informática</option><option>Limpeza</option></select></div><div class="fg"><label>Quantidade</label><input type="number" id="almQtd" min="0" placeholder="0"></div><div class="fg"><label>Status</label><select id="almSt"><option value="OK">OK</option><option value="REPOR">Repor</option><option value="CRÍTICO">Crítico</option></select></div><button class="btn btn-p" onclick="saveAlmox()">💾 Salvar</button></div></div>
+
+<div id="mRel" class="mo" style="display:none;" onclick="cmOut(event,'mRel')"><div class="mb" style="width:min(780px,96vw);max-height:94vh;"><div class="mh"><h3 style="font-family:'Outfit';" id="mRelT">Relatório</h3><div style="display:flex;gap:8px;"><button class="btn btn-p btn-sm" onclick="window.print()">🖨️ Imprimir</button><button class="mc" onclick="closeM('mRel')">✕</button></div></div><div id="mRelC" style="font-size:14px;line-height:1.85;"></div></div></div>
+
+<script>
+const EDIT=`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
+const DEL=`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
+
+const S={
+  staff:[{name:'Danilo Vieira',role:'Coordenação'},{name:'Ana Souza',role:'Cadastrador'},{name:'Carlos Lima',role:'Chefe de Divisão'},{name:'Mariana Ramos',role:'Cadastrador'},{name:'Joana Ferreira',role:'Recepção'}],
+  regs:[{id:'#4451',type:'Inclusão Cadastral',staff:'Ana Souza',unit:'Centro',date:'2025-04-14',status:'Concluído',qtd:1},{id:'#4452',type:'Atualização Cadastral',staff:'Danilo Vieira',unit:'Boiçucanga',date:'2025-04-14',status:'Concluído',qtd:1},{id:'#4453',type:'Atualização Cadastral',staff:'Mariana Ramos',unit:'Canto do Mar',date:'2025-04-15',status:'Concluído',qtd:1},{id:'#4454',type:'Atendimento Recepção',staff:'Joana Ferreira',unit:'Centro',date:'2025-04-15',status:'Concluído',qtd:1},{id:'#4455',type:'Inclusão Cadastral',staff:'Ana Souza',unit:'Morro do Abrigo',date:'2025-04-15',status:'Concluído',qtd:1}],
+  tasks:[{id:1,title:'Responder e-mail do Diretor',pri:'high',urg:true,start:'2025-04-15',end:'2025-04-15',stage:'todo'},{id:2,title:'Enviar relatório SMAS',pri:'high',urg:true,start:'2025-04-15',end:'2025-04-15',stage:'doing'},{id:3,title:'Reunião de equipe',pri:'med',urg:false,start:'2025-04-14',end:'2025-04-18',stage:'doing'},{id:4,title:'Organizar mutirão Enseada',pri:'med',urg:false,start:'2025-04-10',end:'2025-04-14',stage:'done',archived:false},{id:5,title:'Solicitar reposição de A4',pri:'high',urg:true,start:'2025-04-15',end:'2025-04-15',stage:'todo'}],
+  acoes:[{id:1,tipo:'Ação Móvel',local:'Boiçucanga',data:'2025-04-20',obj:'60 famílias',resp:['Ana Souza','Mariana Ramos'],stage:'plan'},{id:2,tipo:'Visita Domiciliar',local:'Morro do Abrigo',data:'2025-04-22',obj:'Verificar bloqueios',resp:['Danilo Vieira'],stage:'plan'},{id:3,tipo:'Ação Móvel',local:'Canto do Mar',data:'2025-04-10',obj:'40 famílias',resp:['Ana Souza'],stage:'fin',archived:false}],
+  units:[{setor:'Recepção Principal',resp:'Joana Ferreira',unit:'Centro'},{setor:'Averiguação Cadastral',resp:'Danilo Vieira',unit:'Centro'},{setor:'Atendimento Boiçucanga',resp:'Ana Souza',unit:'Boiçucanga'},{setor:'Recepção Canto do Mar',resp:'Mariana Ramos',unit:'Canto do Mar'}],
+  almox:[{nome:'Formulário V7',cat:'Documentação',qtd:1250,status:'OK'},{nome:'Papel A4 (resma)',cat:'Escritório',qtd:12,status:'CRÍTICO'},{nome:'Pasta Suspensa',cat:'Arquivamento',qtd:45,status:'REPOR'},{nome:'Caneta Esferográfica',cat:'Escritório',qtd:80,status:'OK'},{nome:'Toner Impressora',cat:'Informática',qtd:2,status:'REPOR'}],
+  informes:[{num:90,mes:'Mai 2025',titulo:'Informe CadÚnico nº 90 — MDS',desc:'Novas diretrizes para inclusão de famílias em situação de rua e procedimentos emergenciais de cadastro.'},{num:89,mes:'Abr 2025',titulo:'Informe CadÚnico nº 89 — MDS',desc:'Orientações sobre atualização do CadÚnico, prazos de revisão cadastral e procedimentos para famílias unipessoais.'},{num:88,mes:'Mar 2025',titulo:'Informe CadÚnico nº 88 — MDS',desc:'Nota técnica sobre averiguação cadastral, critérios de bloqueio do Bolsa Família e prazos de regularização.'},{num:87,mes:'Fev 2025',titulo:'Informe CadÚnico nº 87 — MDS',desc:'Procedimentos para inclusão e atualização de famílias vulneráveis em situação de extrema pobreza.'},{num:86,mes:'Jan 2025',titulo:'Informe CadÚnico nº 86 — MDS',desc:'Novo CadÚnico: inovações tecnológicas e integração de dados.'},{num:85,mes:'Dez 2024',titulo:'Informe CadÚnico nº 85 — MDS',desc:'Orientações sobre o SIBEC e procedimentos de consulta e gestão.'},{num:84,mes:'Nov 2024',titulo:'Informe CadÚnico nº 84 — MDS',desc:'Revisão cadastral de famílias com cadastros desatualizados há mais de 24 meses.'}],
+  activity:[], nextTask:6, nextAcao:4
+};
+
+const unitasData=[
+  {nome:'Centro',bairros:'Centro, Enseada, Porto Grande, Topolândia',pop:38200,familias:6700,pessoas:13400,color:'#5B6BF8',atualPct:88,ativasPct:83},
+  {nome:'Boiçucanga',bairros:'Boiçucanga, Maresias, Barra do Una, Juquei',pop:22400,familias:4580,pessoas:9100,color:'#2DD4BF',atualPct:86,ativasPct:81},
+  {nome:'Canto do Mar',bairros:'Canto do Mar, São Francisco, Pontal da Cruz',pop:13800,familias:2800,pessoas:5400,color:'#9B6DFF',atualPct:87,ativasPct:82},
+  {nome:'Morro do Abrigo',bairros:'Morro do Abrigo, Boracéia, Itatinga',pop:7195,familias:1586,pessoas:3000,color:'#34D399',atualPct:85,ativasPct:79}
+];
+
+window.onload=()=>{updateClk();setInterval(updateClk,1000);document.getElementById('rDate').value=today();document.getElementById('tStart').value=today();document.getElementById('tEnd').value=today();renderAll();setTimeout(initCharts,120);renderInformes();};
+function today(){return new Date().toISOString().split('T')[0];}
+function weekStart(){const n=new Date();n.setDate(n.getDate()-n.getDay()+1);return n.toISOString().split('T')[0];}
+function monthStart(){const n=new Date();return new Date(n.getFullYear(),n.getMonth(),1).toISOString().split('T')[0];}
+function renderAll(){renderStaff();renderRegs();renderTasks();renderAcoes();renderUnits();renderAlmox();renderDash();renderActivity();updateTotals();renderPerfisStaff();}
+
+// INFORMES
+function renderInformes(){const el=document.getElementById('informes-list');if(!el)return;el.innerHTML=S.informes.map(i=>`<div class="nc"><span class="nm">Informe nº ${i.num} • ${i.mes}</span><h4>${i.titulo}</h4><p>${i.desc}</p><a class="nl2" href="https://www.gov.br/mds/pt-br/acoes-e-programas/cadastro-unico/informes" target="_blank">📎 Acessar Portal MDS →</a></div>`).join('');}
+
+// PERFIS
+const PERFIS=['Coordenação','Cadastrador','Recepção','Apoio'];
+function renderPerfisStaff(){const el=document.getElementById('perfis-staff-tb');if(!el)return;el.innerHTML=S.staff.map((s,i)=>`<tr><td><strong>${s.name}</strong></td><td><span class="badge bn">${s.role}</span></td><td><span class="badge ${s.perfil==='Coordenação'?'bg':s.perfil==='Cadastrador'?'bs':'bn'}">${s.perfil||'Cadastrador'}</span></td><td><select style="width:140px;padding:5px 8px;font-size:13px;" onchange="setPerfil(${i},this.value)">${PERFIS.map(p=>`<option value="${p}" ${(s.perfil||'Cadastrador')===p?'selected':''}>${p}</option>`).join('')}</select></td></tr>`).join('');
+const pl=document.getElementById('perfis-list');if(!pl)return;pl.innerHTML=PERFIS.map(p=>`<div style="padding:14px;background:var(--card2);border-radius:12px;border:1px solid var(--border);text-align:center;"><div style="font-weight:700;font-size:14px;margin-bottom:4px;">${p}</div><div style="font-size:13px;color:var(--text2);">${{'Coordenação':'Acesso total a todas as seções.','Cadastrador':'Acesso a registros, tarefas e informes.','Recepção':'Visualização de registros e dashboard.','Apoio':'Acesso a almoxarifado e informes.'}[p]}</div></div>`).join('');}
+function setPerfil(i,v){S.staff[i].perfil=v;renderPerfisStaff();}
+
+// NAV
+function go(id,el){document.querySelectorAll('.vc').forEach(v=>v.classList.remove('active'));document.querySelectorAll('.nl').forEach(n=>n.classList.remove('active'));document.getElementById(id).classList.add('active');if(el)el.classList.add('active');const titles={dash:'Dashboard',reg:'Registros',tasks:'Tarefas',acoes:'Ação Móvel',almox:'Almoxarifado',units:'Unidades',rel:'Relatórios',inf:'Informes e News',eq:'Equipe',setores:'Setores / Perfis'};document.getElementById('vtitle').innerText=titles[id]||'';document.getElementById('sb').classList.remove('open');if(id==='almox')setTimeout(initStockChart,100);}
+function updateClk(){const n=new Date();document.getElementById('clk').innerText=n.toLocaleTimeString('pt-BR',{hour12:false})+' • '+n.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'});}
+
+// THEME
+function toggleTheme(){
+  const on=document.getElementById('thm').checked;
+  document.body.classList.toggle('lt',on);
+  const icon=document.getElementById('thmIcon');
+  if(on){icon.innerHTML='<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';icon.setAttribute('stroke','#92620a');} else {icon.innerHTML='<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';icon.setAttribute('stroke','#aabbee');}
+}
+
+// MODALS
+function openM(id){document.getElementById(id).style.display='flex';}
+function closeM(id){document.getElementById(id).style.display='none';}
+function cmOut(e,id){if(e.target.id===id)closeM(id);}
+function showConfirm(msg,onOk){const o=document.createElement('div');o.className='confirm-overlay';o.innerHTML=`<div class="confirm-box"><h3>⚠️ Confirmação</h3><p>${msg}</p><div class="confirm-actions"><button class="btn btn-p" id="cfm-ok">Continuar</button><button class="btn btn-g" id="cfm-cancel">Cancelar</button></div></div>`;document.body.appendChild(o);document.getElementById('cfm-ok').onclick=()=>{o.remove();onOk();};document.getElementById('cfm-cancel').onclick=()=>{o.remove();};o.onclick=(e)=>{if(e.target===o)o.remove();};}
+
+// STAFF
+function addSt(){const n=document.getElementById('stName').value.trim();if(!n){alert('Insira o nome');return;}S.staff.push({name:n,role:document.getElementById('stRole').value});document.getElementById('stName').value='';renderStaff();log(`Novo membro: ${n}`,'eq');}
+function rmSt(i){showConfirm('Tem certeza que deseja remover este membro?',()=>{S.staff.splice(i,1);renderStaff();});}
+function edSt(i){const s=S.staff[i];document.getElementById('stName').value=s.name;document.getElementById('stRole').value=s.role;S.staff.splice(i,1);renderStaff();}
+function renderStaff(){document.getElementById('stTB').innerHTML=S.staff.map((s,i)=>`<tr><td><strong>${s.name}</strong></td><td><span class="badge bn">${s.role}</span></td><td style="display:flex;gap:5px;justify-content:center;"><button class="btn btn-sm btn-edit" onclick="edSt(${i})" title="Editar">${EDIT}</button><button class="btn btn-sm btn-d" onclick="rmSt(${i})" title="Excluir">${DEL}</button></td></tr>`).join('');const opts=S.staff.map(s=>`<option value="${s.name}">${s.name} (${s.role})</option>`).join('');document.querySelectorAll('.ssy').forEach(sel=>sel.innerHTML=opts);renderPerfisStaff();}
+
+// REGISTROS
+function saveReg(){const type=document.getElementById('rType').value;const staff=document.getElementById('rStaff').value;const unit=document.getElementById('rUnit').value;const date=document.getElementById('rDate').value;const qtd=parseInt(document.getElementById('rQtd').value)||1;if(!date){alert('Selecione a data');return;}const ex=S.regs.findIndex(r=>r.type===type&&r.staff===staff&&r.unit===unit&&r.date===date);if(ex>=0){S.regs[ex].qtd=(S.regs[ex].qtd||1)+qtd;}else{S.regs.unshift({id:'#'+Math.floor(1000+Math.random()*9000),type,staff,unit,date,status:'Concluído',qtd});}document.getElementById('rQtd').value='1';renderRegs();updateTotals();renderWeekChart();renderDash();log(`Atendimento: ${type} — ${unit} (${qtd}x)`,'reg');}
+function delReg(i){showConfirm('Excluir este registro?',()=>{S.regs.splice(i,1);renderRegs();updateTotals();renderWeekChart();renderDash();});}
+function edReg(i){const r=S.regs[i];document.getElementById('rType').value=r.type;document.getElementById('rUnit').value=r.unit;document.getElementById('rDate').value=r.date;document.getElementById('rQtd').value=r.qtd||1;S.regs.splice(i,1);renderRegs();updateTotals();renderWeekChart();}
+function renderRegs(){document.getElementById('regTB').innerHTML=S.regs.map((r,i)=>`<tr><td><code style="color:var(--cyan);font-size:13px;">${r.id}</code></td><td><strong>${r.type}</strong></td><td>${r.staff||'—'}</td><td>${r.unit||'—'}</td><td style="font-weight:700;">${r.qtd||1}</td><td>${r.date}</td><td><span class="badge ${r.status==='Concluído'?'bs':'bw'}">${r.status}</span></td><td style="display:flex;gap:5px;justify-content:center;"><button class="btn btn-sm btn-edit" onclick="edReg(${i})" title="Editar">${EDIT}</button><button class="btn btn-sm btn-d" onclick="delReg(${i})" title="Excluir">${DEL}</button></td></tr>`).join('');}
+function updateTotals(){const td=today(),ws=weekStart(),ms=monthStart();const sq=a=>a.reduce((s,r)=>s+(r.qtd||1),0);const d=sq(S.regs.filter(r=>r.date===td));const w=sq(S.regs.filter(r=>r.date>=ws));const m=sq(S.regs.filter(r=>r.date>=ms));const el=(id,v)=>{const e=document.getElementById(id);if(e)e.innerText=v;};el('tot-d',d);el('tot-w',w);el('tot-m',m);}
+
+// WEEK CHART
+function getWeekChartData(){const days=['Seg','Ter','Qua','Qui','Sex'];const now=new Date();const dow=now.getDay();const mon=new Date(now);mon.setDate(now.getDate()-(dow===0?6:dow-1));const labels=[],upd=[],inc=[];for(let i=0;i<5;i++){const d=new Date(mon);d.setDate(mon.getDate()+i);const ds=d.toISOString().split('T')[0];labels.push(days[i]);upd.push(S.regs.filter(r=>r.date===ds&&r.type==='Atualização Cadastral').reduce((s,r)=>s+(r.qtd||1),0));inc.push(S.regs.filter(r=>r.date===ds&&r.type==='Inclusão Cadastral').reduce((s,r)=>s+(r.qtd||1),0));}return{labels,upd,inc};}
+
+// TASKS
+let dragId=null,dragType=null;
+function saveTask(){const id=document.getElementById('editTaskId').value;const title=document.getElementById('tTitle').value.trim();if(!title){alert('Insira o título');return;}const task={id:id?parseInt(id):S.nextTask++,title,pri:document.getElementById('tPri').value,urg:document.getElementById('tUrg').value==='1',start:document.getElementById('tStart').value,end:document.getElementById('tEnd').value,stage:document.getElementById('tStage').value,archived:false};if(id)S.tasks=S.tasks.map(t=>t.id===parseInt(id)?task:t);else S.tasks.push(task);document.getElementById('editTaskId').value='';document.getElementById('tTitle').value='';document.getElementById('tUrg').value='0';closeM('mTask');renderTasks();renderDash();log(`Tarefa: ${title}`,'tasks');}
+function delTask(id){showConfirm('Excluir esta tarefa?',()=>{S.tasks=S.tasks.filter(t=>t.id!==id);renderTasks();renderDash();});}
+function edTask(id){const t=S.tasks.find(x=>x.id===id);if(!t)return;document.getElementById('editTaskId').value=id;document.getElementById('tTitle').value=t.title;document.getElementById('tPri').value=t.pri;document.getElementById('tUrg').value=t.urg?'1':'0';document.getElementById('tStart').value=t.start||today();document.getElementById('tEnd').value=t.end||today();document.getElementById('tStage').value=t.stage;document.getElementById('mTaskT').innerText='Editar Tarefa';openM('mTask');}
+function renderTasks(){['todo','doing','done'].forEach(st=>{const vis=S.tasks.filter(t=>t.stage===st&&!t.archived);const list=document.getElementById('tl-'+st);list.innerHTML='';vis.forEach(t=>list.appendChild(mkTaskCard(t)));const cnt=document.getElementById('cnt-'+st);if(cnt)cnt.innerText=vis.length;});}
+function mkTaskCard(t){const c=document.createElement('div');c.className='kcard';c.draggable=true;c.dataset.id=t.id;c.dataset.type='task';const pc={high:'ph',med:'pm',low:'pl'};const pl={high:'Alta',med:'Média',low:'Baixa'};const urgTag=t.urg?'<span class="badge bd" style="font-size:9px;">URGENTE</span>':'';const typeTag=t.start===t.end?'<span class="badge bn" style="font-size:9px;">Diária</span>':'<span class="badge bn" style="font-size:9px;">Semanal</span>';
+c.innerHTML=`<div class="kcard-body"><h5>${t.title}</h5><div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:4px;">${urgTag}${typeTag}</div><div class="meta"><div style="display:flex;align-items:center;gap:5px;"><div class="pd ${pc[t.pri]}"></div><span style="font-size:12px;color:var(--text2);">${pl[t.pri]}</span></div><span style="font-size:11px;color:var(--text2);">📅 ${t.end||'—'}</span></div></div><div class="kca"><button class="btn btn-sm btn-edit" style="padding:4px 7px;" onclick="edTask(${t.id})" title="Editar">${EDIT}</button><button class="btn btn-sm btn-d" style="padding:4px 7px;" onclick="delTask(${t.id})" title="Excluir">${DEL}</button></div>`;
+c.addEventListener('dragstart',()=>{dragId=t.id;dragType='task';c.classList.add('dragging');});c.addEventListener('dragend',()=>{c.classList.remove('dragging');dragId=null;});return c;}
+function adr(e){e.preventDefault();e.currentTarget.classList.add('dt');}
+function rmdt(e){e.currentTarget.classList.remove('dt');}
+function drp(e,st){e.preventDefault();e.currentTarget.classList.remove('dt');if(dragType!=='task'||dragId===null)return;const t=S.tasks.find(x=>x.id===dragId);if(t){if(st==='done'&&t.stage!=='done'){showConfirm('Tem certeza que quer fazer isso?',()=>{t.stage='done';t.pri='low';t.urg=false;renderTasks();renderDash();log(`Tarefa "${t.title}" → Concluído`,'tasks');});}else{t.stage=st;renderTasks();renderDash();log(`Tarefa "${t.title}" → ${st==='done'?'Concluído':st==='doing'?'Em Andamento':'A Fazer'}`,'tasks');}}}
+
+// AFAZERES
+function renderAfazeres(){const td=today();const active=S.tasks.filter(t=>!t.archived&&(t.stage==='todo'||t.stage==='doing'));const hj=active.filter(t=>t.start===td||t.end===td||(t.start<=td&&t.end>=td&&t.start===t.end));const mkI=t=>{const cls=t.urg?'urg':'att';const st=t.stage==='doing'?'<span class="badge bw" style="font-size:9px;margin-left:6px;">ANDAMENTO</span>':'<span class="badge bd" style="font-size:9px;margin-left:6px;">A FAZER</span>';return`<div class="ti ${cls}"><div class="tck"></div><span>${t.title}${st}</span><span class="tt">${t.end||'—'}</span></div>`;};document.getElementById('td-hj').innerHTML=hj.length?hj.map(mkI).join(''):'<p style="font-size:13px;color:var(--text2);padding:8px 0;">Nenhuma tarefa para hoje.</p>';document.getElementById('td-sm').innerHTML=active.length?active.map(mkI).join(''):'<p style="font-size:13px;color:var(--text2);padding:8px 0;">Nenhuma tarefa semanal.</p>';}
+function todotab(t){document.getElementById('td-hj').style.display=t==='hj'?'':'none';document.getElementById('td-sm').style.display=t==='sm'?'':'none';document.getElementById('tb-hj').className=t==='hj'?'btn btn-sm':'btn btn-sm btn-g';document.getElementById('tb-sm').className=t==='sm'?'btn btn-sm':'btn btn-sm btn-g';if(t==='hj')document.getElementById('tb-hj').style.cssText='background:linear-gradient(135deg,var(--yellow),#ffea70);color:#15130b;border:none;';else document.getElementById('tb-hj').style.cssText='';if(t==='sm')document.getElementById('tb-sm').style.cssText='background:linear-gradient(135deg,var(--yellow),#ffea70);color:#15130b;border:none;';else document.getElementById('tb-sm').style.cssText='';}
+
+// AÇÕES
+function saveAcao(){const id=document.getElementById('editAcaoId').value;const local=document.getElementById('aLocal').value.trim();if(!local){alert('Insira a localização');return;}const sel=document.getElementById('aResp');const resp=Array.from(sel.selectedOptions).map(o=>o.value);const a={id:id?parseInt(id):S.nextAcao++,tipo:document.getElementById('aTipo').value,local,data:document.getElementById('aData').value,obj:document.getElementById('aObj').value,resp:resp.length?resp:[sel.options[0]?.value||'—'],stage:'plan',archived:false};if(id)S.acoes=S.acoes.map(x=>x.id===parseInt(id)?a:x);else S.acoes.push(a);document.getElementById('editAcaoId').value='';document.getElementById('aLocal').value='';document.getElementById('aObj').value='';closeM('mAcao');renderAcoes();renderDash();log(`Ação: ${a.tipo} — ${local}`,'acoes');}
+function delAcao(id){showConfirm('Excluir esta ação?',()=>{S.acoes=S.acoes.filter(a=>a.id!==id);renderAcoes();renderDash();});}
+function edAcao(id){const a=S.acoes.find(x=>x.id===id);if(!a)return;document.getElementById('editAcaoId').value=id;document.getElementById('aTipo').value=a.tipo;document.getElementById('aLocal').value=a.local;document.getElementById('aData').value=a.data||'';document.getElementById('aObj').value=a.obj||'';document.getElementById('mAcaoT').innerText='Editar Ação';openM('mAcao');}
+function renderAcoes(){['plan','exec','fin'].forEach(st=>{const vis=S.acoes.filter(a=>a.stage===st&&!a.archived);const list=document.getElementById('al-'+st);list.innerHTML='';vis.forEach(a=>list.appendChild(mkAcaoCard(a)));const cnt=document.getElementById('cnt-a'+st);if(cnt)cnt.innerText=vis.length;});}
+function mkAcaoCard(a){const c=document.createElement('div');c.className='kcard';c.draggable=true;c.dataset.id=a.id;c.dataset.type='acao';c.innerHTML=`<div class="kcard-body"><div style="font-size:12px;font-weight:700;color:var(--cyan);margin-bottom:4px;">${a.tipo}</div><h5 style="font-size:13px;">📍 ${a.local}</h5><div style="font-size:12px;color:var(--text2);margin:4px 0;">📅 ${a.data||'—'} · 🎯 ${a.obj||'—'}</div><div style="font-size:12px;color:var(--text2);">👥 ${Array.isArray(a.resp)?a.resp.join(', '):a.resp}</div></div><div class="kca"><button class="btn btn-sm btn-edit" style="padding:4px 7px;" onclick="edAcao(${a.id})" title="Editar">${EDIT}</button><button class="btn btn-sm btn-d" style="padding:4px 7px;" onclick="delAcao(${a.id})" title="Excluir">${DEL}</button></div>`;c.addEventListener('dragstart',()=>{dragId=a.id;dragType='acao';c.classList.add('dragging');});c.addEventListener('dragend',()=>{c.classList.remove('dragging');dragId=null;});return c;}
+function drpA(e,st){e.preventDefault();e.currentTarget.classList.remove('dt');if(dragType!=='acao'||dragId===null)return;const a=S.acoes.find(x=>x.id===dragId);if(a){a.stage=st;renderAcoes();renderDash();log(`Ação "${a.tipo}" → ${st==='fin'?'Finalizado':st==='exec'?'Em Execução':'Planejado'}`,'acoes');}}
+
+// ALMOXARIFADO
+function saveAlmox(){const idx=document.getElementById('editAlmoxIdx').value;const rawNome=document.getElementById('almNome').value.trim();if(!rawNome){alert('Insira o nome');return;}const cat=document.getElementById('almCat').value;const qtd=parseInt(document.getElementById('almQtd').value)||0;const status=document.getElementById('almSt').value;if(idx!==''){S.almox[parseInt(idx)]={nome:rawNome,cat,qtd,status};}else{const ex=S.almox.findIndex(a=>a.nome.toLowerCase()===rawNome.toLowerCase());if(ex>=0){S.almox[ex].qtd+=qtd;S.almox[ex].status=status;}else{S.almox.push({nome:rawNome,cat,qtd,status});}}document.getElementById('editAlmoxIdx').value='';document.getElementById('almNome').value='';document.getElementById('almQtd').value='';document.getElementById('mAlmoxT').innerText='Novo Item';closeM('mAlmox');renderAlmox();log(`Almox: ${rawNome} (${qtd})`,'almox');}
+function edAlmox(i){const a=S.almox[i];document.getElementById('editAlmoxIdx').value=i;document.getElementById('almNome').value=a.nome;document.getElementById('almCat').value=a.cat;document.getElementById('almQtd').value=a.qtd;document.getElementById('almSt').value=a.status;document.getElementById('mAlmoxT').innerText='Editar Item';openM('mAlmox');}
+function delAlmox(i){showConfirm('Excluir este item?',()=>{S.almox.splice(i,1);renderAlmox();});}
+function renderAlmox(){document.getElementById('almoxTB').innerHTML=S.almox.map((a,i)=>{const cls=a.status==='OK'?'bs':a.status==='REPOR'?'bw':'bd';return`<tr><td><strong>${a.nome}</strong></td><td>${a.cat}</td><td>${a.qtd}</td><td><span class="badge ${cls}">${a.status}</span></td><td style="display:flex;gap:5px;justify-content:center;"><button class="btn btn-sm btn-edit" onclick="edAlmox(${i})" title="Editar">${EDIT}</button><button class="btn btn-sm btn-d" onclick="delAlmox(${i})" title="Excluir">${DEL}</button></td></tr>`;}).join('');}
+
+// UNIDADES
+function saveUnit(){const idx=document.getElementById('editUnitIdx').value;const u={setor:document.getElementById('uSetor').value,resp:document.getElementById('uResp').value,unit:document.getElementById('uUnit').value};if(!u.setor){alert('Insira o setor');return;}if(idx!=='')S.units[parseInt(idx)]=u;else S.units.push(u);document.getElementById('editUnitIdx').value='';document.getElementById('uSetor').value='';document.getElementById('mUnitT').innerText='Nova Unidade';closeM('mUnit');renderUnits();log(`Setor: ${u.setor}`,'units');}
+function edUnit(i){const u=S.units[i];document.getElementById('editUnitIdx').value=i;document.getElementById('uSetor').value=u.setor;document.getElementById('uUnit').value=u.unit;document.getElementById('mUnitT').innerText='Editar Unidade';renderStaff();setTimeout(()=>document.getElementById('uResp').value=u.resp,50);openM('mUnit');}
+function delUnit(i){showConfirm('Excluir este setor?',()=>{S.units.splice(i,1);renderUnits();});}
+function renderUnits(){const totFam=15666;const cc=document.getElementById('unitCards');if(cc)cc.innerHTML=unitasData.map((u,ui)=>{const pct=Math.round((u.familias/totFam)*100);return`<div class="card uc"><div class="uh" style="background:linear-gradient(135deg,${u.color}18,transparent);"><strong style="font-family:'Outfit',sans-serif;font-weight:800;font-size:16px;">${u.nome}</strong><div style="display:flex;gap:5px;"><button class="btn btn-sm btn-edit" onclick="alert('Edição de card de unidade: ${u.nome}\\nOs dados de unidades são fixos no sistema.')" title="Editar">${EDIT}</button></div></div><div class="ub"><div style="font-size:12px;color:var(--text2);margin-bottom:10px;">📍 ${u.bairros}</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;"><div style="background:var(--card2);border-radius:10px;padding:10px;text-align:center;"><div style="font-size:11px;color:var(--text2);margin-bottom:3px;">CADASTRADAS</div><div style="font-size:18px;font-weight:800;font-family:'Outfit';color:${u.color};">${u.familias.toLocaleString('pt-BR')}</div><div style="font-size:11px;color:var(--text2);">famílias</div></div><div style="background:var(--card2);border-radius:10px;padding:10px;text-align:center;"><div style="font-size:11px;color:var(--text2);margin-bottom:3px;">ATIVAS</div><div style="font-size:18px;font-weight:800;font-family:'Outfit';color:var(--green);">${Math.round(u.familias*u.ativasPct/100).toLocaleString('pt-BR')}</div><div style="font-size:11px;color:var(--text2);">${u.ativasPct}%</div></div><div style="background:var(--card2);border-radius:10px;padding:10px;text-align:center;"><div style="font-size:11px;color:var(--text2);margin-bottom:3px;">ATUALIZ.</div><div style="font-size:18px;font-weight:800;font-family:'Outfit';color:var(--amber);">${Math.round(u.familias*u.atualPct/100).toLocaleString('pt-BR')}</div><div style="font-size:11px;color:var(--text2);">${u.atualPct}%</div></div></div></div></div>`;}).join('');
+const igdEl=document.getElementById('igd-card');if(igdEl)igdEl.innerHTML=`<div style="margin-bottom:14px;padding:14px;background:rgba(91,107,248,.08);border-radius:14px;border:1px solid rgba(91,107,248,.15);"><div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;margin-bottom:10px;text-align:center;">IGD-M — Fev/2026</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"><div style="background:var(--card2);border-radius:10px;padding:12px;text-align:center;"><div style="font-size:11px;color:var(--text2);margin-bottom:4px;">ATUALIZAÇÃO CADASTRAL</div><span style="font-size:20px;font-weight:800;font-family:'Outfit';color:var(--accent);">71,9%</span><span style="font-size:12px;color:var(--text2);"> / 76,7%</span></div><div style="background:var(--card2);border-radius:10px;padding:12px;text-align:center;"><div style="font-size:11px;color:var(--text2);margin-bottom:4px;">COND. EDUCAÇÃO</div><span style="font-size:20px;font-weight:800;font-family:'Outfit';color:var(--green);">95,6%</span><span style="font-size:12px;color:var(--text2);"> / 89,2%</span></div><div style="background:var(--card2);border-radius:10px;padding:12px;text-align:center;"><div style="font-size:11px;color:var(--text2);margin-bottom:4px;">COND. SAÚDE</div><span style="font-size:20px;font-weight:800;font-family:'Outfit';color:var(--cyan);">83,5%</span><span style="font-size:12px;color:var(--text2);"> / 83,5%</span></div><div style="background:var(--card2);border-radius:10px;padding:12px;text-align:center;"><div style="font-size:11px;color:var(--text2);margin-bottom:4px;">IGD-M GERAL</div><span style="font-size:20px;font-weight:800;font-family:'Outfit';color:var(--amber);">80,7%</span><span style="font-size:12px;color:var(--text2);"> / 81,5%</span></div></div></div><div style="padding:12px;background:rgba(251,191,36,.07);border-left:3px solid var(--amber);border-radius:10px;font-size:13px;color:var(--text2);text-align:center;"><strong style="color:var(--amber);">Repasse IGD-M:</strong> R$ 20.302,77 (fev/2026) · Famílias: <strong style="color:var(--text);">15.666</strong></div>`;
+document.getElementById('unitTB').innerHTML=S.units.map((u,i)=>`<tr><td><strong>${u.setor}</strong></td><td>${u.resp}</td><td>${u.unit}</td><td style="display:flex;gap:5px;justify-content:center;"><button class="btn btn-sm btn-edit" onclick="edUnit(${i})" title="Editar">${EDIT}</button><button class="btn btn-sm btn-d" onclick="delUnit(${i})" title="Excluir">${DEL}</button></td></tr>`).join('');}
+
+// DASHBOARD
+function renderDash(){renderAfazeres();renderDashUnits();renderDashAcoes();renderLiveUrgent();renderGestao();renderActivity();}
+function renderDashUnits(){const el=document.getElementById('dash-units');if(!el)return;el.innerHTML=unitasData.map(u=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:rgba(120,150,200,.04);border-radius:12px;font-size:14px;border-left:3px solid ${u.color};"><span style="font-weight:700;">${u.nome}</span><span style="font-size:13px;color:var(--text2);">👨‍👩‍👧 ${u.familias.toLocaleString('pt-BR')}</span><span style="font-size:13px;color:${u.color};font-weight:700;">${u.pessoas.toLocaleString('pt-BR')}</span></div>`).join('');}
+function renderDashAcoes(){const el=document.getElementById('dash-acoes');if(!el)return;const vis=S.acoes.filter(a=>!a.archived&&a.stage!=='fin').slice(0,3);if(!vis.length){el.innerHTML='<p style="font-size:13px;color:var(--text2);">Nenhuma ação planejada.</p>';return;}el.innerHTML=vis.map(a=>`<div style="background:rgba(61,126,240,.08);border-radius:12px;padding:12px;border-left:3px solid var(--accent);"><div style="font-size:13px;font-weight:700;">${a.tipo} — ${a.local}</div><div style="font-size:12px;color:var(--text2);margin-top:4px;">📅 ${a.data||'—'} · 🎯 ${a.obj||'—'}</div></div>`).join('');}
+function renderLiveUrgent(){const el=document.getElementById('live-urgent');if(!el)return;const urg=S.tasks.filter(t=>!t.archived&&t.urg&&t.stage!=='done');if(!urg.length){el.innerHTML='<p style="font-size:13px;color:var(--text2);">Nenhuma tarefa urgente.</p>';return;}el.innerHTML=urg.map(t=>`<div style="display:flex;gap:8px;align-items:center;padding:9px 10px;background:rgba(240,99,122,.08);border-radius:10px;border-left:3px solid var(--red);"><span>🔴</span><span style="font-size:13px;"><strong>${t.end||'—'}</strong> ${t.title}</span></div>`).join('');}
+function renderGestao(){const el=document.getElementById('dash-gestao');const elT=document.getElementById('dash-leitura');if(!el||!elT)return;const alerts=[];const almoxCrit=S.almox.filter(a=>a.status==='CRÍTICO');const almoxRep=S.almox.filter(a=>a.status==='REPOR');const tasksUrg=S.tasks.filter(t=>!t.archived&&t.urg&&t.stage!=='done').length;const ws=weekStart();const weekRegs=S.regs.filter(r=>r.date>=ws).reduce((s,r)=>s+(r.qtd||1),0);if(tasksUrg>0)alerts.push({cls:'bd',txt:`🔴 ${tasksUrg} tarefa(s) urgente(s) sem conclusão.`});if(almoxCrit.length>0)alerts.push({cls:'bd',txt:`🔴 Almoxarifado crítico: ${almoxCrit.map(a=>a.nome).join(', ')}.`});if(almoxRep.length>0)alerts.push({cls:'bw',txt:`🟡 Itens para repor: ${almoxRep.map(a=>a.nome).join(', ')}.`});if(!alerts.length)alerts.push({cls:'bs',txt:'🟢 Operação estável.'});el.innerHTML=alerts.slice(0,4).map(a=>`<div style="padding:10px 12px;border-radius:12px;font-size:13px;border-left:3px solid;${a.cls==='bd'?'background:rgba(240,99,122,.08);border-color:var(--red)':a.cls==='bw'?'background:rgba(245,192,67,.08);border-color:var(--amber)':'background:rgba(76,175,80,.08);border-color:var(--green)'}">${a.txt}</div>`).join('');elT.innerText=`A operação municipal do CadÚnico em São Sebastião/SP conta com ${S.staff.length} profissionais ativos. Nesta semana: ${weekRegs} atendimento(s). ${tasksUrg>0?`${tasksUrg} tarefa(s) urgente(s).`:''}`;}
+
+// ACTIVITY
+function log(txt,sec){const icons={reg:'📝',tasks:'✅',acoes:'🚐',eq:'👥',units:'🏢',almox:'📦',rel:'📄'};S.activity.unshift({txt,time:new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),icon:icons[sec]||'🔔'});renderActivity();}
+function renderActivity(){const el=document.getElementById('actFeed');if(!el)return;el.innerHTML=S.activity.slice(0,12).map(a=>`<div class="ai"><span style="font-size:15px;">${a.icon}</span><div><div class="ai-t">${a.txt}</div><div class="ai-s">${a.time}</div></div></div>`).join('')||'<p style="font-size:13px;color:var(--text2);padding:8px 0;">Nenhuma atualização.</p>';const cnt=document.getElementById('act-cnt');if(cnt)cnt.innerText=`${S.activity.length}`;}
+
+// CHARTS
+let chartSem=null,chartStk=null;
+function initCharts(){const ctx=document.getElementById('chartSemanal');if(!ctx)return;const{labels,upd,inc}=getWeekChartData();chartSem=new Chart(ctx.getContext('2d'),{type:'bar',data:{labels,datasets:[{label:'Atualizações',data:upd,backgroundColor:'rgba(45,212,191,.65)',borderRadius:8,borderWidth:0},{label:'Inclusões',data:inc,backgroundColor:'rgba(155,109,255,.65)',borderRadius:8,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{grid:{color:'rgba(120,150,200,.05)'},ticks:{color:'#8ea0c5',font:{size:11},stepSize:1,beginAtZero:true},min:0},x:{grid:{display:false},ticks:{color:'#8ea0c5',font:{size:11}}}}}});}
+function renderWeekChart(){if(!chartSem)return;const{labels,upd,inc}=getWeekChartData();chartSem.data.labels=labels;chartSem.data.datasets[0].data=upd;chartSem.data.datasets[1].data=inc;chartSem.update();}
+let stkInit=false;
+function initStockChart(){if(stkInit)return;stkInit=true;const ctx=document.getElementById('stockChart');if(!ctx)return;chartStk=new Chart(ctx.getContext('2d'),{type:'bar',data:{labels:S.almox.map(a=>a.nome.length>14?a.nome.substring(0,14)+'…':a.nome),datasets:[{label:'Quantidade',data:S.almox.map(a=>a.qtd),backgroundColor:S.almox.map(a=>a.status==='OK'?'rgba(45,212,191,.7)':a.status==='REPOR'?'rgba(251,191,36,.7)':'rgba(248,113,113,.7)'),borderRadius:8,borderWidth:0}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(120,150,200,.05)'},ticks:{color:'#8ea0c5',font:{size:11}}},y:{grid:{display:false},ticks:{color:'#8ea0c5',font:{size:11}}}}}});}
+
+// RELATÓRIOS ABNT
+function genRel(tipo){
+  const td=new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+  const ws=weekStart(),ms=monthStart();
+  const wRegs=S.regs.filter(r=>r.date>=ws),mRegs=S.regs.filter(r=>r.date>=ms);
+  const sq=a=>a.reduce((s,r)=>s+(r.qtd||1),0);
+  const wUpd=sq(wRegs.filter(r=>r.type==='Atualização Cadastral'));
+  const wInc=sq(wRegs.filter(r=>r.type==='Inclusão Cadastral'));
+  const wRec=sq(wRegs.filter(r=>r.type==='Atendimento Recepção'));
+  const mUpd=sq(mRegs.filter(r=>r.type==='Atualização Cadastral'));
+  const mInc=sq(mRegs.filter(r=>r.type==='Inclusão Cadastral'));
+  const tDone=S.tasks.filter(t=>t.stage==='done').length;
+  const tTodo=S.tasks.filter(t=>t.stage==='todo'&&!t.archived).length;
+  const tDoing=S.tasks.filter(t=>t.stage==='doing'&&!t.archived).length;
+  const aFin=S.acoes.filter(a=>a.stage==='fin').length;
+
+  // ABNT formatting: Times New Roman 12pt, margens 3cm sup/esq, 2cm inf/dir, espaçamento 1.5
+  const css=`font-family:'Times New Roman',Times,serif;font-size:12pt;max-width:700px;margin:0 auto;line-height:1.5;color:#111;background:#fff;padding:30px 20px 20px 30px;text-align:justify;`;
+  const tblCss=`width:100%;border-collapse:collapse;font-size:11pt;margin:12px 0;`;
+  const thCss=`background:#eef0f8;padding:8px 10px;border:1px solid #000;font-weight:700;text-align:center;font-size:10pt;text-transform:uppercase;`;
+  const tdCss=`padding:8px 10px;border:1px solid #000;vertical-align:top;text-align:center;`;
+  const header=(titulo,subtitulo='')=>`<div style="${css}"><div style="text-align:center;margin-bottom:24px;"><div style="font-size:12pt;text-transform:uppercase;font-weight:700;margin-bottom:4px;">PREFEITURA MUNICIPAL DE SÃO SEBASTIÃO — SP</div><div style="font-size:12pt;">Secretaria Municipal de Assistência Social — SMAS</div><div style="font-size:12pt;margin-bottom:16px;">Divisão do Cadastro Único — CadÚnico</div><div style="font-size:14pt;font-weight:700;text-transform:uppercase;margin:20px 0 8px;">${titulo}</div>${subtitulo?`<div style="font-size:12pt;color:#333;margin-top:4px;">${subtitulo}</div>`:''}<div style="font-size:11pt;color:#555;margin-top:12px;">São Sebastião/SP, ${td}</div></div>`;
+  const footer=`<div style="margin-top:40px;border-top:1px solid #000;padding-top:16px;"><table style="${tblCss}"><tr><td style="border:none;text-align:center;padding:20px 10px;"><div style="border-top:1px solid #000;padding-top:8px;font-size:11pt;display:inline-block;min-width:220px;">Responsável Técnico — Divisão do CadÚnico<br>São Sebastião/SP, ${td}</div></td><td style="border:none;text-align:center;padding:20px 10px;"><div style="border-top:1px solid #000;padding-top:8px;font-size:11pt;display:inline-block;min-width:220px;">Coordenador(a) Municipal — CadÚnico<br>Prefeitura de São Sebastião/SP</div></td></tr></table><div style="text-align:center;font-size:10pt;color:#888;margin-top:8px;">Sistema Gestão Cadastro Único | Emitido em ${td}</div></div></div>`;
+  const sec=(n,t)=>`<p style="font-size:12pt;font-weight:700;margin:24px 0 8px;text-transform:uppercase;">${n} ${t}</p>`;
+  const p=t=>`<p style="text-indent:1.25cm;margin:8px 0;font-size:12pt;">${t}</p>`;
+
+  const bodies={
+    geral:`${header('Relatório Geral Integrado','Relatório técnico consolidado para apoio à decisão e documentação institucional.')}
+${sec('1.','INTRODUÇÃO')}${p(`O presente relatório apresenta o consolidado das atividades desenvolvidas pela Divisão do Cadastro Único do Município de São Sebastião/SP, em conformidade com as diretrizes do Ministério do Desenvolvimento Social (MDS), Lei nº 10.836/2004 e Lei nº 14.601/2023.`)}
+${sec('2.','RESUMO EXECUTIVO')}<table style="${tblCss}"><thead><tr><th style="${thCss}">Indicador</th><th style="${thCss}">Semana</th><th style="${thCss}">Mês</th><th style="${thCss}">Total</th></tr></thead><tbody><tr><td style="${tdCss}">Atualização Cadastral</td><td style="${tdCss}">${wUpd}</td><td style="${tdCss}">${mUpd}</td><td style="${tdCss}">${S.regs.filter(r=>r.type==='Atualização Cadastral').reduce((s,r)=>s+(r.qtd||1),0)}</td></tr><tr><td style="${tdCss}">Inclusão Cadastral</td><td style="${tdCss}">${wInc}</td><td style="${tdCss}">${mInc}</td><td style="${tdCss}">${S.regs.filter(r=>r.type==='Inclusão Cadastral').reduce((s,r)=>s+(r.qtd||1),0)}</td></tr><tr><td style="${tdCss}">Atendimento Recepção</td><td style="${tdCss}">${wRec}</td><td style="${tdCss}">${sq(mRegs.filter(r=>r.type==='Atendimento Recepção'))}</td><td style="${tdCss}">${S.regs.filter(r=>r.type==='Atendimento Recepção').reduce((s,r)=>s+(r.qtd||1),0)}</td></tr><tr style="font-weight:700;"><td style="${tdCss}"><strong>Total</strong></td><td style="${tdCss}">${sq(wRegs)}</td><td style="${tdCss}">${sq(mRegs)}</td><td style="${tdCss}">${sq(S.regs)}</td></tr></tbody></table>
+${sec('3.','COBERTURA TERRITORIAL')}${p(`O município possui <strong>15.666 famílias cadastradas</strong> com <strong>13.641 atualizadas</strong> (87,1%).`)}<table style="${tblCss}"><thead><tr><th style="${thCss}">Unidade</th><th style="${thCss}">Famílias</th><th style="${thCss}">Pessoas</th><th style="${thCss}">% Municipal</th></tr></thead><tbody>${unitasData.map(u=>`<tr><td style="${tdCss}">${u.nome}</td><td style="${tdCss}">${u.familias.toLocaleString('pt-BR')}</td><td style="${tdCss}">${u.pessoas.toLocaleString('pt-BR')}</td><td style="${tdCss}">${Math.round(u.familias/15666*100)}%</td></tr>`).join('')}</tbody></table>
+${sec('4.','GESTÃO OPERACIONAL')}${p(`Equipe: <strong>${S.staff.length} profissionais</strong>. Tarefas: ${tDone} concluídas, ${tDoing} em andamento, ${tTodo} pendentes. Ações de campo: ${aFin} finalizadas.`)}
+${sec('5.','ALMOXARIFADO')}${p(`${S.almox.filter(a=>a.status==='CRÍTICO').length} item(ns) crítico(s) e ${S.almox.filter(a=>a.status==='REPOR').length} em reposição.`)}
+${sec('6.','ÍNDICES IGD-M — FEV/2026')}<table style="${tblCss}"><thead><tr><th style="${thCss}">Indicador</th><th style="${thCss}">São Sebastião</th><th style="${thCss}">Nacional</th></tr></thead><tbody><tr><td style="${tdCss}">TAC</td><td style="${tdCss}">71,9%</td><td style="${tdCss}">76,7%</td></tr><tr><td style="${tdCss}">Educação</td><td style="${tdCss}">95,6%</td><td style="${tdCss}">89,2%</td></tr><tr><td style="${tdCss}">Saúde</td><td style="${tdCss}">83,5%</td><td style="${tdCss}">83,5%</td></tr><tr><td style="${tdCss}">IGD-M Geral</td><td style="${tdCss}">80,7%</td><td style="${tdCss}">81,5%</td></tr></tbody></table>
+${sec('7.','CONSIDERAÇÕES FINAIS')}${p(`Recomenda-se intensificar ações de busca ativa para elevar a taxa de atualização cadastral ao patamar nacional.`)}
+${sec('','REFERÊNCIAS')}${p(`BRASIL. Lei nº 10.836, de 9 de janeiro de 2004. Cria o Programa Bolsa Família. Diário Oficial da União, Brasília, DF, 2004.`)}${p(`BRASIL. Lei nº 14.601, de 19 de junho de 2023. Institui o Programa Bolsa Família. Diário Oficial da União, Brasília, DF, 2023.`)}${p(`MDS. Manual de Gestão do Cadastro Único. Ministério do Desenvolvimento Social, 2024.`)}
+${footer}`,
+
+    semanal:`${header('Relatório Semanal de Atendimentos','Síntese semanal de atendimentos, tarefas e ações móveis.')}
+${sec('1.','RESUMO')}${p(`Na semana de referência, registraram-se <strong>${sq(wRegs)} atendimento(s)</strong>.`)}
+${sec('2.','ATENDIMENTOS POR TIPO')}<table style="${tblCss}"><thead><tr><th style="${thCss}">Tipo</th><th style="${thCss}">Qtd</th><th style="${thCss}">%</th></tr></thead><tbody><tr><td style="${tdCss}">Atualização</td><td style="${tdCss}">${wUpd}</td><td style="${tdCss}">${sq(wRegs)?Math.round(wUpd/sq(wRegs)*100):0}%</td></tr><tr><td style="${tdCss}">Inclusão</td><td style="${tdCss}">${wInc}</td><td style="${tdCss}">${sq(wRegs)?Math.round(wInc/sq(wRegs)*100):0}%</td></tr><tr><td style="${tdCss}">Recepção</td><td style="${tdCss}">${wRec}</td><td style="${tdCss}">${sq(wRegs)?Math.round(wRec/sq(wRegs)*100):0}%</td></tr></tbody></table>
+${sec('3.','TAREFAS')}${p(`${tDone} concluídas, ${tDoing} em andamento, ${tTodo} pendentes.`)}
+${sec('4.','REFERÊNCIAS')}${p(`MDS. Informes CadÚnico nº 84 a 90. Ministério do Desenvolvimento Social, 2024–2025.`)}
+${footer}`,
+
+    adm:`${header('Relatório Administrativo','Quadro de pessoal, fluxo operacional e inventário.')}
+${sec('1.','QUADRO DE PESSOAL')}${p(`${S.staff.length} profissionais ativos.`)}<table style="${tblCss}"><thead><tr><th style="${thCss}">Nome</th><th style="${thCss}">Cargo</th></tr></thead><tbody>${S.staff.map(s=>`<tr><td style="${tdCss}">${s.name}</td><td style="${tdCss}">${s.role}</td></tr>`).join('')}</tbody></table>
+${sec('2.','FLUXO OPERACIONAL')}<table style="${tblCss}"><thead><tr><th style="${thCss}">Tarefa</th><th style="${thCss}">Prioridade</th><th style="${thCss}">Status</th></tr></thead><tbody>${S.tasks.filter(t=>!t.archived).map(t=>`<tr><td style="${tdCss}">${t.title}</td><td style="${tdCss}">${t.pri==='high'?'Alta':t.pri==='med'?'Média':'Baixa'}</td><td style="${tdCss}">${t.stage==='todo'?'A Fazer':t.stage==='doing'?'Em Andamento':'Concluído'}</td></tr>`).join('')}</tbody></table>
+${sec('3.','ALMOXARIFADO')}<table style="${tblCss}"><thead><tr><th style="${thCss}">Item</th><th style="${thCss}">Qtd</th><th style="${thCss}">Status</th></tr></thead><tbody>${S.almox.map(a=>`<tr><td style="${tdCss}">${a.nome}</td><td style="${tdCss}">${a.qtd}</td><td style="${tdCss}">${a.status}</td></tr>`).join('')}</tbody></table>
+${sec('4.','REFERÊNCIAS')}${p(`MDS. Manual de Gestão do Cadastro Único. Ministério do Desenvolvimento Social, 2024.`)}
+${footer}`,
+
+    unidades:`${header('Relatório por Unidade — Cobertura Territorial','Distribuição de famílias cadastradas por unidade e bairro.')}
+${sec('1.','ESCOPO')}${p(`Distribuição territorial das famílias cadastradas no CadÚnico de São Sebastião/SP (IBGE: 3550704).`)}
+${sec('2.','FAMÍLIAS POR UNIDADE')}<table style="${tblCss}"><thead><tr><th style="${thCss}">Unidade</th><th style="${thCss}">Pop. Est.</th><th style="${thCss}">Famílias</th><th style="${thCss}">Ativas</th><th style="${thCss}">Atual.</th><th style="${thCss}">%</th></tr></thead><tbody>${unitasData.map(u=>`<tr><td style="${tdCss}">${u.nome}</td><td style="${tdCss}">${u.pop.toLocaleString('pt-BR')}</td><td style="${tdCss}">${u.familias.toLocaleString('pt-BR')}</td><td style="${tdCss}">${Math.round(u.familias*u.ativasPct/100).toLocaleString('pt-BR')}</td><td style="${tdCss}">${Math.round(u.familias*u.atualPct/100).toLocaleString('pt-BR')}</td><td style="${tdCss}">${Math.round(u.familias/15666*100)}%</td></tr>`).join('')}<tr style="font-weight:700;"><td style="${tdCss}">Total</td><td style="${tdCss}">81.595</td><td style="${tdCss}">15.666</td><td style="${tdCss}">12.840</td><td style="${tdCss}">13.641</td><td style="${tdCss}">100%</td></tr></tbody></table>
+${sec('3.','BAIRROS POR UNIDADE')}${unitasData.map(u=>p(`<strong>${u.nome}:</strong> ${u.bairros}.`)).join('')}
+${sec('4.','REFERÊNCIAS')}${p(`IBGE. Censo Demográfico 2022. Instituto Brasileiro de Geografia e Estatística, 2023.`)}${p(`MDS. Painel Cadastro Único, 2026. Disponível em: https://cecad.cidadania.gov.br`)}
+${footer}`
+  };
+
+  const titulos={geral:'Relatório Geral',semanal:'Relatório Semanal',adm:'Relatório Administrativo',unidades:'Relatório por Unidade'};
+  document.getElementById('mRelT').innerText=titulos[tipo];
+  document.getElementById('mRelC').innerHTML=bodies[tipo];
+  openM('mRel');
+  log(`Relatório gerado: ${titulos[tipo]}`,'rel');
+}
+</script>
+</body>
+</html>
